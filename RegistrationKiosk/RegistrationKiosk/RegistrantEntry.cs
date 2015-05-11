@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace RegistrationKiosk {
     class RegistrantEntry {
 
-        public static enum RegistrantType { General, Student, Employee }
-        public static enum ClassStanding { Freshman, Junior, Sophomore, Senior, PostBac, Graduate, Alumnus }
-        public static enum Sex { Male, Female }
+        public enum RegistrantType { General, Student, Employee }
+        public enum ClassStanding { None, Freshman, Junior, Sophomore, Senior, PostBac, Graduate, Alumnus }
+        public enum Sex { Male, Female }
 
         //===========================================================================
         #region Properties
@@ -18,6 +18,10 @@ namespace RegistrationKiosk {
         // -------------------------
         #region General Properties
         // -------------------------
+        public int code {
+            get;
+            set;
+        }
         public RegistrantType regType {
             get;
             set;
@@ -55,6 +59,10 @@ namespace RegistrationKiosk {
             get;
             set;
         }
+        public string major {
+            get;
+            set;
+        }
         public string studentID {
             get;
             set;
@@ -82,7 +90,7 @@ namespace RegistrationKiosk {
 
         #endregion
         //===========================================================================
-        #region Constructors
+        #region Constructor
         //===========================================================================
 
         /// <summary>
@@ -99,7 +107,7 @@ namespace RegistrationKiosk {
             this.sex = sex;
             this.email = email;
             this.phone = phone;
-            this.regType = RegistrantType.General;
+            SetTypeGeneral();
         }
 
         #endregion
@@ -107,6 +115,8 @@ namespace RegistrationKiosk {
         #region Methods
         //===========================================================================
 
+        #region SET REGISTRATION TYPE
+        
         public void SetTypeStudent(ClassStanding classStanding, string college, string studentID, int gradYear) {
             this.classStanding = classStanding;
             this.college = college;
@@ -119,6 +129,24 @@ namespace RegistrationKiosk {
             this.business = business;
             this.job = job;
             this.regType = RegistrantType.Employee;
+        }
+
+        public void SetTypeGeneral() {
+            this.regType = RegistrantType.General;
+        }
+
+        #endregion
+
+        public string GetQueryString() {
+            return "";
+        }
+
+        /// <summary>
+        /// Returns a six-digit integer for database lookup of the registrant.
+        /// </summary>
+        /// <returns>Six-digit hash code</returns>
+        public int GenerateHashCode() {
+            return 123456;
         }
 
         #endregion

@@ -18,11 +18,9 @@
         <Rectangle x:Name="rec_Header" Grid.Column="1" Fill="#FFC6E8E8" Stroke="#FF81ADAA" RadiusX="5" RadiusY="5" StrokeThickness="3"/>
         <Label x:Name="lbl_PageHeader" Content="Page Title" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="32" FontWeight="Bold" d:IsLocked="True"/>
         <Button x:Name="btn_AdminMenu" Content="Admin" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="56" Height="36" Click="btn_AdminMenu_Click"/>
-        <Button x:Name="btn_AdminBack" Content="Back" HorizontalAlignment="Center" Margin="4,14" VerticalAlignment="Center" Width="56" Height="36" Click="btn_AdminBack_Click"/>
-        <Button x:Name="btn_ExitProgram" Content="Exit" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="56" Height="36" Grid.Column="2" Click="btn_ExitProgram_Click"/>
 
         <!-- REGISTRATION GRID -->
-        <Grid x:Name="grid_Registration" Grid.Column="1" Grid.Row="1" Visibility="Visible" d:IsHidden="True">
+        <Grid x:Name="grid_Registration" Grid.Column="1" Grid.Row="1" Visibility="Visible">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
@@ -154,12 +152,12 @@
             <Rectangle x:Name="rec_RegStudent" Fill="#FFC6E8E8" RadiusY="5" RadiusX="5" Stroke="#FF81ADAA" StrokeThickness="3" Grid.Column="1" Grid.Row="1" d:IsLocked="True"/>
 
             <!-- STUDENT INFORMATION SECTION -->
-            <Grid x:Name="grid_RegStudent" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" Width="322" d:IsHidden="True">
+            <Grid x:Name="grid_RegStudent" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" Width="322">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="34"/>
                     <RowDefinition Height="112"/>
-                    <RowDefinition Height="53*"/>
-                    <RowDefinition Height="35*"/>
+                    <RowDefinition Height="150*"/>
+                    <RowDefinition Height="19*"/>
                 </Grid.RowDefinitions>
                 <Label x:Name="lbl_RegStudent" Content="Student Information" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" FontSize="18" FontWeight="Bold"/>
                 <!-- CLASS STANDING GRID -->
@@ -192,16 +190,21 @@
                         <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <Rectangle x:Name="rec_RegStudMore" Fill="#FFC6E8E8" RadiusY="5" RadiusX="5" Stroke="#FF81ADAA" StrokeThickness="3" Grid.Row="1" Grid.RowSpan="3" d:IsLocked="True"/>
+                    <Rectangle x:Name="rec_RegStudMore" Fill="#FFC6E8E8" RadiusY="5" RadiusX="5" Stroke="#FF81ADAA" StrokeThickness="3" Grid.Row="1" Grid.RowSpan="4"/>
                     <Label x:Name="lbl_College" Content="College" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="73" Grid.Row="1" Margin="10,0,0,0"/>
-                    <Label x:Name="lbl_StudentID" Content="Student ID" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="100" Grid.Row="2" Margin="10,0,0,0"/>
-                    <Label x:Name="lbl_Graduation" Content="Graduation Year" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="100" Grid.Row="3" Margin="10,0,0,0" HorizontalContentAlignment="Center"/>
+                    <Label x:Name="lbl_StudentID" Content="Student ID" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="100" Grid.Row="3" Margin="10,0,0,0"/>
+                    <Label x:Name="lbl_Graduation" Content="Graduation Year" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="100" Grid.Row="4" Margin="10,0,0,0" HorizontalContentAlignment="Center"/>
+                    <Label x:Name="lbl_Major" Content="Major" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="73" Grid.Row="2" Margin="10,1,0,0"/>
                     <ComboBox x:Name="combo_Colleges" HorizontalAlignment="Left" Margin="83,4,0,4" Grid.Row="1" VerticalAlignment="Center" Width="209">
                         <ComboBoxItem Content="Eastern Washington University"/>
                     </ComboBox>
-                    <TextBox x:Name="txtbx_StudentID" Height="20" Margin="110,4,10,4" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="2" VerticalContentAlignment="Center"/>
-                    <TextBox x:Name="txtbx_Graduation" Height="20" Margin="110,4,10,4" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="3" VerticalContentAlignment="Center"/>
+                    <ComboBox x:Name="combo_Majors" HorizontalAlignment="Left" Margin="83,4,0,5" Grid.Row="2" VerticalAlignment="Center" Width="209">
+                        <ComboBoxItem Content="Computer Science"/>
+                    </ComboBox>
+                    <TextBox x:Name="txtbx_StudentID" Height="20" Margin="110,4,10,4" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="3" VerticalContentAlignment="Center"/>
+                    <TextBox x:Name="txtbx_Graduation" Height="20" Margin="110,4,10,4" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="4" VerticalContentAlignment="Center"/>
                 </Grid>
             </Grid>
             <Grid x:Name="grid_RegEmployer" Grid.Column="1" Grid.Row="1" d:IsHidden="True">
@@ -233,7 +236,7 @@
                 <Button x:Name="btn_Checkin" Content="Check In" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="120" Height="60" FontSize="24" FontWeight="Bold" Click="btn_Checkin_Click"/>
             </Grid>
         </Grid>
-        <Grid x:Name="grid_Admin" Grid.Column="1" Grid.Row="1">
+        <Grid x:Name="grid_Admin" Grid.Column="1" Grid.Row="1" d:IsHidden="True">
             <Grid.RowDefinitions>
                 <RowDefinition Height="237*"/>
                 <RowDefinition Height="357*"/>
@@ -276,11 +279,11 @@
                     </Grid.RowDefinitions>
                     <Rectangle x:Name="rec_AdminEntriesEdit" Fill="#FFC6E8E8" RadiusY="5" RadiusX="5" Stroke="#FF81ADAA" StrokeThickness="3" Grid.Row="1" d:IsLocked="True" Grid.RowSpan="5"/>
                     <Label x:Name="lbl_AdminEntriesEdit" Content="Manipulate Entries" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="-5.25,-1.25" Height="26" Grid.RowSpan="2"/>
+                    <Label x:Name="lbl_AdminEntriesCode" Content="Registration Code" HorizontalAlignment="Center" Margin="0" Grid.Row="1" VerticalAlignment="Bottom"/>
+                    <TextBox x:Name="txtbx_AdminEntriesCode" HorizontalAlignment="Center" Height="23" Margin="0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Center" Width="150" HorizontalContentAlignment="Center"/>
                     <Button x:Name="btn_AdminEntriesEdit" Content="Edit Entry" HorizontalAlignment="Center" Margin="54,13,55,14" Grid.Row="3" VerticalAlignment="Center" Width="100"/>
                     <Button x:Name="btn_AdminEntriesRemove" Content="Remove Entry" HorizontalAlignment="Center" Margin="54,14,55,13" Grid.Row="4" VerticalAlignment="Center" Width="100"/>
                     <Button x:Name="btn_AdminEntriesClear" Content="Clear All Entries" HorizontalAlignment="Center" Margin="54,13,55,14" Grid.Row="5" VerticalAlignment="Center" Width="100"/>
-                    <TextBox x:Name="txtbx_AdminEntriesCode" HorizontalAlignment="Center" Height="23" Margin="0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Center" Width="150"/>
-                    <Label Content="Registration Code" HorizontalAlignment="Center" Margin="0" Grid.Row="1" VerticalAlignment="Bottom"/>
                 </Grid>
                 <Grid x:Name="grid_AdminEntriesFind" Margin="10" Grid.Row="1" Grid.Column="2">
                     <Grid.RowDefinitions>
@@ -296,5 +299,7 @@
                 </Grid>
             </Grid>
         </Grid>
+        <Button x:Name="btn_AdminBack" Content="Back" HorizontalAlignment="Center" Margin="4,14" VerticalAlignment="Center" Width="56" Height="36" Click="btn_AdminBack_Click"/>
+        <Button x:Name="btn_ExitProgram" Content="Exit" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="56" Height="36" Grid.Column="2" Click="btn_ExitProgram_Click"/>
     </Grid>
 </Window>

@@ -30,6 +30,8 @@ namespace RegistrationKiosk {
         private SolidColorBrush brush_FormBorder = new SolidColorBrush(Color.FromRgb(129, 173, 170));
         private SolidColorBrush brush_FormFill = new SolidColorBrush(Color.FromRgb(198, 232, 232));
 
+        private List<RegistrantEntry> searchEntries = new List<RegistrantEntry>();
+
         //===========================================================================
         #region Initialize Window
         //===========================================================================
@@ -167,8 +169,8 @@ namespace RegistrationKiosk {
             #endregion
 
             #region COMBO BOX
-            // Colleges
             combo_Colleges.SelectedIndex = -1;
+            combo_Majors.SelectedIndex = -1;
             #endregion
 
             #region RECTANGLES
@@ -200,7 +202,7 @@ namespace RegistrationKiosk {
             // -------------------------
             
             #region Name
-            regex_pattern = @"^[A-Za-z-\s]{2,}$";
+            regex_pattern = @"^[A-Za-z-.\s]{2,}$";
             if (!Regex.IsMatch(txtbx_FirstName.Text, regex_pattern)) {
                 MessageBox.Show("Invalid First Name!");
                 txtbx_FirstName.Focus();
@@ -215,25 +217,6 @@ namespace RegistrationKiosk {
                 return false;
             } else
                 rec_RegName.Stroke = brush_FormBorder;
-            #endregion
-
-            #region Sex
-            if (radio_Male.IsChecked == false && radio_Female.IsChecked == false) {
-                MessageBox.Show("Please indicate sex.");
-                rec_RegSex.Stroke = Brushes.Red;
-                return false;
-            } else
-                rec_RegSex.Stroke = brush_FormBorder;
-            #endregion
-
-            #region Registrant Type
-            // REGISTRANT TYPE
-            if (radio_Student.IsChecked == false && radio_Employee.IsChecked == false && radio_General.IsChecked == false) {
-                MessageBox.Show("Please indicate registrant type.");
-                rec_RegRegistrant.Stroke = Brushes.Red;
-                return false;
-            } else
-                rec_RegRegistrant.Stroke = brush_FormBorder;
             #endregion
 
             #region Contact Info
@@ -259,6 +242,25 @@ namespace RegistrationKiosk {
                 rec_RegContact.Stroke = brush_FormBorder;
             #endregion
 
+            #region Sex
+            if (radio_Male.IsChecked == false && radio_Female.IsChecked == false) {
+                MessageBox.Show("Please indicate sex.");
+                rec_RegSex.Stroke = Brushes.Red;
+                return false;
+            } else
+                rec_RegSex.Stroke = brush_FormBorder;
+            #endregion
+
+            #region Registrant Type
+            // REGISTRANT TYPE
+            if (radio_Student.IsChecked == false && radio_Employee.IsChecked == false && radio_General.IsChecked == false) {
+                MessageBox.Show("Please indicate registrant type.");
+                rec_RegRegistrant.Stroke = Brushes.Red;
+                return false;
+            } else
+                rec_RegRegistrant.Stroke = brush_FormBorder;
+            #endregion
+
             #endregion
             // -------------------------
             #region STUDENT INFO
@@ -280,6 +282,14 @@ namespace RegistrationKiosk {
                 #region College
                 if (combo_Colleges.SelectedIndex == -1) {
                     MessageBox.Show("Please indicate college.");
+                    rec_RegStudMore.Stroke = Brushes.Red;
+                    return false;
+                }
+                #endregion
+
+                #region Major
+                if (combo_Majors.SelectedIndex == -1) {
+                    MessageBox.Show("Please select major.");
                     rec_RegStudMore.Stroke = Brushes.Red;
                     return false;
                 }
@@ -381,6 +391,76 @@ namespace RegistrationKiosk {
 
         }
 
+        /// <summary>
+        /// Creates a new RegistrantEntry object from form data. WARNING: Does not validate data.
+        /// </summary>
+        /// <returns>New RegistrantEntry object</returns>
+        private RegistrantEntry RegistrantFromForm() {
+            // General Variables
+            string lname = txtbx_LastName.Text;
+            string fname = txtbx_FirstName.Text;
+            RegistrantEntry.Sex sex;
+            if (radio_Male.IsChecked == true)
+                 sex = RegistrantEntry.Sex.Male;
+            else
+                sex = RegistrantEntry.Sex.Female;
+            string email = txtbx_Email.Text;
+            string phone = txtbx_Phone.Text;
+            // Create RegistrantEntry
+            RegistrantEntry registrant = new RegistrantEntry(lname, fname, sex, email, phone);
+            registrant.code = registrant.GenerateHashCode();
+            // Check for Student or Employee
+            if (radio_Student.IsChecked == true) {
+                RegistrantEntry.ClassStanding classStanding = GetClassStanding();
+                string college = combo_Colleges.SelectionBoxItem.ToString();
+                string major = combo_Majors.SelectionBoxItem.ToString();
+                string studentID = txtbx_StudentID.Text;
+                int gradYear = Convert.ToInt32(txtbx_Graduation.Text);
+                registrant.SetTypeStudent(classStanding, college, studentID, gradYear);
+            }
+            else if (radio_Employee.IsChecked == true) {
+                string business = txtbx_Business.Text;
+                string job = txtbx_Job.Text;
+                registrant.SetTypeEmployee(business, job);
+            }
+            return registrant;
+        }
+
+        /// <summary>
+        /// Returns the RegistrantEntry ClassStanding enum value corresponding to radio buttons.
+        /// </summary>
+        /// <returns>RegistrantEntry ClassStanding enum value</returns>
+        private RegistrantEntry.ClassStanding GetClassStanding() {
+            if (radio_Freshman.IsChecked == true)
+                return RegistrantEntry.ClassStanding.Freshman;
+            if (radio_Sophomore.IsChecked == true)
+                return RegistrantEntry.ClassStanding.Sophomore;
+            if (radio_Junior.IsChecked == true)
+                return RegistrantEntry.ClassStanding.Junior;
+            if (radio_Senior.IsChecked == true)
+                return RegistrantEntry.ClassStanding.Senior;
+            if (radio_Postbac.IsChecked == true)
+                return RegistrantEntry.ClassStanding.PostBac;
+            if (radio_Grad.IsChecked == true)
+                return RegistrantEntry.ClassStanding.Graduate;
+            if (radio_Alumnus.IsChecked == true)
+                return RegistrantEntry.ClassStanding.Alumnus;
+            return RegistrantEntry.ClassStanding.None;
+        }
+
+        #endregion
+        //---------------------------------------------------------------------------
+        #region ADMIN VIEW
+        //---------------------------------------------------------------------------
+
+        /// <summary>
+        /// Queries the database for search string and populates DataGrid with entries.
+        /// </summary>
+        /// <param name="search">The search parameter</param>
+        private void GetSearchResults(string search) {
+            MessageBox.Show("Database not yet hooked up!");
+        }
+
         #endregion
         //---------------------------------------------------------------------------
 
@@ -418,15 +498,18 @@ namespace RegistrationKiosk {
         // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
         private void btn_RegCode_Click(object sender, RoutedEventArgs e) {
             if (Regex.IsMatch(txtbx_RegCode.Text, "^[0-9]{6}$")) {
-                MessageBox.Show("It's good!");
+                /* Query database for entry with given code */
             } else
                 MessageBox.Show("Invalid Registration Code!");
             txtbx_RegCode.Text = "";
         }
 
         private void btn_Checkin_Click(object sender, RoutedEventArgs e) {
-            if (ValidateRegistrationForms())
+            if (ValidateRegistrationForms()) {
+                RegistrantEntry registrant = RegistrantFromForm();
+                /* Send registrant to database */
                 ClearRegistrationForm();
+            }
         }
 
         #endregion
