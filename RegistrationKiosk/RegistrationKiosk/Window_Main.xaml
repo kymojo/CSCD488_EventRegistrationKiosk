@@ -207,7 +207,7 @@
                     <TextBox x:Name="txtbx_Graduation" Height="20" Margin="110,4,10,4" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="4" VerticalContentAlignment="Center"/>
                 </Grid>
             </Grid>
-            <Grid x:Name="grid_RegEmployer" Grid.Column="1" Grid.Row="1" d:IsHidden="True">
+            <Grid x:Name="grid_RegEmployer" Grid.Column="1" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="34"/>
                     <RowDefinition/>
@@ -226,7 +226,7 @@
                     <TextBox x:Name="txtbx_Job" Height="20" Margin="72,4,10,4" TextWrapping="Wrap" VerticalAlignment="Center" VerticalContentAlignment="Center" Grid.Row="2"/>
                 </Grid>
             </Grid>
-            <Grid x:Name="grid_RegBlank" Grid.Column="1" Grid.Row="1" d:IsHidden="True">
+            <Grid x:Name="grid_RegBlank" Grid.Column="1" Grid.Row="1">
                 <Rectangle x:Name="rec_RegBlank" Fill="#FF81ADAA" Margin="10" RadiusY="5" RadiusX="5" Stroke="#FF81ADAA" StrokeThickness="0" d:IsLocked="True"/>
             </Grid>
 
@@ -236,7 +236,7 @@
                 <Button x:Name="btn_Checkin" Content="Check In" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="120" Height="60" FontSize="24" FontWeight="Bold" Click="btn_Checkin_Click"/>
             </Grid>
         </Grid>
-        <Grid x:Name="grid_Admin" Grid.Column="1" Grid.Row="1" d:IsHidden="True">
+        <Grid x:Name="grid_Admin" Grid.Column="1" Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="237*"/>
                 <RowDefinition Height="357*"/>
@@ -263,8 +263,8 @@
                     </Grid.RowDefinitions>
                     <Rectangle x:Name="rec_AdminEntriesIO" Fill="#FFC6E8E8" RadiusY="5" RadiusX="5" Stroke="#FF81ADAA" StrokeThickness="3" Grid.Row="1" d:IsLocked="True" Grid.RowSpan="4"/>
                     <Label x:Name="lbl_AdminEntriesIO" Content="Import / Export Entries" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="-5.25,-1.25" Height="26" Margin="0" Grid.RowSpan="2"/>
-                    <Button x:Name="btn_AdminEntriesImport" Content="Import Entries" HorizontalAlignment="Center" Margin="0" Grid.Row="1" VerticalAlignment="Center" Width="100"/>
-                    <Button x:Name="btn_AdminEntriesExport" Content="Export Entries" HorizontalAlignment="Center" Margin="0" Grid.Row="2" VerticalAlignment="Bottom" Width="100"/>
+                    <Button x:Name="btn_AdminEntriesImport" Content="Import Entries" HorizontalAlignment="Center" Margin="0" Grid.Row="1" VerticalAlignment="Center" Width="100" Click="btn_AdminEntriesImport_Click"/>
+                    <Button x:Name="btn_AdminEntriesExport" Content="Export Entries" HorizontalAlignment="Center" Margin="0" Grid.Row="2" VerticalAlignment="Bottom" Width="100" Click="btn_AdminEntriesExport_Click"/>
                     <RadioButton x:Name="radio_AdminEntriesExcel" Content="Spreadsheet" HorizontalAlignment="Left" Margin="54,0,0,0" Grid.Row="3" VerticalAlignment="Bottom" GroupName="group_Export" IsChecked="True"/>
                     <RadioButton x:Name="radio_AdminEntriesBackup" Content="Backup Database" HorizontalAlignment="Left" Margin="54,0,0,0" Grid.Row="4" VerticalAlignment="Top" GroupName="group_Export"/>
                 </Grid>

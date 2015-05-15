@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Text.RegularExpressions;
+using MySql.Data.MySqlClient;
+using System.Data.SqlClient;
 
 namespace RegistrationKiosk {
     /// <summary>
@@ -529,6 +531,23 @@ namespace RegistrationKiosk {
             }
         }
         #endregion
+
+        private void btn_AdminEntriesImport_Click(object sender, RoutedEventArgs e)
+        {
+            IOExcel ioe = new IOExcel();
+            string filename = ioe.selectFile();
+            ioe.importExcel(filename);
+
+            /*MySQLClient msc = new MySQLClient("cscd379.com", "jobfair", "jobfair", "ewu2015");
+            msc.createEvent("JobFairProgramTest");
+            msc.dropEvent("JobFairProgramTest");*/
+        }
+
+
+        private void btn_AdminEntriesExport_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
         //---------------------------------------------------------------------------
 
         #endregion
