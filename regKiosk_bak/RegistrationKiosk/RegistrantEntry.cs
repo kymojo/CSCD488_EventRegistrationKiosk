@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
 
 namespace RegistrationKiosk {
     class RegistrantEntry {
@@ -95,11 +94,6 @@ namespace RegistrationKiosk {
         //===========================================================================
 
         /// <summary>
-        /// A constructor for a blank registrant.
-        /// </summary>
-        public RegistrantEntry() { }
-
-        /// <summary>
         /// A constructor for a general registrant
         /// </summary>
         /// <param name="lname">Last Name</param>
@@ -114,7 +108,6 @@ namespace RegistrationKiosk {
             this.email = email;
             this.phone = phone;
             SetTypeGeneral();
-            GenerateHashCode();
         }
 
         #endregion
@@ -152,33 +145,8 @@ namespace RegistrationKiosk {
         /// Returns a six-digit integer for database lookup of the registrant.
         /// </summary>
         /// <returns>Six-digit hash code</returns>
-        public void GenerateHashCode() {
-            code = HashFunction(lname + fname + phone);
-        }
- 
-        /// <summary>
-        /// A modified hashing function found here: http://stackoverflow.com/a/549352
-        /// </summary>
-        /// <param name="s">String to hash</param>
-        /// <returns></returns>
-        public int HashFunction(string s)
-        {
-            uint hash = 0;
-            // if you care this can be done much faster with unsafe 
-            // using fixed char* reinterpreted as a byte*
-            foreach (byte b in System.Text.Encoding.Unicode.GetBytes(s))
-            {   
-                hash += b;
-                hash += (hash << 10);
-                hash ^= (hash >> 6);    
-            }
-            // final avalanche
-            hash += (hash << 3);
-            hash ^= (hash >> 11);
-            hash += (hash << 15);
-            // helpfully we only want positive integer < MUST_BE_LESS_THAN
-            // so simple truncate cast is ok if not perfect
-            return (int)(hash % 1000000);
+        public int GenerateHashCode() {
+            return 123456;
         }
 
         #endregion

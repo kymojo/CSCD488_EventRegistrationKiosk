@@ -13,7 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Text.RegularExpressions;
-using System.Collections.ObjectModel;
+using MySql.Data.MySqlClient;
+using System.Data.SqlClient;
 
 namespace RegistrationKiosk {
     /// <summary>
@@ -21,41 +22,25 @@ namespace RegistrationKiosk {
     /// </summary>
     public partial class Window_Main : Window {
 
-        //===========================================================================
-        #region Window Variables
-        //===========================================================================
-
-        // Window State stuff
         private enum WindowView { CheckIn, Admin, Edit };
         private WindowView AppState = WindowView.CheckIn;
 
-        // Admin Window stuff
         private Window_Admin adminWindow = null;
         public delegate void AdminDelegateType();
         public AdminDelegateType Delegate_OnAdminSuccess;
 
-        // Defined color brushes
         private SolidColorBrush brush_FormBorder = new SolidColorBrush(Color.FromRgb(129, 173, 170));
         private SolidColorBrush brush_FormFill = new SolidColorBrush(Color.FromRgb(198, 232, 232));
 
-        // Collection for viewing search results
-        private ObservableCollection<RegistrantEntry> searchEntries = new ObservableCollection<RegistrantEntry>();
+        private List<RegistrantEntry> searchEntries = new List<RegistrantEntry>();
 
-        // Lookup code of entry being edited
-        private int editingID = 123456;
-
-        // Flag indicating if user used pre-registration code
-        private bool validCodeEntered = false;
-
-        #endregion
         //===========================================================================
-        #region Window Initialization
+        #region Initialize Window
         //===========================================================================
         public Window_Main() {
             InitializeComponent();
             ChangeAppState(AppState);
-            ChangeSpecialView();
-            datagrid_AdminEntries.DataContext = searchEntries;
+            ChangeRegistrationView();
         }
 
         #endregion
@@ -66,53 +51,24 @@ namespace RegistrationKiosk {
         //---------------------------------------------------------------------------
         #region GENERAL
         //---------------------------------------------------------------------------
-        
         /// <summary>
         /// Changes visibility of view-specific elements to match passed state.
         /// </summary>
         /// <param name="toState">The state to change to</param>
         private void ChangeAppState(WindowView toState) {
 
-            #region CHECK IN VIEW & EDIT VIEW
-            if (toState == WindowView.CheckIn || toState == WindowView.Edit) {
-
-                if (toState == WindowView.CheckIn) {
-                    lbl_PageHeader.Content = "Event Check In Form";
-                    // Enable Admin Button
-                    btn_AdminMenu.IsEnabled = true;
-                    btn_AdminMenu.Visibility = System.Windows.Visibility.Visible;
-                    // Disable Edit Header & Footer
-                    grid_EditFooter.IsEnabled = false;
-                    grid_EditFooter.Visibility = System.Windows.Visibility.Hidden;
-                    grid_EditHeader.IsEnabled = false;
-                    grid_EditHeader.Visibility = System.Windows.Visibility.Hidden;
-                    // Enable Header & Footer
-                    grid_RegFooter.IsEnabled = true;
-                    grid_RegFooter.Visibility = System.Windows.Visibility.Visible;
-                    grid_RegPre.IsEnabled = true;
-                    grid_RegPre.Visibility = System.Windows.Visibility.Visible;
-                    // Disable Back Button
-                    btn_Back.IsEnabled = false;
-                    btn_Back.Visibility = System.Windows.Visibility.Hidden;
-                } else {
-                    lbl_PageHeader.Content = "Edit Registrant";
-                    lbl_EditHeaderCode.Content = "Editing Entry #" + editingID;
-                    // Disable Header & Footer
-                    grid_RegFooter.IsEnabled = false;
-                    grid_RegFooter.Visibility = System.Windows.Visibility.Hidden;
-                    grid_RegPre.IsEnabled = false;
-                    grid_RegPre.Visibility = System.Windows.Visibility.Hidden;
-                    // Enable Edit Header & Footer
-                    grid_EditFooter.IsEnabled = true;
-                    grid_EditFooter.Visibility = System.Windows.Visibility.Visible;
-                    grid_EditHeader.IsEnabled = true;
-                    grid_EditHeader.Visibility = System.Windows.Visibility.Visible;
-                }
-                
+            #region CHECK IN VIEW
+            if (toState == WindowView.CheckIn) {
+                lbl_PageHeader.Content = "Event Check In Form";
                 // Enable View
                 grid_Registration.IsEnabled = true;
                 grid_Registration.Visibility = System.Windows.Visibility.Visible;
-                
+                // Enable Adin Button
+                btn_AdminMenu.IsEnabled = true;
+                btn_AdminMenu.Visibility = System.Windows.Visibility.Visible;
+                // Disable Back Button
+                btn_AdminBack.IsEnabled = false;
+                btn_AdminBack.Visibility = System.Windows.Visibility.Hidden;
             } else {
                 // Disable View
                 grid_Registration.IsEnabled = false;
@@ -121,8 +77,8 @@ namespace RegistrationKiosk {
                 btn_AdminMenu.IsEnabled = false;
                 btn_AdminMenu.Visibility = System.Windows.Visibility.Hidden;
                 // Enable Back Button
-                btn_Back.IsEnabled = true;
-                btn_Back.Visibility = System.Windows.Visibility.Visible;
+                btn_AdminBack.IsEnabled = true;
+                btn_AdminBack.Visibility = System.Windows.Visibility.Visible;
             }
             #endregion
 
@@ -145,6 +101,10 @@ namespace RegistrationKiosk {
             }
             #endregion
 
+            #region EDIT VIEW
+
+            #endregion
+
             // When leaving CheckIn view 
             if (AppState == WindowView.CheckIn && AppState != toState)
                 ClearRegistrationForm();
@@ -152,41 +112,17 @@ namespace RegistrationKiosk {
             AppState = toState;
         }
 
-        /// <summary>
-        /// Calls ChangeAppState(Admin) used by delegate for Window_Admin.
-        /// </summary>
         private void GotoAdminPage() {
             ChangeAppState(WindowView.Admin);
         }
 
-        /// <summary>
-        /// Calls the method referred to by admin window success delegate.
-        /// </summary>
         public void RunAdminDelegate() {
             if (Delegate_OnAdminSuccess != null)
                 Delegate_OnAdminSuccess();
         }
 
-        /// <summary>
-        /// Sets the method for admin window success delegate.
-        /// </summary>
-        /// <param name="del">Method to delegate</param>
         private void SetAdminDelegate(AdminDelegateType del) {
             Delegate_OnAdminSuccess = del;
-        }
-
-        /// <summary>
-        /// Validates a registration code (format and existence).
-        /// </summary>
-        /// <param name="code">String of registration code</param>
-        /// <returns>IsValid flag</returns>
-        private bool ValidateRegistrationCode(string code) {
-            if (Regex.IsMatch(code, "^[0-9]{6}$")) {
-                /* check if exists in database */
-                return true;
-            }
-            MessageBox.Show("Invalid Registration Code!");
-            return false;
         }
 
         #endregion
@@ -199,7 +135,7 @@ namespace RegistrationKiosk {
         /// </summary>
         private void ClearRegistrationForm() {
             
-            #region CLEAR TEXT BOXES
+            #region TEXT BOXES
             // Prereg
             txtbx_RegCode.Text = "";
             // Name
@@ -216,7 +152,7 @@ namespace RegistrationKiosk {
             txtbx_Job.Text = "";
             #endregion
 
-            #region CLEAR RADIO BUTTONS
+            #region RADIO BUTTONS
             // Sex
             radio_Male.IsChecked = false;
             radio_Female.IsChecked = false;
@@ -234,12 +170,12 @@ namespace RegistrationKiosk {
             radio_Alumnus.IsChecked = false;
             #endregion
 
-            #region CLEAR COMBO BOXES
+            #region COMBO BOX
             combo_Colleges.SelectedIndex = -1;
             combo_Majors.SelectedIndex = -1;
             #endregion
 
-            #region CLEAR RECTANGLE COLORS
+            #region RECTANGLES
             // General Info
             rec_RegName.Stroke = brush_FormBorder;
             rec_RegSex.Stroke = brush_FormBorder;
@@ -252,50 +188,43 @@ namespace RegistrationKiosk {
             rec_RegEmployer.Stroke = brush_FormBorder;
             #endregion
 
-            // Resets Registration View (after no radio selected)
-            ChangeSpecialView();
+            ChangeRegistrationView();
 
-            validCodeEntered = false;
         }
 
         /// <summary>
         /// Checks check in form for any improper or missing data.
         /// </summary>
-        /// <returns>IsValid flag</returns>
+        /// <returns>Is valid</returns>
         private bool ValidateRegistrationForms() {
 
             string regex_pattern;
             // -------------------------
-            #region VALIDATE GENERAL INFO
+            #region GENERAL INFO
             // -------------------------
             
             #region Name
-            // Set Regex Pattern
             regex_pattern = @"^[A-Za-z-.\s]{2,}$";
             if (!Regex.IsMatch(txtbx_FirstName.Text, regex_pattern)) {
-                // If First Name invalid,
                 MessageBox.Show("Invalid First Name!");
                 txtbx_FirstName.Focus();
                 txtbx_FirstName.SelectAll();
                 rec_RegName.Stroke = Brushes.Red;
                 return false;
             } else if (!Regex.IsMatch(txtbx_LastName.Text, regex_pattern)) {
-                // If Last Name invalid,
                 MessageBox.Show("Invalid Last Name!");
                 txtbx_LastName.Focus();
                 txtbx_LastName.SelectAll();
                 rec_RegName.Stroke = Brushes.Red;
                 return false;
             } else
-                // Set normal border color
                 rec_RegName.Stroke = brush_FormBorder;
             #endregion
 
             #region Contact Info
-            // Set Regex Pattern for Email
+            // Email
             regex_pattern = "^[A-Za-z0-9!#$%&'*+\u002D/=?^_`{|}~]+@[A-Za-z0-9.-]+\u002E[A-Za-z]{2,6}$";
             if (!Regex.IsMatch(txtbx_Email.Text, regex_pattern)) {
-                // If email is invalid
                 MessageBox.Show("Invalid Email Address!");
                 txtbx_Email.Focus();
                 txtbx_Email.SelectAll();
@@ -303,17 +232,15 @@ namespace RegistrationKiosk {
                 return false;
             }
 
-            // Set Regex Pattern for Phone
+            // PHONE
             regex_pattern = @"^(\+?1)?[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$";
             if (!Regex.IsMatch(txtbx_Phone.Text, regex_pattern)) {
-                // If phone is invalid
                 MessageBox.Show("Invalid Phone Number!");
                 txtbx_Phone.Focus();
                 txtbx_Phone.SelectAll();
                 rec_RegContact.Stroke = Brushes.Red;
                 return false;
             } else
-                // Set normal border color
                 rec_RegContact.Stroke = brush_FormBorder;
             #endregion
 
@@ -338,7 +265,7 @@ namespace RegistrationKiosk {
 
             #endregion
             // -------------------------
-            #region VALIDATE STUDENT INFO
+            #region STUDENT INFO
             // -------------------------
             if (radio_Student.IsChecked == true) {
 
@@ -396,7 +323,7 @@ namespace RegistrationKiosk {
 
             #endregion
             // -------------------------
-            #region VALIDATE EMPLOYEE INFO
+            #region EMPLOYEE INFO
             // -------------------------
             if (radio_Employee.IsChecked == true) {
 
@@ -432,7 +359,7 @@ namespace RegistrationKiosk {
         /// <summary>
         /// Changes visibility of view-specific elements to match registrant type selection.
         /// </summary>
-        private void ChangeSpecialView() {
+        private void ChangeRegistrationView() {
 
             #region STUDENT VIEW
             if (radio_Student.IsChecked == true) {
@@ -483,6 +410,7 @@ namespace RegistrationKiosk {
             string phone = txtbx_Phone.Text;
             // Create RegistrantEntry
             RegistrantEntry registrant = new RegistrantEntry(lname, fname, sex, email, phone);
+            registrant.code = registrant.GenerateHashCode();
             // Check for Student or Employee
             if (radio_Student.IsChecked == true) {
                 RegistrantEntry.ClassStanding classStanding = GetClassStanding();
@@ -522,66 +450,6 @@ namespace RegistrationKiosk {
             return RegistrantEntry.ClassStanding.None;
         }
 
-        /// <summary>
-        /// Checks the radio button corresponding to passed enum value
-        /// </summary>
-        /// <param name="standing">Class standing enum</param>
-        private void CheckClassStanding(RegistrantEntry.ClassStanding standing) {
-            if (standing == RegistrantEntry.ClassStanding.Freshman)
-                radio_Freshman.IsChecked = true;
-            if (standing == RegistrantEntry.ClassStanding.Sophomore)
-                radio_Sophomore.IsChecked = true;
-            if (standing == RegistrantEntry.ClassStanding.Junior)
-                radio_Junior.IsChecked = true;
-            if (standing == RegistrantEntry.ClassStanding.Senior)
-                radio_Senior.IsChecked = true;
-            if (standing == RegistrantEntry.ClassStanding.PostBac)
-                radio_Postbac.IsChecked = true;
-            if (standing == RegistrantEntry.ClassStanding.Graduate)
-                radio_Grad.IsChecked = true;
-            if (standing == RegistrantEntry.ClassStanding.Alumnus)
-                radio_Alumnus.IsChecked = true;
-        }
-
-        /// <summary>
-        /// Populates the form using a registrant entry.
-        /// </summary>
-        /// <param name="entry">Registrant with data</param>
-        private void PopulateFormFromRegistrant(RegistrantEntry entry) {
-            if (entry == null)
-                return;
-            txtbx_LastName.Text = entry.lname;
-            txtbx_FirstName.Text = entry.fname;
-            if (entry.sex == RegistrantEntry.Sex.Male)
-                radio_Male.IsChecked = true;
-            else
-                radio_Female.IsChecked = true;
-            txtbx_Email.Text = entry.email;
-            txtbx_Phone.Text = entry.phone;
-
-            if (entry.regType == RegistrantEntry.RegistrantType.Student) {
-                radio_Student.IsChecked = true;
-                CheckClassStanding(entry.classStanding);
-                combo_Colleges.SelectedItem = combo_Colleges.FindName(entry.college);
-                combo_Majors.SelectedItem = combo_Majors.FindName(entry.major);
-                txtbx_StudentID.Text = entry.studentID;
-                txtbx_Graduation.Text = entry.gradYear.ToString();
-            } else if (entry.regType == RegistrantEntry.RegistrantType.Employee) {
-                txtbx_Business.Text = entry.business;
-                txtbx_Job.Text = entry.job;
-            }
-        }
-
-        /// <summary>
-        /// Retrieves a registrant entry from database.
-        /// </summary>
-        /// <param name="code">Registrant lookup code</param>
-        /// <returns>Corresponding registrant object</returns>
-        private RegistrantEntry GetRegistrantFromCode(string code) {
-            RegistrantEntry registrant = null;
-            return registrant;
-        }
-
         #endregion
         //---------------------------------------------------------------------------
         #region ADMIN VIEW
@@ -592,14 +460,7 @@ namespace RegistrationKiosk {
         /// </summary>
         /// <param name="search">The search parameter</param>
         private void GetSearchResults(string search) {
-            // Clear entries from previous search
-            searchEntries.Clear();
-            /* add entries to search box */
-            MessageBox.Show("Dummy entries.");
-            searchEntries.Add(new RegistrantEntry("Johnson", "Kyle", RegistrantEntry.Sex.Male, "myEmail@hotmail.com", "123-456-7890"));
-            searchEntries.Add(new RegistrantEntry("Xia", "Zhenyu", RegistrantEntry.Sex.Male, "myEmail@hotmail.com", "123-456-7890"));
-            searchEntries.Add(new RegistrantEntry("Holliday", "Dylan", RegistrantEntry.Sex.Male, "myEmail@hotmail.com", "123-456-7890"));
-            searchEntries.Add(new RegistrantEntry("Reynolds", "Kevin", RegistrantEntry.Sex.Male, "myEmail@hotmail.com", "123-456-7890"));
+            MessageBox.Show("Database not yet hooked up!");
         }
 
         #endregion
@@ -618,183 +479,38 @@ namespace RegistrationKiosk {
         #region NAVIGATION BUTTONS
         // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-        /// <summary>
-        /// Click event for Admin button (visible from check-in form).
-        /// </summary>
         private void btn_AdminMenu_Click(object sender, RoutedEventArgs e) {
-            // Create admin window and display
             adminWindow = new Window_Admin(this);
             adminWindow.Show();
-            // Set method for successful validation
             SetAdminDelegate(new AdminDelegateType(GotoAdminPage));
-            // Disable this window (until admin window closes)
             this.IsEnabled = false;
         }
 
-        /// <summary>
-        /// Click event for Back button (visible from admin and edit pages).
-        /// </summary>
-        private void btn_Back_Click(object sender, RoutedEventArgs e) {
-            // If admin page, return to check-in page
-            if (AppState == WindowView.Admin)
-                ChangeAppState(WindowView.CheckIn);
-            // if edit page, return to admin page
-            else if (AppState == WindowView.Edit)
-                btn_EditCancel_Click(sender, e);
+        private void btn_AdminBack_Click(object sender, RoutedEventArgs e) {
+            ChangeAppState(WindowView.CheckIn);
         }
 
-        /// <summary>
-        /// Click event for Exit button (visible on admin page).
-        /// </summary>
         private void btn_ExitProgram_Click(object sender, RoutedEventArgs e) {
-            // Ask user for permission to exit program
-            MessageBoxResult result = MessageBox.Show("Are you sure you want exit?", "Exit", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (result == MessageBoxResult.Yes)
-                Application.Current.Shutdown();
+            Application.Current.Shutdown();
         }
 
         #endregion
         // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
         #region CHECK IN FORM BUTTONS
         // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-        
-        /// <summary>
-        /// Click event for Registration Code button on CheckIn page.
-        /// </summary>
         private void btn_RegCode_Click(object sender, RoutedEventArgs e) {
-            if (ValidateRegistrationCode(txtbx_RegCode.Text)) {
-                // Populate form
-                PopulateFormFromRegistrant(GetRegistrantFromCode(txtbx_RegCode.Text));
-                validCodeEntered = true;
-                // Allow user to verify that the code was correct
-                MessageBoxResult result = MessageBox.Show("Is this the information you registered with?", "Pre-Reg Validation", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (result == MessageBoxResult.No) {
-                    ClearRegistrationForm();
-                }
-            } else {
-                validCodeEntered = false;
-                txtbx_RegCode.Text = "";
-            }
+            if (Regex.IsMatch(txtbx_RegCode.Text, "^[0-9]{6}$")) {
+                /* Query database for entry with given code */
+            } else
+                MessageBox.Show("Invalid Registration Code!");
+            txtbx_RegCode.Text = "";
         }
 
-        /// <summary>
-        /// Click event for Check-In button on CheckIn page.
-        /// </summary>
         private void btn_Checkin_Click(object sender, RoutedEventArgs e) {
             if (ValidateRegistrationForms()) {
-                // If entry already exists
-                if (validCodeEntered) {
-                    /* edit existing user entry */
-                } else {
-                    RegistrantEntry registrant = RegistrantFromForm();
-                    searchEntries.Add(registrant);
-                    /* add to database */
-                }
+                RegistrantEntry registrant = RegistrantFromForm();
+                /* Send registrant to database */
                 ClearRegistrationForm();
-            }
-        }
-
-        #endregion
-        // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-        #region ADMIN FORM BUTTONS
-        
-        /// <summary>
-        /// Click event for Search button on Admin page.
-        /// </summary>
-        private void btn_AdminEntriesSearch_Click(object sender, RoutedEventArgs e) {
-            GetSearchResults(txtbx_AdminEntriesSearch.Text);
-        }
-
-        /// <summary>
-        /// Click event for Edit Entry button on Admin page.
-        /// </summary>
-        private void btn_AdminEntriesEdit_Click(object sender, RoutedEventArgs e) {
-            // Validate code
-            if (ValidateRegistrationCode(txtbx_AdminEntriesCode.Text)) {
-                // Set editingID, go to edit view, and populate form
-                editingID = Convert.ToInt32(txtbx_AdminEntriesCode.Text);
-                ChangeAppState(WindowView.Edit);
-                RegistrantEntry registrant = GetRegistrantFromCode(txtbx_AdminEntriesCode.Text);
-                PopulateFormFromRegistrant(registrant);
-            } else {
-                // Otherwise, select code box
-                txtbx_AdminEntriesCode.SelectAll();
-                txtbx_AdminEntriesCode.Focus();
-            }
-        }
-
-        /// <summary>
-        /// Click event for Remove Entry button on Admin page.
-        /// </summary>
-        private void btn_AdminEntriesRemove_Click(object sender, RoutedEventArgs e) {
-            // Validate code
-            if (ValidateRegistrationCode(txtbx_AdminEntriesCode.Text)) {
-                // Ask admin if this action is correct
-                MessageBoxResult result = MessageBox.Show("Are you sure you want to remove this entry?", "Remove", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (result == MessageBoxResult.Yes) {
-                    // If so, remove entry from database (and search)
-                    MessageBox.Show("I'll do that later.");
-                    txtbx_AdminEntriesCode.Text = "";
-                }
-            } else {
-                // If invalid code, select code
-                txtbx_AdminEntriesCode.SelectAll();
-                txtbx_AdminEntriesCode.Focus();
-            }
-        }
-
-        /// <summary>
-        /// Click event for Clear All Entries button on Admin page.
-        /// </summary>
-        private void btn_AdminEntriesClear_Click(object sender, RoutedEventArgs e) {
-            // Ask admin if this action is correct
-            MessageBoxResult result = MessageBox.Show("Are you sure you want to clear the database?\nTHIS CANNOT BE UNDONE!", "Clear Database", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if (result == MessageBoxResult.Yes) {
-                // Clear entry database
-                MessageBox.Show("I'll do that later.");
-                txtbx_AdminEntriesCode.Text = "";
-            }
-        }
-
-        /// <summary>
-        /// Click event for Import Entries button on Admin page.
-        /// </summary>
-        private void btn_AdminEntriesImport_Click(object sender, RoutedEventArgs e) {
-            // Import Entries
-        }
-
-        /// <summary>
-        /// Click event for Export Entries button on Admin page.
-        /// </summary>
-        private void btn_AdminEntriesExport_Click(object sender, RoutedEventArgs e) {
-            // Export Entries based upon export type
-        }
-
-        #endregion
-        // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-        #region EDIT FORM BUTTONS
-
-        /// <summary>
-        /// Click event for Confirm button on Edit page.
-        /// </summary>
-        private void btn_EditConfirm_Click(object sender, RoutedEventArgs e) {
-            // If form is valid
-            if (ValidateRegistrationForms()) {
-                // Edit entry in database
-                MessageBox.Show("I'll do that later.");
-                ChangeAppState(WindowView.Admin);
-            }
-        }
-
-        /// <summary>
-        /// Click event for Cancel button on Edit page.
-        /// </summary>
-        private void btn_EditCancel_Click(object sender, RoutedEventArgs e) {
-            // Ask if user wants to discard edits
-            MessageBoxResult result = MessageBox.Show("Cancel edits made?", "Cancel", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (result == MessageBoxResult.Yes) {
-                // If yes, return to Admin page
-                ChangeAppState(WindowView.Admin);
             }
         }
 
@@ -805,47 +521,33 @@ namespace RegistrationKiosk {
         //---------------------------------------------------------------------------
         #region OTHER
         //---------------------------------------------------------------------------
-        
-        /// <summary>
-        /// Check event of Registration Type radio buttons on form.
-        /// </summary>
         private void radio_RegistrantType_Checked(object sender, RoutedEventArgs e) {
-            // Change the Registration window to match the radio button selected
-            ChangeSpecialView();
+            ChangeRegistrationView();
         }
 
-        /// <summary>
-        /// KeyDown event for Registration Code textbox on CheckIn page.
-        /// </summary>
         private void txtbx_RegCode_PressEnter(object sender, KeyEventArgs e) {
-            // Check Enter key
             if (e.Key == Key.Return) {
-                // Simulate registration code button
                 btn_RegCode_Click(sender, e);
             }
         }
-
-        /// <summary>
-        /// Change selection event for Admin Entries datagrid on Admin page.
-        /// </summary>
-        private void datagrid_AdminEntries_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            // Sets admin code box to entry selected
-            int code = searchEntries.ElementAt<RegistrantEntry>(datagrid_AdminEntries.SelectedIndex).code;
-            txtbx_AdminEntriesCode.Text = code.ToString();
-        }
-
-        /// <summary>
-        /// KeyDown event for Search textbox on Admin page.
-        /// </summary>
-        private void txtbx_AdminEntriesSearch_KeyDown(object sender, KeyEventArgs e) {
-            // Check Enter key
-            if (e.Key == Key.Return) {
-                // Simulate search button
-                btn_AdminEntriesSearch_Click(sender, e);
-            }
-        }
-
         #endregion
+
+        private void btn_AdminEntriesImport_Click(object sender, RoutedEventArgs e)
+        {
+            IOExcel ioe = new IOExcel();
+            string filename = ioe.selectFile();
+            ioe.importExcel(filename);
+
+            /*MySQLClient msc = new MySQLClient("cscd379.com", "jobfair", "jobfair", "ewu2015");
+            msc.createEvent("JobFairProgramTest");
+            msc.dropEvent("JobFairProgramTest");*/
+        }
+
+
+        private void btn_AdminEntriesExport_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
         //---------------------------------------------------------------------------
 
         #endregion
