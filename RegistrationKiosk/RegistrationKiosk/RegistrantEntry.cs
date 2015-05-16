@@ -124,9 +124,10 @@ namespace RegistrationKiosk {
 
         #region SET REGISTRATION TYPE
         
-        public void SetTypeStudent(ClassStanding classStanding, string college, string studentID, int gradYear) {
+        public void SetTypeStudent(ClassStanding classStanding, string college, string major, string studentID, int gradYear) {
             this.classStanding = classStanding;
             this.college = college;
+            this.major = major;
             this.studentID = studentID;
             this.gradYear = gradYear;
             this.regType = RegistrantType.Student;

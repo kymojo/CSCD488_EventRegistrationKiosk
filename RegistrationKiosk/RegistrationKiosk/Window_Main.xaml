@@ -20,7 +20,7 @@
         <Button x:Name="btn_AdminMenu" Content="Admin" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="56" Height="36" Click="btn_AdminMenu_Click"/>
 
         <!-- REGISTRATION GRID -->
-        <Grid x:Name="grid_Registration" Grid.Column="1" Grid.Row="1" Visibility="Visible" d:IsHidden="True">
+        <Grid x:Name="grid_Registration" Grid.Column="1" Grid.Row="1" Visibility="Visible">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
@@ -207,7 +207,7 @@
                     <Label x:Name="lbl_Graduation" Content="Graduation Year" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="100" Grid.Row="4" Margin="10,0,0,0" HorizontalContentAlignment="Center"/>
                     <Label x:Name="lbl_Major" Content="Major" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="73" Grid.Row="2" Margin="10,1,0,0"/>
                     <ComboBox x:Name="combo_Colleges" HorizontalAlignment="Left" Margin="83,4,0,4" Grid.Row="1" VerticalAlignment="Center" Width="209">
-                        <ComboBoxItem Content="Eastern Washington University"/>
+                        <ComboBoxItem x:Name="cmbItem_Eastern" Content="Eastern Washington University"/>
                     </ComboBox>
                     <ComboBox x:Name="combo_Majors" HorizontalAlignment="Left" Margin="83,4,0,5" Grid.Row="2" VerticalAlignment="Center" Width="209">
                         <ComboBoxItem Content="Computer Science"/>
@@ -256,7 +256,7 @@
                 <Button x:Name="btn_EditCancel" Content="Cancel" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="120" Height="60" FontSize="24" FontWeight="Bold" Grid.Column="2" Click="btn_EditCancel_Click"/>
             </Grid>
         </Grid>
-        <Grid x:Name="grid_Admin" Grid.Column="1" Grid.Row="1">
+        <Grid x:Name="grid_Admin" Grid.Column="1" Grid.Row="1" d:IsHidden="True">
             <Grid.RowDefinitions>
                 <RowDefinition Height="237*"/>
                 <RowDefinition Height="357*"/>

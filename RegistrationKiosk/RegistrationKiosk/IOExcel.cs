@@ -13,10 +13,12 @@ namespace RegistrationKiosk
     
     class IOExcel
     {
-        
-     
-        public IOExcel()
+
+        MySQLClient sqlClient;
+
+        public IOExcel(MySQLClient sqlClient)
         {
+            this.sqlClient = sqlClient;
         }
 
         public string selectFile()
@@ -50,10 +52,9 @@ namespace RegistrationKiosk
         {
             int i, j, sheetNum = 0;
             string columns = "", data = "";
-            MySQLClient msc = new MySQLClient("cscd379.com", "jobfair", "jobfair", "ewu2015");
             
             string eventName = Path.GetFileNameWithoutExtension(filename);
-            msc.createEvent(eventName);
+            sqlClient.createEvent(eventName);
 
             ApplicationClass app = new ApplicationClass();
             Workbook book = null;
@@ -111,12 +112,11 @@ namespace RegistrationKiosk
                         //Console.WriteLine(data);
 
                         if (sheetNum == 0)
-                            msc.Insert(eventName + "_registrants", columns, data);
+                            sqlClient.Insert(eventName + "_registrants", columns, data);
                         else if (sheetNum == 1)
-                            msc.Insert(eventName + "_students", columns, data);
+                            sqlClient.Insert(eventName + "_students", columns, data);
                         else if (sheetNum == 2)
-                            msc.Insert(eventName + "_employees", columns, data);
-                        
+                            sqlClient.Insert(eventName + "_employees", columns, data);
                     }
 
 

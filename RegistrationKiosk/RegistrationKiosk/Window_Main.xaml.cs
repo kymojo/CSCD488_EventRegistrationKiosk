@@ -36,6 +36,12 @@ namespace RegistrationKiosk {
         public delegate void AdminDelegateType();
         public AdminDelegateType Delegate_OnAdminSuccess;
 
+        // Database Connection Object
+        MySQLClient dbConnection;
+
+        // Excel Interop Object
+        IOExcel ioXL;
+
         // Defined color brushes
         private SolidColorBrush brush_FormBorder = new SolidColorBrush(Color.FromRgb(129, 173, 170));
         private SolidColorBrush brush_FormFill = new SolidColorBrush(Color.FromRgb(198, 232, 232));
@@ -45,6 +51,7 @@ namespace RegistrationKiosk {
 
         // Lookup code of entry being edited
         private int editingID = 123456;
+        private RegistrantEntry editingRegistrant;
 
         // Flag indicating if user used pre-registration code
         private bool validCodeEntered = false;
@@ -58,6 +65,8 @@ namespace RegistrationKiosk {
             ChangeAppState(AppState);
             ChangeSpecialView();
             datagrid_AdminEntries.DataContext = searchEntries;
+            dbConnection = new MySQLClient("cscd379.com", "excelimport", "jobfair", "ewu2015");
+            ioXL = new IOExcel(dbConnection);
         }
 
         #endregion
@@ -147,9 +156,7 @@ namespace RegistrationKiosk {
             }
             #endregion
 
-            // When leaving CheckIn view 
-            if (AppState == WindowView.CheckIn && AppState != toState)
-                ClearRegistrationForm();
+            ClearRegistrationForm();
 
             AppState = toState;
         }
@@ -184,10 +191,24 @@ namespace RegistrationKiosk {
         /// <returns>IsValid flag</returns>
         private bool ValidateRegistrationCode(string code) {
             if (Regex.IsMatch(code, "^[0-9]{6}$")) {
-                /* check if exists in database */
-                return true;
-            }
-            MessageBox.Show("Invalid Registration Code!");
+                // check if exists in database
+                string where = "Code = " + code;
+                List<RegistrantEntry> regList = dbConnection.SelectRegistrant(where);
+                int ct = regList.Count;
+                if (ct == 0) {
+                    // If no hits, display message
+                    MessageBox.Show("Entry with that code does not exist!");
+                } else if (ct == 1) {
+                    // If only one hit, return true
+                    editingRegistrant = regList[0];
+                    editingID = Convert.ToInt32(code);
+                    return true;
+                } else if (ct > 1) {
+                    // If there is a collision, show an error message
+                    MessageBox.Show("An error occurred.");
+                }
+            } else
+                MessageBox.Show("Invalid Registration Code!");
             return false;
         }
 
@@ -492,7 +513,7 @@ namespace RegistrationKiosk {
                 string major = combo_Majors.SelectionBoxItem.ToString();
                 string studentID = txtbx_StudentID.Text;
                 int gradYear = Convert.ToInt32(txtbx_Graduation.Text);
-                registrant.SetTypeStudent(classStanding, college, studentID, gradYear);
+                registrant.SetTypeStudent(classStanding, college, major, studentID, gradYear);
             }
             else if (radio_Employee.IsChecked == true) {
                 string business = txtbx_Business.Text;
@@ -564,23 +585,38 @@ namespace RegistrationKiosk {
             if (entry.regType == RegistrantEntry.RegistrantType.Student) {
                 radio_Student.IsChecked = true;
                 CheckClassStanding(entry.classStanding);
-                combo_Colleges.SelectedItem = combo_Colleges.FindName(entry.college);
-                combo_Majors.SelectedItem = combo_Majors.FindName(entry.major);
+
+                for (int i = 0; i < combo_Colleges.Items.Count; i++) {
+                    string s1 = ((ComboBoxItem)combo_Colleges.Items[i]).Content.ToString();
+                    string s2 = entry.college;
+                    if (String.Equals(s1, s2))
+                        combo_Colleges.SelectedIndex = i;
+                }
+
+                for (int i = 0; i < combo_Majors.Items.Count; i++) {
+                    string s1 = ((ComboBoxItem)combo_Majors.Items[i]).Content.ToString();
+                    string s2 = entry.major;
+                    if (String.Equals(s1, s2))
+                        combo_Majors.SelectedIndex = i;
+                }
+
                 txtbx_StudentID.Text = entry.studentID;
                 txtbx_Graduation.Text = entry.gradYear.ToString();
             } else if (entry.regType == RegistrantEntry.RegistrantType.Employee) {
+                radio_Employee.IsChecked = true;
                 txtbx_Business.Text = entry.business;
                 txtbx_Job.Text = entry.job;
-            }
+            } else
+                radio_General.IsChecked = true;
         }
 
         /// <summary>
-        /// Retrieves a registrant entry from database.
+        /// Returns the registrant resulting from a previously successful code verification.
         /// </summary>
-        /// <param name="code">Registrant lookup code</param>
-        /// <returns>Corresponding registrant object</returns>
-        private RegistrantEntry GetRegistrantFromCode(string code) {
-            RegistrantEntry registrant = null;
+        /// <returns>Found registrant for editing</returns>
+        private RegistrantEntry GetEditingRegistrant() {
+            RegistrantEntry registrant = editingRegistrant;
+            editingRegistrant = null;
             return registrant;
         }
 
@@ -666,7 +702,7 @@ namespace RegistrationKiosk {
         private void btn_RegCode_Click(object sender, RoutedEventArgs e) {
             if (ValidateRegistrationCode(txtbx_RegCode.Text)) {
                 // Populate form
-                PopulateFormFromRegistrant(GetRegistrantFromCode(txtbx_RegCode.Text));
+                PopulateFormFromRegistrant(GetEditingRegistrant());
                 validCodeEntered = true;
                 // Allow user to verify that the code was correct
                 MessageBoxResult result = MessageBox.Show("Is this the information you registered with?", "Pre-Reg Validation", MessageBoxButton.YesNo, MessageBoxImage.Question);
@@ -686,11 +722,9 @@ namespace RegistrationKiosk {
             if (ValidateRegistrationForms()) {
                 // If entry already exists
                 if (validCodeEntered) {
-                    /* edit existing user entry */
+                    dbConnection.UpdateRegistrant(editingID, RegistrantFromForm());
                 } else {
-                    RegistrantEntry registrant = RegistrantFromForm();
-                    searchEntries.Add(registrant);
-                    /* add to database */
+                    dbConnection.InsertRegistrant(RegistrantFromForm());
                 }
                 ClearRegistrationForm();
             }
@@ -716,7 +750,7 @@ namespace RegistrationKiosk {
                 // Set editingID, go to edit view, and populate form
                 editingID = Convert.ToInt32(txtbx_AdminEntriesCode.Text);
                 ChangeAppState(WindowView.Edit);
-                RegistrantEntry registrant = GetRegistrantFromCode(txtbx_AdminEntriesCode.Text);
+                RegistrantEntry registrant = GetEditingRegistrant();
                 PopulateFormFromRegistrant(registrant);
             } else {
                 // Otherwise, select code box
@@ -734,8 +768,8 @@ namespace RegistrationKiosk {
                 // Ask admin if this action is correct
                 MessageBoxResult result = MessageBox.Show("Are you sure you want to remove this entry?", "Remove", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result == MessageBoxResult.Yes) {
-                    // If so, remove entry from database (and search)
-                    MessageBox.Show("I'll do that later.");
+                    dbConnection.DeleteRegistrant(Convert.ToInt32(txtbx_AdminEntriesCode.Text));
+                    MessageBox.Show("Entry successfully deleted.");
                     txtbx_AdminEntriesCode.Text = "";
                 }
             } else {
@@ -762,13 +796,9 @@ namespace RegistrationKiosk {
         /// Click event for Import Entries button on Admin page.
         /// </summary>
         private void btn_AdminEntriesImport_Click(object sender, RoutedEventArgs e) {
-            IOExcel ioe = new IOExcel();
-            string filename = ioe.selectFile();
-            ioe.importExcel(filename);
-
-            /*MySQLClient msc = new MySQLClient("cscd379.com", "jobfair", "jobfair", "ewu2015");
-            msc.createEvent("JobFairProgramTest");
-            msc.dropEvent("JobFairProgramTest");*/
+            // Get File Name and Import
+            string filename = ioXL.selectFile();
+            ioXL.importExcel(filename);
         }
 
         /// <summary>
@@ -788,8 +818,7 @@ namespace RegistrationKiosk {
         private void btn_EditConfirm_Click(object sender, RoutedEventArgs e) {
             // If form is valid
             if (ValidateRegistrationForms()) {
-                // Edit entry in database
-                MessageBox.Show("I'll do that later.");
+                dbConnection.UpdateRegistrant(editingID, RegistrantFromForm());
                 ChangeAppState(WindowView.Admin);
             }
         }
@@ -837,6 +866,9 @@ namespace RegistrationKiosk {
         /// Change selection event for Admin Entries datagrid on Admin page.
         /// </summary>
         private void datagrid_AdminEntries_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            // Make sure selected index is valid (changes between searches)
+            if (datagrid_AdminEntries.SelectedIndex >= searchEntries.Count - 1)
+                return;
             // Sets admin code box to entry selected
             int code = searchEntries.ElementAt<RegistrantEntry>(datagrid_AdminEntries.SelectedIndex).code;
             txtbx_AdminEntriesCode.Text = code.ToString();
