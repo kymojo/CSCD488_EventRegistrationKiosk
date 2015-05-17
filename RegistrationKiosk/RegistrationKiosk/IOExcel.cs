@@ -53,8 +53,8 @@ namespace RegistrationKiosk
             int i, j, sheetNum = 0;
             string columns = "", data = "";
             
-            string eventName = Path.GetFileNameWithoutExtension(filename);
-            sqlClient.createEvent(eventName);
+            /*string eventName = Path.GetFileNameWithoutExtension(filename);
+            sqlClient.createEvent(eventName);*/
 
             ApplicationClass app = new ApplicationClass();
             Workbook book = null;
@@ -74,8 +74,6 @@ namespace RegistrationKiosk
                                                 , Missing.Value, Missing.Value, Missing.Value);
                 foreach (Worksheet sheet in book.Worksheets)
                 {
-                    Console.WriteLine(@"Values for Sheet " + sheet.Index);
-
                     // get a range to work with
                     range = sheet.get_Range("A1", Missing.Value);
                     // get the end of values to the right (will stop at the first empty cell)
@@ -109,14 +107,12 @@ namespace RegistrationKiosk
                         for (j = 2; j <= values.GetLength(1); j++)
                             data += ", '" + values[i, j] + "'";
 
-                        //Console.WriteLine(data);
-
                         if (sheetNum == 0)
-                            sqlClient.Insert(eventName + "_registrants", columns, data);
+                            sqlClient.Insert("registrant", columns, data);
                         else if (sheetNum == 1)
-                            sqlClient.Insert(eventName + "_students", columns, data);
+                            sqlClient.Insert("student", columns, data);
                         else if (sheetNum == 2)
-                            sqlClient.Insert(eventName + "_employees", columns, data);
+                            sqlClient.Insert("employee", columns, data);
                     }
 
 
