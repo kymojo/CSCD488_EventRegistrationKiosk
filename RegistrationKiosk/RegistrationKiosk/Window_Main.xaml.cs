@@ -60,6 +60,7 @@ namespace RegistrationKiosk {
         //===========================================================================
         #region Window Initialization
         //===========================================================================
+        
         public Window_Main() {
             InitializeComponent();
             ChangeAppState(AppState);
