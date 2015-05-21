@@ -50,7 +50,7 @@ namespace RegistrationKiosk {
         private ObservableCollection<RegistrantEntry> searchEntries = new ObservableCollection<RegistrantEntry>();
 
         // Lookup code of entry being edited
-        private int editingID = 123456;
+        private string editingID = "123456";
         private RegistrantEntry editingRegistrant;
 
         // Flag indicating if user used pre-registration code
@@ -106,6 +106,8 @@ namespace RegistrationKiosk {
                     // Disable Back Button
                     btn_Back.IsEnabled = false;
                     btn_Back.Visibility = System.Windows.Visibility.Hidden;
+                    // Focus on RegCode Textbox
+                    txtbx_RegCode.Focus();
                 } else {
                     lbl_PageHeader.Content = "Edit Registrant";
                     lbl_EditHeaderCode.Content = "Editing Entry #" + editingID;
@@ -120,7 +122,6 @@ namespace RegistrationKiosk {
                     grid_EditHeader.IsEnabled = true;
                     grid_EditHeader.Visibility = System.Windows.Visibility.Visible;
                 }
-                
                 // Enable View
                 grid_Registration.IsEnabled = true;
                 grid_Registration.Visibility = System.Windows.Visibility.Visible;
@@ -193,7 +194,7 @@ namespace RegistrationKiosk {
         private bool ValidateRegistrationCode(string code) {
             if (Regex.IsMatch(code, "^[0-9]{6}$")) {
                 // check if exists in database
-                string where = "Code = " + code;
+                string where = "Code = '" + code + "'";
                 List<RegistrantEntry> regList = dbConnection.SelectRegistrant(where);
                 int ct = regList.Count;
                 if (ct == 0) {
@@ -202,7 +203,7 @@ namespace RegistrationKiosk {
                 } else if (ct == 1) {
                     // If only one hit, return true
                     editingRegistrant = regList[0];
-                    editingID = Convert.ToInt32(code);
+                    editingID = code;
                     return true;
                 } else if (ct > 1) {
                     // If there is a collision, show an error message
@@ -728,6 +729,7 @@ namespace RegistrationKiosk {
                     dbConnection.InsertRegistrant(RegistrantFromForm());
                 }
                 ClearRegistrationForm();
+                txtbx_RegCode.Focus();
             }
         }
 
@@ -749,7 +751,7 @@ namespace RegistrationKiosk {
             // Validate code
             if (ValidateRegistrationCode(txtbx_AdminEntriesCode.Text)) {
                 // Set editingID, go to edit view, and populate form
-                editingID = Convert.ToInt32(txtbx_AdminEntriesCode.Text);
+                editingID = txtbx_AdminEntriesCode.Text;
                 ChangeAppState(WindowView.Edit);
                 RegistrantEntry registrant = GetEditingRegistrant();
                 PopulateFormFromRegistrant(registrant);
@@ -871,7 +873,7 @@ namespace RegistrationKiosk {
             if (datagrid_AdminEntries.SelectedIndex >= searchEntries.Count - 1)
                 return;
             // Sets admin code box to entry selected
-            int code = searchEntries.ElementAt<RegistrantEntry>(datagrid_AdminEntries.SelectedIndex).code;
+            string code = searchEntries.ElementAt<RegistrantEntry>(datagrid_AdminEntries.SelectedIndex).code;
             txtbx_AdminEntriesCode.Text = code.ToString();
         }
 

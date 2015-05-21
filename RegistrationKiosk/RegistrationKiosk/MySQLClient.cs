@@ -104,8 +104,9 @@ namespace RegistrationKiosk
             value += "'" + registrant.phone + "', ";
             value += "'" + registrant.email + "', ";
             value += "'" + registrant.sex.ToString() + "', ";
-            value += "'" + registrant.regType.ToString() + "'";
-            generalQuery = "INSERT INTO registrant (Code, Fname, Lname, Phone, Email, Sex, RegType) VALUES(" + value + ");";
+            value += "'" + registrant.regType.ToString() + "', ";
+            value += "'Yes'";
+            generalQuery = "INSERT INTO registrant (Code, Fname, Lname, Phone, Email, Sex, RegType, CheckedIn) VALUES(" + value + ");";
 
             if (registrant.regType == RegistrantEntry.RegistrantType.Student) {
                 value = "'" + registrant.code + "', ";
@@ -140,7 +141,7 @@ namespace RegistrationKiosk
             return;
         }
 
-        public void UpdateRegistrant(int code, RegistrantEntry registrant) {
+        public void UpdateRegistrant(string code, RegistrantEntry registrant) {
 
             string SET;
             string query;
@@ -155,8 +156,9 @@ namespace RegistrationKiosk
                     SET += "Phone = '" + registrant.phone + "', ";
                     SET += "Email = '" + registrant.email + "', ";
                     SET += "Sex = '" + registrant.sex.ToString() + "', ";
-                    SET += "RegType = '" + registrant.regType.ToString() + "'";
-                    query = "UPDATE registrant SET " + SET + " WHERE Code = " + code + ";";
+                    SET += "RegType = '" + registrant.regType.ToString() + "', ";
+                    SET += "CheckedIn = 'Yes'";
+                    query = "UPDATE registrant SET " + SET + " WHERE Code = '" + code + "';";
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
@@ -168,7 +170,7 @@ namespace RegistrationKiosk
                         SET += "Major = '" + registrant.major + "', ";
                         SET += "College = '" + registrant.college + "', ";
                         SET += "ClassStanding = '" + registrant.classStanding.ToString() + "'";
-                        query = "UPDATE student SET " + SET + " WHERE Code = " + code + ";";
+                        query = "UPDATE student SET " + SET + " WHERE Code = '" + code + "';";
                         cmd = new MySqlCommand(query, conn);
                         cmd.ExecuteNonQuery();
 
@@ -177,7 +179,7 @@ namespace RegistrationKiosk
                         SET = "";
                         SET += "Business = '" + registrant.business + "', ";
                         SET += "Job = '" + registrant.job + "'";
-                        query = "UPDATE employee SET " + SET + " WHERE Code = " + code + ";";
+                        query = "UPDATE employee SET " + SET + " WHERE Code = '" + code + "';";
                         cmd = new MySqlCommand(query, conn);
                         cmd.ExecuteNonQuery();
 
@@ -221,15 +223,15 @@ namespace RegistrationKiosk
             if (this.Open()) {
                 try {
                     //Opens a connection, if succefull; run the query and then close the connection.
-                    query = "DELETE FROM registrant WHERE Code = " + code + ";";
+                    query = "DELETE FROM registrant WHERE Code = '" + code + "';";
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
-                    query = "DELETE FROM student WHERE Code = " + code + ";";
+                    query = "DELETE FROM student WHERE Code = '" + code + "';";
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
-                    query = "DELETE FROM employee WHERE Code = " + code + ";";
+                    query = "DELETE FROM employee WHERE Code = '" + code + "';";
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
@@ -292,15 +294,14 @@ namespace RegistrationKiosk
                     while (dataReader.Read())
                     {
                         registrant = new RegistrantEntry();
-                        registrant.code = (int)dataReader[0];
+                        registrant.code = (string)dataReader[0];
                         registrant.fname = (string)dataReader[1];
                         registrant.lname = (string)dataReader[2];
                         registrant.phone = (string)dataReader[3];
                         registrant.email = (string)dataReader[4];
                         registrant.sex = (RegistrantEntry.Sex) Enum.Parse(typeof(RegistrantEntry.Sex), (string)dataReader[5]);
-                        // Registered [6]
-                        // Time [7]
-                        registrant.regType = (RegistrantEntry.RegistrantType)Enum.Parse(typeof(RegistrantEntry.RegistrantType), (string)dataReader[8]);
+                        registrant.regType = (RegistrantEntry.RegistrantType)Enum.Parse(typeof(RegistrantEntry.RegistrantType), (string)dataReader[6]);
+                        // CheckedIn [7]
 
                         regList.Add(registrant);
                     }
@@ -312,7 +313,7 @@ namespace RegistrationKiosk
                     dataReader = cmd.ExecuteReader();
                     while (dataReader.Read()) {
                         int code = (int)dataReader[0];
-                        int index = regList.FindIndex(reg => reg.code == code);
+                        int index = regList.FindIndex(reg => reg.code.Equals(code));
                         if (index != -1) {
                             regList[index].gradYear = (int)dataReader[1];
                             regList[index].studentID = ((int)dataReader[2]).ToString();
@@ -329,7 +330,7 @@ namespace RegistrationKiosk
                     dataReader = cmd.ExecuteReader();
                     while (dataReader.Read()) {
                         int code = (int)dataReader[0];
-                        int index = regList.FindIndex(reg => reg.code == code);
+                        int index = regList.FindIndex(reg => reg.code.Equals(code));
                         if (index != -1) {
                             regList[index].business = (string)dataReader[1];
                             regList[index].job = (string)dataReader[2];

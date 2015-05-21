@@ -19,7 +19,7 @@ namespace RegistrationKiosk {
         // -------------------------
         #region General Properties
         // -------------------------
-        public int code {
+        public string code {
             get;
             set;
         }
@@ -162,7 +162,7 @@ namespace RegistrationKiosk {
         /// </summary>
         /// <param name="s">String to hash</param>
         /// <returns></returns>
-        public int HashFunction(string s)
+        public string HashFunction(string s)
         {
             uint hash = 0;
             // if you care this can be done much faster with unsafe 
@@ -179,7 +179,8 @@ namespace RegistrationKiosk {
             hash += (hash << 15);
             // helpfully we only want positive integer < MUST_BE_LESS_THAN
             // so simple truncate cast is ok if not perfect
-            return (int)(hash % 1000000);
+            string getstring = ((int)(hash % 1000000)).ToString("000000");
+            return getstring;
         }
 
         #endregion
