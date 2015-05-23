@@ -98,28 +98,28 @@ namespace RegistrationKiosk
 
             string generalQuery, value, specialQuery = null;
 
-            value =  "'" + registrant.code + "', ";
-            value += "'" + registrant.fname + "', ";
-            value += "'" + registrant.lname + "', ";
-            value += "'" + registrant.phone + "', ";
-            value += "'" + registrant.email + "', ";
-            value += "'" + registrant.sex.ToString() + "', ";
-            value += "'" + registrant.regType.ToString() + "', ";
+            value =  "'" + registrant.Code + "', ";
+            value += "'" + registrant.Fname + "', ";
+            value += "'" + registrant.Lname + "', ";
+            value += "'" + registrant.Phone + "', ";
+            value += "'" + registrant.Email + "', ";
+            value += "'" + registrant.Sex.ToString() + "', ";
+            value += "'" + registrant.RegType.ToString() + "', ";
             value += "'Yes'";
             generalQuery = "INSERT INTO registrant (Code, Fname, Lname, Phone, Email, Sex, RegType, CheckedIn) VALUES(" + value + ");";
 
-            if (registrant.regType == RegistrantEntry.RegistrantType.Student) {
-                value = "'" + registrant.code + "', ";
-                value += "'" + registrant.gradYear + "', ";
-                value += "'" + registrant.studentID + "', ";
-                value += "'" + registrant.major + "', ";
-                value += "'" + registrant.college + "', ";
-                value += "'" + registrant.classStanding.ToString() + "'";
+            if (registrant.RegType == RegistrantEntry.RegistrantType.Student) {
+                value = "'" + registrant.Code + "', ";
+                value += "'" + registrant.GradYear + "', ";
+                value += "'" + registrant.StudentID + "', ";
+                value += "'" + registrant.Major + "', ";
+                value += "'" + registrant.College + "', ";
+                value += "'" + registrant.ClassStanding.ToString() + "'";
                 specialQuery = "INSERT INTO student (Code, Graduation, StudentID, Major, College, ClassStanding) VALUES(" + value + ");";
-            } else if (registrant.regType == RegistrantEntry.RegistrantType.Employee) {
-                value = "'" + registrant.code + "', ";
-                value += "'" + registrant.business + "', ";
-                value += "'" + registrant.job + "'";
+            } else if (registrant.RegType == RegistrantEntry.RegistrantType.Employee) {
+                value = "'" + registrant.Code + "', ";
+                value += "'" + registrant.Business + "', ";
+                value += "'" + registrant.Job + "'";
                 specialQuery = "INSERT INTO employee (Code, Business, Job) VALUES(" + value + ");";
             }
 
@@ -151,34 +151,34 @@ namespace RegistrationKiosk
                 try
                 {
                     SET = "";
-                    SET += "Fname = '" + registrant.fname + "', ";
-                    SET += "Lname = '" + registrant.lname + "', ";
-                    SET += "Phone = '" + registrant.phone + "', ";
-                    SET += "Email = '" + registrant.email + "', ";
-                    SET += "Sex = '" + registrant.sex.ToString() + "', ";
-                    SET += "RegType = '" + registrant.regType.ToString() + "', ";
+                    SET += "Fname = '" + registrant.Fname + "', ";
+                    SET += "Lname = '" + registrant.Lname + "', ";
+                    SET += "Phone = '" + registrant.Phone + "', ";
+                    SET += "Email = '" + registrant.Email + "', ";
+                    SET += "Sex = '" + registrant.Sex.ToString() + "', ";
+                    SET += "RegType = '" + registrant.RegType.ToString() + "', ";
                     SET += "CheckedIn = 'Yes'";
                     query = "UPDATE registrant SET " + SET + " WHERE Code = '" + code + "';";
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
-                    if (registrant.regType == RegistrantEntry.RegistrantType.Student) {
+                    if (registrant.RegType == RegistrantEntry.RegistrantType.Student) {
 
                         SET = "";
-                        SET += "Graduation = '" + registrant.gradYear + "', ";
-                        SET += "StudentID = '" + registrant.studentID + "', ";
-                        SET += "Major = '" + registrant.major + "', ";
-                        SET += "College = '" + registrant.college + "', ";
-                        SET += "ClassStanding = '" + registrant.classStanding.ToString() + "'";
+                        SET += "Graduation = '" + registrant.GradYear + "', ";
+                        SET += "StudentID = '" + registrant.StudentID + "', ";
+                        SET += "Major = '" + registrant.Major + "', ";
+                        SET += "College = '" + registrant.College + "', ";
+                        SET += "ClassStanding = '" + registrant.ClassStanding.ToString() + "'";
                         query = "UPDATE student SET " + SET + " WHERE Code = '" + code + "';";
                         cmd = new MySqlCommand(query, conn);
                         cmd.ExecuteNonQuery();
 
-                    } else if (registrant.regType == RegistrantEntry.RegistrantType.Employee) {
+                    } else if (registrant.RegType == RegistrantEntry.RegistrantType.Employee) {
 
                         SET = "";
-                        SET += "Business = '" + registrant.business + "', ";
-                        SET += "Job = '" + registrant.job + "'";
+                        SET += "Business = '" + registrant.Business + "', ";
+                        SET += "Job = '" + registrant.Job + "'";
                         query = "UPDATE employee SET " + SET + " WHERE Code = '" + code + "';";
                         cmd = new MySqlCommand(query, conn);
                         cmd.ExecuteNonQuery();
@@ -294,13 +294,13 @@ namespace RegistrationKiosk
                     while (dataReader.Read())
                     {
                         registrant = new RegistrantEntry();
-                        registrant.code = (string)dataReader[0];
-                        registrant.fname = (string)dataReader[1];
-                        registrant.lname = (string)dataReader[2];
-                        registrant.phone = (string)dataReader[3];
-                        registrant.email = (string)dataReader[4];
-                        registrant.sex = (RegistrantEntry.Sex) Enum.Parse(typeof(RegistrantEntry.Sex), (string)dataReader[5]);
-                        registrant.regType = (RegistrantEntry.RegistrantType)Enum.Parse(typeof(RegistrantEntry.RegistrantType), (string)dataReader[6]);
+                        registrant.Code = (string)dataReader[0];
+                        registrant.Fname = (string)dataReader[1];
+                        registrant.Lname = (string)dataReader[2];
+                        registrant.Phone = (string)dataReader[3];
+                        registrant.Email = (string)dataReader[4];
+                        registrant.Sex = (RegistrantEntry.SexType) Enum.Parse(typeof(RegistrantEntry.SexType), (string)dataReader[5]);
+                        registrant.RegType = (RegistrantEntry.RegistrantType)Enum.Parse(typeof(RegistrantEntry.RegistrantType), (string)dataReader[6]);
                         // CheckedIn [7]
 
                         regList.Add(registrant);
@@ -312,14 +312,14 @@ namespace RegistrationKiosk
                     cmd = new MySqlCommand(query, conn);
                     dataReader = cmd.ExecuteReader();
                     while (dataReader.Read()) {
-                        int code = (int)dataReader[0];
-                        int index = regList.FindIndex(reg => reg.code.Equals(code));
+                        string code = (string)dataReader[0];
+                        int index = regList.FindIndex(reg => reg.Code.Equals(code));
                         if (index != -1) {
-                            regList[index].gradYear = (int)dataReader[1];
-                            regList[index].studentID = ((int)dataReader[2]).ToString();
-                            regList[index].major = (string)dataReader[3];
-                            regList[index].college = (string)dataReader[4];
-                            regList[index].classStanding = (RegistrantEntry.ClassStanding)Enum.Parse(typeof(RegistrantEntry.ClassStanding), (string)dataReader[5]);
+                            regList[index].GradYear = (int)dataReader[1];
+                            regList[index].StudentID = ((int)dataReader[2]).ToString();
+                            regList[index].Major = (string)dataReader[3];
+                            regList[index].College = (string)dataReader[4];
+                            regList[index].ClassStanding = (RegistrantEntry.ClassStandingType)Enum.Parse(typeof(RegistrantEntry.ClassStandingType), (string)dataReader[5]);
                         }
                     }
                     dataReader.Close();
@@ -329,11 +329,11 @@ namespace RegistrationKiosk
                     cmd = new MySqlCommand(query, conn);
                     dataReader = cmd.ExecuteReader();
                     while (dataReader.Read()) {
-                        int code = (int)dataReader[0];
-                        int index = regList.FindIndex(reg => reg.code.Equals(code));
+                        string code = (string)dataReader[0];
+                        int index = regList.FindIndex(reg => reg.Code.Equals(code));
                         if (index != -1) {
-                            regList[index].business = (string)dataReader[1];
-                            regList[index].job = (string)dataReader[2];
+                            regList[index].Business = (string)dataReader[1];
+                            regList[index].Job = (string)dataReader[2];
                         }
                     }
                     dataReader.Close();

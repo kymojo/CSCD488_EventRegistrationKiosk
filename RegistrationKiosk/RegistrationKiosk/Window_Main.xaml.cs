@@ -36,6 +36,9 @@ namespace RegistrationKiosk {
         public delegate void AdminDelegateType();
         public AdminDelegateType Delegate_OnAdminSuccess;
 
+        // Forgot Code Window
+        private Window_ForgotCode forgotcodeWindow = null;
+
         // Database Connection Object
         MySQLClient dbConnection;
 
@@ -191,7 +194,7 @@ namespace RegistrationKiosk {
         /// </summary>
         /// <param name="code">String of registration code</param>
         /// <returns>IsValid flag</returns>
-        private bool ValidateRegistrationCode(string code) {
+        public bool ValidateRegistrationCode(string code) {
             if (Regex.IsMatch(code, "^[0-9]{6}$")) {
                 // check if exists in database
                 string where = "Code = '" + code + "'";
@@ -199,7 +202,7 @@ namespace RegistrationKiosk {
                 int ct = regList.Count;
                 if (ct == 0) {
                     // If no hits, display message
-                    MessageBox.Show("Entry with that code does not exist!");
+                    MessageBox.Show("The entry does not exist!");
                 } else if (ct == 1) {
                     // If only one hit, return true
                     editingRegistrant = regList[0];
@@ -236,6 +239,9 @@ namespace RegistrationKiosk {
             // Student
             txtbx_StudentID.Text = "";
             txtbx_Graduation.Text = "";
+            combo_Colleges.Text = "";
+            txtbx_Major.Text = "";
+
             // Employee
             txtbx_Business.Text = "";
             txtbx_Job.Text = "";
@@ -257,11 +263,6 @@ namespace RegistrationKiosk {
             radio_Postbac.IsChecked = false;
             radio_Grad.IsChecked = false;
             radio_Alumnus.IsChecked = false;
-            #endregion
-
-            #region CLEAR COMBO BOXES
-            combo_Colleges.SelectedIndex = -1;
-            combo_Majors.SelectedIndex = -1;
             #endregion
 
             #region CLEAR RECTANGLE COLORS
@@ -388,8 +389,9 @@ namespace RegistrationKiosk {
                 #endregion
 
                 #region Major
-                if (combo_Majors.SelectedIndex == -1) {
-                    MessageBox.Show("Please select major.");
+                regex_pattern = @"^[\w\s\d.+-]{2,24}$";
+                if (!Regex.IsMatch(txtbx_Major.Text, regex_pattern)) {
+                    MessageBox.Show("Invalid major!/nMajors must be under 24 characters long.");
                     rec_RegStudMore.Stroke = Brushes.Red;
                     return false;
                 }
@@ -437,7 +439,7 @@ namespace RegistrationKiosk {
                 #endregion
 
                 #region Job Title
-                regex_pattern = @"^[\w\s\d.+-]{3}$";
+                regex_pattern = @"^[\w\s\d.+-]{3,}$";
                 if (!Regex.IsMatch(txtbx_Job.Text, regex_pattern)) {
                     MessageBox.Show("Invalid job title!");
                     txtbx_Job.Focus();
@@ -497,29 +499,29 @@ namespace RegistrationKiosk {
         /// <returns>New RegistrantEntry object</returns>
         private RegistrantEntry RegistrantFromForm() {
             // General Variables
-            string lname = txtbx_LastName.Text;
-            string fname = txtbx_FirstName.Text;
-            RegistrantEntry.Sex sex;
+            string lname = txtbx_LastName.Text.Trim();
+            string fname = txtbx_FirstName.Text.Trim();
+            RegistrantEntry.SexType sex;
             if (radio_Male.IsChecked == true)
-                 sex = RegistrantEntry.Sex.Male;
+                 sex = RegistrantEntry.SexType.Male;
             else
-                sex = RegistrantEntry.Sex.Female;
+                sex = RegistrantEntry.SexType.Female;
             string email = txtbx_Email.Text;
             string phone = txtbx_Phone.Text;
             // Create RegistrantEntry
             RegistrantEntry registrant = new RegistrantEntry(lname, fname, sex, email, phone);
             // Check for Student or Employee
             if (radio_Student.IsChecked == true) {
-                RegistrantEntry.ClassStanding classStanding = GetClassStanding();
-                string college = combo_Colleges.SelectionBoxItem.ToString();
-                string major = combo_Majors.SelectionBoxItem.ToString();
+                RegistrantEntry.ClassStandingType classStanding = GetClassStanding();
+                string college = combo_Colleges.Text.Trim();
+                string major = txtbx_Major.Text.Trim();
                 string studentID = txtbx_StudentID.Text;
                 int gradYear = Convert.ToInt32(txtbx_Graduation.Text);
                 registrant.SetTypeStudent(classStanding, college, major, studentID, gradYear);
             }
             else if (radio_Employee.IsChecked == true) {
-                string business = txtbx_Business.Text;
-                string job = txtbx_Job.Text;
+                string business = txtbx_Business.Text.Trim();
+                string job = txtbx_Job.Text.Trim();
                 registrant.SetTypeEmployee(business, job);
             }
             return registrant;
@@ -529,42 +531,42 @@ namespace RegistrationKiosk {
         /// Returns the RegistrantEntry ClassStanding enum value corresponding to radio buttons.
         /// </summary>
         /// <returns>RegistrantEntry ClassStanding enum value</returns>
-        private RegistrantEntry.ClassStanding GetClassStanding() {
+        private RegistrantEntry.ClassStandingType GetClassStanding() {
             if (radio_Freshman.IsChecked == true)
-                return RegistrantEntry.ClassStanding.Freshman;
+                return RegistrantEntry.ClassStandingType.Freshman;
             if (radio_Sophomore.IsChecked == true)
-                return RegistrantEntry.ClassStanding.Sophomore;
+                return RegistrantEntry.ClassStandingType.Sophomore;
             if (radio_Junior.IsChecked == true)
-                return RegistrantEntry.ClassStanding.Junior;
+                return RegistrantEntry.ClassStandingType.Junior;
             if (radio_Senior.IsChecked == true)
-                return RegistrantEntry.ClassStanding.Senior;
+                return RegistrantEntry.ClassStandingType.Senior;
             if (radio_Postbac.IsChecked == true)
-                return RegistrantEntry.ClassStanding.PostBac;
+                return RegistrantEntry.ClassStandingType.PostBac;
             if (radio_Grad.IsChecked == true)
-                return RegistrantEntry.ClassStanding.Graduate;
+                return RegistrantEntry.ClassStandingType.Graduate;
             if (radio_Alumnus.IsChecked == true)
-                return RegistrantEntry.ClassStanding.Alumnus;
-            return RegistrantEntry.ClassStanding.None;
+                return RegistrantEntry.ClassStandingType.Alumnus;
+            return RegistrantEntry.ClassStandingType.None;
         }
 
         /// <summary>
         /// Checks the radio button corresponding to passed enum value
         /// </summary>
         /// <param name="standing">Class standing enum</param>
-        private void CheckClassStanding(RegistrantEntry.ClassStanding standing) {
-            if (standing == RegistrantEntry.ClassStanding.Freshman)
+        private void CheckClassStanding(RegistrantEntry.ClassStandingType standing) {
+            if (standing == RegistrantEntry.ClassStandingType.Freshman)
                 radio_Freshman.IsChecked = true;
-            if (standing == RegistrantEntry.ClassStanding.Sophomore)
+            if (standing == RegistrantEntry.ClassStandingType.Sophomore)
                 radio_Sophomore.IsChecked = true;
-            if (standing == RegistrantEntry.ClassStanding.Junior)
+            if (standing == RegistrantEntry.ClassStandingType.Junior)
                 radio_Junior.IsChecked = true;
-            if (standing == RegistrantEntry.ClassStanding.Senior)
+            if (standing == RegistrantEntry.ClassStandingType.Senior)
                 radio_Senior.IsChecked = true;
-            if (standing == RegistrantEntry.ClassStanding.PostBac)
+            if (standing == RegistrantEntry.ClassStandingType.PostBac)
                 radio_Postbac.IsChecked = true;
-            if (standing == RegistrantEntry.ClassStanding.Graduate)
+            if (standing == RegistrantEntry.ClassStandingType.Graduate)
                 radio_Grad.IsChecked = true;
-            if (standing == RegistrantEntry.ClassStanding.Alumnus)
+            if (standing == RegistrantEntry.ClassStandingType.Alumnus)
                 radio_Alumnus.IsChecked = true;
         }
 
@@ -575,39 +577,26 @@ namespace RegistrationKiosk {
         private void PopulateFormFromRegistrant(RegistrantEntry entry) {
             if (entry == null)
                 return;
-            txtbx_LastName.Text = entry.lname;
-            txtbx_FirstName.Text = entry.fname;
-            if (entry.sex == RegistrantEntry.Sex.Male)
+            txtbx_LastName.Text = entry.Lname;
+            txtbx_FirstName.Text = entry.Fname;
+            if (entry.Sex == RegistrantEntry.SexType.Male)
                 radio_Male.IsChecked = true;
             else
                 radio_Female.IsChecked = true;
-            txtbx_Email.Text = entry.email;
-            txtbx_Phone.Text = entry.phone;
+            txtbx_Email.Text = entry.Email;
+            txtbx_Phone.Text = entry.Phone;
 
-            if (entry.regType == RegistrantEntry.RegistrantType.Student) {
+            if (entry.RegType == RegistrantEntry.RegistrantType.Student) {
                 radio_Student.IsChecked = true;
-                CheckClassStanding(entry.classStanding);
-
-                for (int i = 0; i < combo_Colleges.Items.Count; i++) {
-                    string s1 = ((ComboBoxItem)combo_Colleges.Items[i]).Content.ToString();
-                    string s2 = entry.college;
-                    if (String.Equals(s1, s2))
-                        combo_Colleges.SelectedIndex = i;
-                }
-
-                for (int i = 0; i < combo_Majors.Items.Count; i++) {
-                    string s1 = ((ComboBoxItem)combo_Majors.Items[i]).Content.ToString();
-                    string s2 = entry.major;
-                    if (String.Equals(s1, s2))
-                        combo_Majors.SelectedIndex = i;
-                }
-
-                txtbx_StudentID.Text = entry.studentID;
-                txtbx_Graduation.Text = entry.gradYear.ToString();
-            } else if (entry.regType == RegistrantEntry.RegistrantType.Employee) {
+                CheckClassStanding(entry.ClassStanding);
+                combo_Colleges.Text = entry.College;
+                txtbx_Major.Text = entry.Major;
+                txtbx_StudentID.Text = entry.StudentID;
+                txtbx_Graduation.Text = entry.GradYear.ToString();
+            } else if (entry.RegType == RegistrantEntry.RegistrantType.Employee) {
                 radio_Employee.IsChecked = true;
-                txtbx_Business.Text = entry.business;
-                txtbx_Job.Text = entry.job;
+                txtbx_Business.Text = entry.Business;
+                txtbx_Job.Text = entry.Job;
             } else
                 radio_General.IsChecked = true;
         }
@@ -636,10 +625,10 @@ namespace RegistrationKiosk {
             searchEntries.Clear();
             /* add entries to search box */
             MessageBox.Show("Dummy entries.");
-            searchEntries.Add(new RegistrantEntry("Johnson", "Kyle", RegistrantEntry.Sex.Male, "myEmail@hotmail.com", "123-456-7890"));
-            searchEntries.Add(new RegistrantEntry("Xia", "Zhenyu", RegistrantEntry.Sex.Male, "myEmail@hotmail.com", "123-456-7890"));
-            searchEntries.Add(new RegistrantEntry("Holliday", "Dylan", RegistrantEntry.Sex.Male, "myEmail@hotmail.com", "123-456-7890"));
-            searchEntries.Add(new RegistrantEntry("Reynolds", "Kevin", RegistrantEntry.Sex.Male, "myEmail@hotmail.com", "123-456-7890"));
+            searchEntries.Add(new RegistrantEntry("Johnson", "Kyle", RegistrantEntry.SexType.Male, "myEmail@hotmail.com", "123-456-7890"));
+            searchEntries.Add(new RegistrantEntry("Xia", "Zhenyu", RegistrantEntry.SexType.Male, "myEmail@hotmail.com", "123-456-7890"));
+            searchEntries.Add(new RegistrantEntry("Holliday", "Dylan", RegistrantEntry.SexType.Male, "myEmail@hotmail.com", "123-456-7890"));
+            searchEntries.Add(new RegistrantEntry("Reynolds", "Kevin", RegistrantEntry.SexType.Male, "myEmail@hotmail.com", "123-456-7890"));
         }
 
         #endregion
@@ -731,6 +720,14 @@ namespace RegistrationKiosk {
                 ClearRegistrationForm();
                 txtbx_RegCode.Focus();
             }
+        }
+
+        private void btn_ForgotCode_Click(object sender, RoutedEventArgs e) {
+            // Create admin window and display
+            forgotcodeWindow = new Window_ForgotCode(this);
+            forgotcodeWindow.Show();
+            // Disable this window (until admin window closes)
+            this.IsEnabled = false;
         }
 
         #endregion
@@ -873,7 +870,7 @@ namespace RegistrationKiosk {
             if (datagrid_AdminEntries.SelectedIndex >= searchEntries.Count - 1)
                 return;
             // Sets admin code box to entry selected
-            string code = searchEntries.ElementAt<RegistrantEntry>(datagrid_AdminEntries.SelectedIndex).code;
+            string code = searchEntries.ElementAt<RegistrantEntry>(datagrid_AdminEntries.SelectedIndex).Code;
             txtbx_AdminEntriesCode.Text = code.ToString();
         }
 

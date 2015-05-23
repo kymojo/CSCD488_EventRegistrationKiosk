@@ -1,0 +1,30 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="RegistrationKiosk.Window_ForgotCode"
+        Title="Window_ForgotCode" Height="160" Width="360" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None">
+    <Grid x:Name="grid_ForgotCode" Background="#FF81ADAA">
+        <Grid x:Name="grid_VerifyInfo" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="106"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="106"/>
+            </Grid.ColumnDefinitions>
+            <Rectangle x:Name="rec_ForgotCode" Fill="#FFC6E8E8" Stroke="#FF81ADAA" RadiusX="5" StrokeThickness="3" RadiusY="5" Grid.ColumnSpan="3" Grid.RowSpan="4" d:IsLocked="True"/>
+            <Label x:Name="lbl_LastName" Content="Last Name" HorizontalAlignment="Center" Margin="10,8,0,8" VerticalAlignment="Center" Grid.Row="1" Height="26" Width="96"/>
+            <Label x:Name="lbl_FirstName" Content="First Name" HorizontalAlignment="Center" Margin="10,8,0,8" VerticalAlignment="Center" Height="26" Width="96"/>
+            <Label x:Name="lbl_Phone" Content="Phone Number" HorizontalAlignment="Center" Margin="10,8,0,8" VerticalAlignment="Center" Grid.Row="2" Height="26" Width="96"/>
+            <TextBox x:Name="txtbx_FirstName" Grid.Column="1" Height="22" Margin="10,0" TextWrapping="Wrap" VerticalAlignment="Center" Grid.ColumnSpan="2" KeyDown="txtbx_PressEnter"/>
+            <TextBox x:Name="txtbx_LastName" Grid.Column="1" Height="22" Margin="10,0" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2" KeyDown="txtbx_PressEnter"/>
+            <TextBox x:Name="txtbx_Phone" Grid.Column="1" Height="24" Margin="10,0" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="2" Grid.ColumnSpan="2" KeyDown="txtbx_PressEnter"/>
+            <Button x:Name="btn_Find" Content="Find My Code!" HorizontalAlignment="Left" Margin="50,0,0,0" VerticalAlignment="Center" Width="100" Grid.Row="3" Height="20" Grid.ColumnSpan="2" Click="btn_Find_Click"/>
+            <Button x:Name="btn_Cancel" Content="Cancel" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,50,0" Grid.Row="3" VerticalAlignment="Center" Width="100" Grid.ColumnSpan="2" Click="btn_Cancel_Click"/>
+        </Grid>
+    </Grid>
+</Window>

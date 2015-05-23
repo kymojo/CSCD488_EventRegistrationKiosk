@@ -57,11 +57,13 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"/>
                         <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
-                    <Rectangle x:Name="rec_RegCode" Fill="#FFC6E8E8" RadiusY="5" RadiusX="5" Stroke="#FF81ADAA" StrokeThickness="3" Grid.RowSpan="2" Grid.ColumnSpan="2" d:IsLocked="True"/>
-                    <TextBox x:Name="txtbx_RegCode" Margin="10,0,5,10" TextWrapping="Wrap" Grid.Row="1" FontSize="24" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="txtbx_RegCode_PressEnter"/>
-                    <Button x:Name="btn_RegCode" Content="Enter" Margin="0,0,10,10" Grid.Row="1" Grid.Column="1" Click="btn_RegCode_Click" FontSize="14" FontWeight="Bold"/>
-                    <Label x:Name="lbl_RegCode" Content="Enter your six digit registration code" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold"/>
+                    <Rectangle x:Name="rec_RegCode" Fill="#FFC6E8E8" RadiusY="5" RadiusX="5" Stroke="#FF81ADAA" StrokeThickness="3" Grid.RowSpan="3" Grid.ColumnSpan="2" d:IsLocked="True"/>
+                    <TextBox x:Name="txtbx_RegCode" Margin="10,0,5,0" TextWrapping="Wrap" Grid.Row="1" FontSize="24" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="txtbx_RegCode_PressEnter"/>
+                    <Button x:Name="btn_RegCode" Content="Enter" Margin="0,0,10,0" Grid.Row="1" Grid.Column="1" Click="btn_RegCode_Click" FontSize="14" FontWeight="Bold"/>
+                    <Button x:Name="btn_ForgotCode" Content="I forgot my code." HorizontalAlignment="Center" Margin="0,0,0,3" Grid.Row="2" VerticalAlignment="Center" Width="242" Background="#FFC6E8E8" BorderBrush="#FF81ADAA" Grid.ColumnSpan="2" FontWeight="Bold" Click="btn_ForgotCode_Click"/>
+                    <Label x:Name="lbl_RegCode" Content="Enter your six digit registration code" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold" Margin="6,1,6,0" Height="30" Width="250"/>
                 </Grid>
 
                 <!-- BARCODE GRID -->
@@ -206,12 +208,13 @@
                     <Label x:Name="lbl_StudentID" Content="Student ID" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="100" Grid.Row="3" Margin="10,0,0,0"/>
                     <Label x:Name="lbl_Graduation" Content="Graduation Year" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="100" Grid.Row="4" Margin="10,0,0,0" HorizontalContentAlignment="Center"/>
                     <Label x:Name="lbl_Major" Content="Major" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="73" Grid.Row="2" Margin="10,1,0,0"/>
-                    <ComboBox x:Name="combo_Colleges" HorizontalAlignment="Left" Margin="83,4,0,4" Grid.Row="1" VerticalAlignment="Center" Width="209">
+                    <ComboBox x:Name="combo_Colleges" HorizontalAlignment="Left" Margin="83,4,0,4" Grid.Row="1" VerticalAlignment="Center" Width="209" IsEditable="True">
                         <ComboBoxItem x:Name="cmbItem_Eastern" Content="Eastern Washington University"/>
+                        <ComboBoxItem x:Name="cmbItem_Gonzaga" Content="Gonzaga University"/>
+                        <ComboBoxItem x:Name="cmbItem_WSU" Content="Washington State University"/>
+                        <ComboBoxItem x:Name="cmbItem_Whitworth" Content="Whitworth University"/>
                     </ComboBox>
-                    <ComboBox x:Name="combo_Majors" HorizontalAlignment="Left" Margin="83,4,0,5" Grid.Row="2" VerticalAlignment="Center" Width="209">
-                        <ComboBoxItem Content="Computer Science"/>
-                    </ComboBox>
+                    <TextBox x:Name="txtbx_Major" Height="20" Margin="88,0,10,0" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="2" VerticalContentAlignment="Center"/>
                     <TextBox x:Name="txtbx_StudentID" Height="20" Margin="110,4,10,4" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="3" VerticalContentAlignment="Center"/>
                     <TextBox x:Name="txtbx_Graduation" Height="20" Margin="110,4,10,4" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="4" VerticalContentAlignment="Center"/>
                 </Grid>

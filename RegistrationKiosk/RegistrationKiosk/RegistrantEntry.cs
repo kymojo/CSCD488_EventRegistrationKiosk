@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 namespace RegistrationKiosk {
     class RegistrantEntry {
 
         public enum RegistrantType { General, Student, Employee }
-        public enum ClassStanding { None, Freshman, Junior, Sophomore, Senior, PostBac, Graduate, Alumnus }
-        public enum Sex { Male, Female }
+        public enum ClassStandingType { None, Freshman, Junior, Sophomore, Senior, PostBac, Graduate, Alumnus }
+        public enum SexType { Male, Female }
 
         //===========================================================================
         #region Properties
@@ -19,56 +19,65 @@ namespace RegistrationKiosk {
         // -------------------------
         #region General Properties
         // -------------------------
-        public string code {
+
+        // General
+        public string Code {
             get;
             set;
         }
-        public RegistrantType regType {
+        public RegistrantType RegType {
             get;
             set;
         }
-        public string fname {
+
+        // Name
+        public string Fname {
             get;
             set;
         }
-        public string lname {
+        public string Lname {
             get;
             set;
         }
-        public Sex sex {
+
+        // Sex
+        public SexType Sex {
             get;
             set;
         }
-        public string email {
+
+        //Contact Info
+        private string phoneNormal;
+        public string Email {
             get;
             set;
         }
-        public string phone {
-            get;
-            set;
+        public string Phone {
+            get { return BeautifyPhone(phoneNormal); }
+            set { phoneNormal = NormalizePhone(value); }
         }
         
         #endregion
         // -------------------------
         #region Student Properties
         // -------------------------
-        public ClassStanding classStanding {
+        public ClassStandingType ClassStanding {
             get;
             set;
         }
-        public string college {
+        public string College {
             get;
             set;
         }
-        public string major {
+        public string Major {
             get;
             set;
         }
-        public string studentID {
+        public string StudentID {
             get;
             set;
         }
-        public int gradYear {
+        public int GradYear {
             get;
             set;
         }
@@ -77,11 +86,11 @@ namespace RegistrationKiosk {
         // -------------------------
         #region Employee Properties
         // -------------------------
-        public string business {
+        public string Business {
             get;
             set;
         }
-        public string job {
+        public string Job {
             get;
             set;
         }
@@ -107,12 +116,12 @@ namespace RegistrationKiosk {
         /// <param name="sex">Sex (Male, Female)</param>
         /// <param name="email">Email Address</param>
         /// <param name="phone">Phone Number</param>
-        public RegistrantEntry(string lname, string fname, Sex sex, string email, string phone) {
-            this.lname = lname;
-            this.fname = fname;
-            this.sex = sex;
-            this.email = email;
-            this.phone = phone;
+        public RegistrantEntry(string lname, string fname, SexType sex, string email, string phone) {
+            this.Lname = lname;
+            this.Fname = fname;
+            this.Sex = sex;
+            this.Email = email;
+            this.Phone = phone;
             SetTypeGeneral();
             GenerateHashCode();
         }
@@ -124,23 +133,23 @@ namespace RegistrationKiosk {
 
         #region SET REGISTRATION TYPE
         
-        public void SetTypeStudent(ClassStanding classStanding, string college, string major, string studentID, int gradYear) {
-            this.classStanding = classStanding;
-            this.college = college;
-            this.major = major;
-            this.studentID = studentID;
-            this.gradYear = gradYear;
-            this.regType = RegistrantType.Student;
+        public void SetTypeStudent(ClassStandingType classStanding, string college, string major, string studentID, int gradYear) {
+            this.ClassStanding = classStanding;
+            this.College = college;
+            this.Major = major;
+            this.StudentID = studentID;
+            this.GradYear = gradYear;
+            this.RegType = RegistrantType.Student;
         }
 
         public void SetTypeEmployee(string business, string job) {
-            this.business = business;
-            this.job = job;
-            this.regType = RegistrantType.Employee;
+            this.Business = business;
+            this.Job = job;
+            this.RegType = RegistrantType.Employee;
         }
 
         public void SetTypeGeneral() {
-            this.regType = RegistrantType.General;
+            this.RegType = RegistrantType.General;
         }
 
         #endregion
@@ -154,7 +163,7 @@ namespace RegistrationKiosk {
         /// </summary>
         /// <returns>Six-digit hash code</returns>
         public void GenerateHashCode() {
-            code = HashFunction(lname + fname + phone);
+            Code = HashFunction(Lname.ToLower() + Fname.ToLower() + phoneNormal);
         }
  
         /// <summary>
@@ -162,7 +171,7 @@ namespace RegistrationKiosk {
         /// </summary>
         /// <param name="s">String to hash</param>
         /// <returns></returns>
-        public string HashFunction(string s)
+        public static string HashFunction(string s)
         {
             uint hash = 0;
             // if you care this can be done much faster with unsafe 
@@ -181,6 +190,25 @@ namespace RegistrationKiosk {
             // so simple truncate cast is ok if not perfect
             string getstring = ((int)(hash % 1000000)).ToString("000000");
             return getstring;
+        }
+
+        public string NormalizePhone(string phone) {
+            string result = phone;
+            result = Regex.Replace(result, "[^0-9]+", "");
+            if (result.Length == 11)
+                result = result.Substring(1);
+            return result;
+        }
+
+        public string BeautifyPhone(string phone) {
+            try {
+                double num = Convert.ToDouble(phone);
+                string result = String.Format("{0:(###) ###-####}", num);
+                return result;
+            } catch (Exception) {
+                return phone;
+            }
+            
         }
 
         #endregion
