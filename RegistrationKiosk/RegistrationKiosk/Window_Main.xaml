@@ -259,7 +259,7 @@
                 <Button x:Name="btn_EditCancel" Content="Cancel" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="120" Height="60" FontSize="24" FontWeight="Bold" Grid.Column="2" Click="btn_EditCancel_Click"/>
             </Grid>
         </Grid>
-        <Grid x:Name="grid_Admin" Grid.Column="1" Grid.Row="1" d:IsHidden="True">
+        <Grid x:Name="grid_Admin" Grid.Column="1" Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="237*"/>
                 <RowDefinition Height="357*"/>
@@ -318,15 +318,15 @@
                     <Label x:Name="lbl_AdminEntriesFind" Content="Find Entries" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="-5.25,-1.25" Height="24" Width="71"/>
                     <TextBox x:Name="txtbx_AdminEntriesSearch" HorizontalAlignment="Left" Height="23" Margin="100,-1,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="234" Grid.Row="1" KeyDown="txtbx_AdminEntriesSearch_KeyDown"/>
                     <Button x:Name="btn_AdminEntriesSearch" Content="Search" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Row="1" VerticalAlignment="Center" Width="75" Height="23" Click="btn_AdminEntriesSearch_Click"/>
-                    <DataGrid x:Name="datagrid_AdminEntries" Margin="10,0,10,10" Grid.Row="2" ItemsSource="{Binding}" AutoGenerateColumns="False" IsReadOnly="True" SelectionChanged="datagrid_AdminEntries_SelectionChanged">
+                    <DataGrid x:Name="datagrid_AdminEntries"  Margin="10,0,10,10" Grid.Row="2" ItemsSource="{Binding}" AutoGenerateColumns="False" IsReadOnly="True" SelectionChanged="datagrid_AdminEntries_SelectionChanged">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Code" Binding="{Binding code}"/>
-                            <DataGridTextColumn Header="Last Name" Binding="{Binding lname}"/>
-                            <DataGridTextColumn Header="First Name"  Binding="{Binding fname}"/>
-                            <DataGridTextColumn Header="Reg Type"  Binding="{Binding regType}"/>
-                            <DataGridTextColumn Header="Sex"  Binding="{Binding sex}"/>
-                            <DataGridTextColumn Header="Phone Number"  Binding="{Binding phone}"/>
-                            <DataGridTextColumn Header="Email Address"  Binding="{Binding email}"/>
+                            <DataGridTextColumn Header="Code" Binding="{Binding Code}"/>
+                            <DataGridTextColumn Header="Last Name" Binding="{Binding Lname}"/>
+                            <DataGridTextColumn Header="First Name"  Binding="{Binding Fname}"/>
+                            <DataGridTextColumn Header="Reg Type"  Binding="{Binding RegType}"/>
+                            <DataGridTextColumn Header="Sex"  Binding="{Binding Sex}"/>
+                            <DataGridTextColumn Header="Phone Number"  Binding="{Binding Phone}"/>
+                            <DataGridTextColumn Header="Email Address"  Binding="{Binding Email}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

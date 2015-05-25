@@ -620,15 +620,26 @@ namespace RegistrationKiosk {
         /// Queries the database for search string and populates DataGrid with entries.
         /// </summary>
         /// <param name="search">The search parameter</param>
+    
+
         private void GetSearchResults(string search) {
             // Clear entries from previous search
             searchEntries.Clear();
             /* add entries to search box */
-            MessageBox.Show("Dummy entries.");
-            searchEntries.Add(new RegistrantEntry("Johnson", "Kyle", RegistrantEntry.SexType.Male, "myEmail@hotmail.com", "123-456-7890"));
-            searchEntries.Add(new RegistrantEntry("Xia", "Zhenyu", RegistrantEntry.SexType.Male, "myEmail@hotmail.com", "123-456-7890"));
-            searchEntries.Add(new RegistrantEntry("Holliday", "Dylan", RegistrantEntry.SexType.Male, "myEmail@hotmail.com", "123-456-7890"));
-            searchEntries.Add(new RegistrantEntry("Reynolds", "Kevin", RegistrantEntry.SexType.Male, "myEmail@hotmail.com", "123-456-7890"));
+            //MessageBox.Show("Dummy entries.");
+            List<RegistrantEntry> Registrants = dbConnection.SelectRegistrant("Code = '" + search + "' or Fname = '" + search + "' or Lname = '" + search + "' or Phone = '" + search + "' or Email = '" + search + "' or Sex = '" + search + "' or RegType = '" + search + "'");
+            foreach (RegistrantEntry entry in Registrants)
+            {
+                searchEntries.Add(entry);
+            }
+         
+            datagrid_AdminEntries.DataContext = searchEntries;
+            datagrid_AdminEntries.UpdateLayout();
+            //searchEntries.Add(new RegistrantEntry("Johnson", "Kyle", RegistrantEntry.SexType.Male, "myEmail@hotmail.com", "123-456-7890"));
+            //searchEntries.Add(new RegistrantEntry("Xia", "Zhenyu", RegistrantEntry.SexType.Male, "myEmail@hotmail.com", "123-456-7890"));
+            //searchEntries.Add(new RegistrantEntry("Holliday", "Dylan", RegistrantEntry.SexType.Male, "myEmail@hotmail.com", "123-456-7890"));
+            //searchEntries.Add(new RegistrantEntry("Reynolds", "Kevin", RegistrantEntry.SexType.Male, "myEmail@hotmail.com", "123-456-7890"));
+        
         }
 
         #endregion
