@@ -37,13 +37,14 @@ namespace RegistrationKiosk
                 return null;
         }
 
-        public string selectFolder()
+        public string selectSaveFile()
         {
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            DialogResult result = fbd.ShowDialog();
+            SaveFileDialog fbd = new SaveFileDialog();
+            fbd.Filter = "Microsoft Excel Worksheet (.xlsx)|*.xlsx|All Files (*.*)|*.*";
+            fbd.FilterIndex = 1;
 
             if (fbd.ShowDialog() == DialogResult.OK)
-                return fbd.SelectedPath;
+                return fbd.FileName;
             else
                 return null;
         }
@@ -137,77 +138,9 @@ namespace RegistrationKiosk
             }
         }
 
-        public void exportExcel( System.Data.DataTable dt, String filename)
+        public void exportExcel(string filename)
         {
-            Microsoft.Office.Interop.Excel.Application excel;
-            Microsoft.Office.Interop.Excel.Workbook excelworkBook;
-            Microsoft.Office.Interop.Excel.Worksheet excelSheet;
-            Microsoft.Office.Interop.Excel.Range excelCellrange;
-
-            // Start Excel and get Application object.
-            excel = new Microsoft.Office.Interop.Excel.Application();
-
-            // for making Excel visible
-            excel.Visible = false;
-            excel.DisplayAlerts = false;
-
-            // Creation a new Workbook
-            excelworkBook = excel.Workbooks.Add(Type.Missing);
-
-            // Work sheet
-            excelSheet = (Microsoft.Office.Interop.Excel.Worksheet)excelworkBook.ActiveSheet;
-            excelSheet.Name = "Test work sheet";
-
-            excelSheet.Cells[1, 1] = "Sample test data";
-            excelSheet.Cells[1, 2] = "Date : " + DateTime.Now.ToShortDateString();
-
-            excelCellrange = excelSheet.Range[excelSheet.Cells[1, 1], excelSheet.Cells[dt.Rows.Count, dt.Columns.Count]];
-            excelCellrange.EntireColumn.AutoFit();
-            Microsoft.Office.Interop.Excel.Borders border = excelCellrange.Borders;
-            border.LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
-            border.Weight = 2d;
-
-            excelSheet.SaveAs(@Path.GetDirectoryName(filename) + "/Org.xlsx");
-            excel.Quit();
-
-            /*//Creae an Excel application instance
-            Microsoft.Office.Interop.Excel.Application excelApp = new Microsoft.Office.Interop.Excel.Application();
-
-            //Create an Excel workbook instance and open it from the predefined location
-            Microsoft.Office.Interop.Excel.Workbook excelWorkBook = excelApp.Workbooks.Open(@Path.GetDirectoryName(filename)+"/Org.xlsx");
-
-            Microsoft.Office.Interop.Excel.Worksheet sheet = excelWorkBook.Sheets["Sheet1"] as Microsoft.Office.Interop.Excel.Worksheet; 
-            Microsoft.Office.Interop.Excel.Range range = sheet.get_Range("A1", Missing.Value);
-
-            if (range != null)
-                 foreach (Microsoft.Office.Interop.Excel.Range r in range)
-                 {
-                     string user = (string) r.Text;
-                     string value = (string) r.Value2;
-
-                 }
-                //Add a new worksheet to workbook with the Datatable name
-            Microsoft.Office.Interop.Excel.Worksheet excelWorkSheet = excelWorkBook.Sheets["Data"] as Microsoft.Office.Interop.Excel.Worksheet;
-                excelWorkSheet.Name = dt.TableName;
-
-                for (int i = 1; i < dt.Columns.Count + 1; i++)
-                {
-                    excelWorkSheet.Cells[1, i] = dt.Columns[i - 1].ColumnName;
-                }
-
-                for (int j = 0; j < dt.Rows.Count; j++)
-                {
-                    for (int k = 0; k < dt.Columns.Count; k++)
-                    {
-                        excelWorkSheet.Cells[j + 2, k + 1] = dt.Rows[j].ItemArray[k].ToString();
-                    }
-                }
-            
-
-            excelWorkBook.Save();
-            excelWorkBook.Close();
-            excelApp.Quit();*/
-            
+            sqlClient.exportEvent(filename);
         }
     }
 }

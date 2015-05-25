@@ -817,6 +817,8 @@ namespace RegistrationKiosk {
         /// </summary>
         private void btn_AdminEntriesExport_Click(object sender, RoutedEventArgs e) {
             // Export Entries based upon export type
+            string filename = ioXL.selectSaveFile();
+            ioXL.exportExcel(filename);
         }
 
         #endregion

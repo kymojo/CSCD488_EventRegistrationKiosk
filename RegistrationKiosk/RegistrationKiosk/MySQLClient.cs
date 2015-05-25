@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 using MySql.Data.MySqlClient;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace RegistrationKiosk
 {
@@ -451,6 +454,93 @@ namespace RegistrationKiosk
             catch
             {
 
+            }
+        }
+
+        public void exportEvent(string filename)
+        {
+            int sheetNum;
+            string tableName = "";
+            string query = "";
+
+            if (this.Open())
+            {
+                MySqlDataAdapter dataAdapter;
+                DataSet ds = new DataSet("ExcelImport");
+                //Creae an Excel application instance
+                Excel.Application excelApp = new Excel.Application();
+
+                //Create an Excel workbook instance and open it from the predefined location
+
+                Excel.Workbook excelWorkBook = excelApp.Workbooks.Add(Type.Missing);
+
+                for (sheetNum = 1; sheetNum < 4; sheetNum++)
+                {
+                    switch (sheetNum)
+                    {
+                        case 1:
+                            tableName = "employee";
+                            break;
+                        case 2:
+                            tableName = "student";
+                            break;
+                        case 3:
+                            tableName = "registrant";
+                            break;
+                    }
+
+                    query = "SELECT * FROM " + tableName;
+
+                    dataAdapter = new MySqlDataAdapter(query, conn);
+                    dataAdapter.FillSchema(ds, SchemaType.Source);
+                    dataAdapter.Fill(ds, tableName);
+                }
+
+                foreach (DataTable table in ds.Tables)
+                {
+                    //Add a new worksheet to workbook with the Datatable name
+                    Excel.Worksheet excelWorkSheet = (Excel.Worksheet)excelWorkBook.Sheets.Add();
+                    excelWorkSheet.Name = table.TableName;
+
+                    for (int i = 1; i < table.Columns.Count + 1; i++)
+                    {
+                        excelWorkSheet.Cells[1, i] = table.Columns[i - 1].ColumnName;
+                    }
+
+                    for (int j = 0; j < table.Rows.Count; j++)
+                    {
+                        for (int k = 0; k < table.Columns.Count; k++)
+                        {
+                            excelWorkSheet.Cells[j + 2, k + 1] = table.Rows[j].ItemArray[k].ToString();
+                        }
+                    }
+                }
+
+                try
+                {
+                    Excel.Worksheet worksheet = (Excel.Worksheet)excelWorkBook.Worksheets[4];
+                    excelApp.DisplayAlerts = false;
+                    worksheet.Delete();
+                    excelApp.DisplayAlerts = true;
+
+                    worksheet = (Excel.Worksheet)excelWorkBook.Worksheets[4];
+                    excelApp.DisplayAlerts = false;
+                    worksheet.Delete();
+                    excelApp.DisplayAlerts = true;
+                }
+                catch (Exception e)
+                {
+                    //It doesn't matter if this failed
+                }
+
+                excelWorkBook.SaveAs(filename, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
+                    Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                excelWorkBook.Close();
+                excelApp.Quit();
+
+                this.Close();
+
+                MessageBox.Show("The file was exported successfully.");
             }
         }
     }
