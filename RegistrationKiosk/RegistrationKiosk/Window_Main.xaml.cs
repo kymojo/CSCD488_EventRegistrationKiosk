@@ -59,6 +59,9 @@ namespace RegistrationKiosk {
         // Flag indicating if user used pre-registration code
         private bool validCodeEntered = false;
 
+        // Printer Object
+        private Printer printer = new Printer();
+
         #endregion
         //===========================================================================
         #region Window Initialization
@@ -779,10 +782,12 @@ namespace RegistrationKiosk {
             if (ValidateRegistrationForms()) {
                 // If entry already exists
                 if (validCodeEntered) {
-                    dbConnection.UpdateRegistrant(editingID, RegistrantFromForm());
-                } else {
-                    dbConnection.InsertRegistrant(RegistrantFromForm());
+                    //dbConnection.UpdateRegistrant(editingID, RegistrantFromForm());
                 }
+                else {
+                    //dbConnection.InsertRegistrant(RegistrantFromForm());
+                }
+                printer.Print(RegistrantFromForm());
                 ClearRegistrationForm();
                 txtbx_RegCode.Focus();
             }

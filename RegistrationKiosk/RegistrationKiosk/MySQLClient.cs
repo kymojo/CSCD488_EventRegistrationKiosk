@@ -664,7 +664,7 @@ namespace RegistrationKiosk {
                     worksheet.Delete();
                     excelApp.DisplayAlerts = true;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     //It doesn't matter if this failed
                 }
