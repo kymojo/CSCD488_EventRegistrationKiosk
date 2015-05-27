@@ -16,7 +16,7 @@ namespace RegistrationKiosk{
         public void Print(RegistrantEntry registrant){
             // Prints a jobfair nametag
             
-            var label = DYMO.Label.Framework.Label.Open(Directory.GetCurrentDirectory() + "/jobfair.label");
+            var label = DYMO.Label.Framework.Label.Open("../../jobfair.label");
             
             try {
                 if (registrant.Major != null)

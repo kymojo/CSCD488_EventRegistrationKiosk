@@ -186,7 +186,7 @@ namespace RegistrationKiosk {
             {   
                 hash += b;
                 hash += (hash << 10);
-                hash ^= (hash >> 6);    
+                hash ^= (hash >> 6);
             }
             // final avalanche
             hash += (hash << 3);

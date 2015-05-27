@@ -137,8 +137,7 @@ namespace RegistrationKiosk {
                     cmd.ExecuteNonQuery();
                     this.Close();
                 }
-            }
-            catch { }
+            } catch { this.Close(); }
             return;
         }
 
@@ -207,7 +206,7 @@ namespace RegistrationKiosk {
                         
                     this.Close();
                 }
-            } catch { }
+            } catch { this.Close(); }
             return;
         }
         
@@ -425,7 +424,7 @@ namespace RegistrationKiosk {
                             #region Set registrant Properties for Students
                             // =========================
                             regList[index].GradYear = (int)dataReader[1];
-                            regList[index].StudentID = ((int)dataReader[2]).ToString();
+                            regList[index].StudentID = (string)dataReader[2];
                             regList[index].Major = (string)dataReader[3];
                             regList[index].College = (string)dataReader[4];
                             regList[index].ClassStanding = (RegistrantEntry.ClassStandingType)Enum.Parse(typeof(RegistrantEntry.ClassStandingType), (string)dataReader[5]);
@@ -553,7 +552,7 @@ namespace RegistrationKiosk {
 
                     this.Close();
                 }
-            } catch { }
+            } catch { this.Close(); }
         }
 
         /// <summary>
@@ -580,8 +579,7 @@ namespace RegistrationKiosk {
 
                     this.Close();
                 }
-            }
-            catch { }
+            } catch { this.Close(); }
         }
 
         #endregion
