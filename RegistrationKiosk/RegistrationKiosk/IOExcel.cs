@@ -8,21 +8,36 @@ using System.Text;
 using System.Windows.Forms;
 using Microsoft.Office.Interop.Excel;
 
-namespace RegistrationKiosk
-{
+namespace RegistrationKiosk {
     
-    class IOExcel
-    {
+    public class IOExcel {
+
+        //===========================================================================
+        #region Class Variables
+        //===========================================================================
 
         MySQLClient sqlClient;
 
-        public IOExcel(MySQLClient sqlClient)
-        {
+        #endregion
+        //===========================================================================
+        #region Class Constructor
+        //===========================================================================
+
+        public IOExcel(MySQLClient sqlClient) {
             this.sqlClient = sqlClient;
         }
 
-        public string selectFile()
-        {
+        #endregion
+        //===========================================================================
+        #region Class Methods
+        //===========================================================================
+
+        /// <summary>
+        /// Allows user to select a file.
+        /// </summary>
+        /// <returns>Filename (null if none selected)</returns>
+        public string SelectFile() {
+
             OpenFileDialog ofd = new OpenFileDialog();
 
             // Setting the filter options
@@ -37,20 +52,29 @@ namespace RegistrationKiosk
                 return null;
         }
 
-        public string selectSaveFile()
-        {
+        /// <summary>
+        /// Allows user to select filename and save directory.
+        /// </summary>
+        /// <returns></returns>
+        public string SelectSaveFile() {
+
             SaveFileDialog fbd = new SaveFileDialog();
             fbd.Filter = "Microsoft Excel Worksheet (.xlsx)|*.xlsx|All Files (*.*)|*.*";
             fbd.FilterIndex = 1;
 
+            // Check if user selected file or not
             if (fbd.ShowDialog() == DialogResult.OK)
                 return fbd.FileName;
             else
                 return null;
         }
 
-        public void importExcel(string filename)
-        {
+        /// <summary>
+        /// Imports entries to database from Excel worksheet
+        /// </summary>
+        /// <param name="filename">Filename of Excel worksheet</param>
+        public void ImportExcel(string filename) {
+
             int i, j, sheetNum = 0;
             string columns = "", data = "";
             
@@ -61,8 +85,7 @@ namespace RegistrationKiosk
             Workbook book = null;
             Range range = null;
 
-            try
-            {
+            try {
                 app.Visible = false;
                 app.ScreenUpdating = false;
                 app.DisplayAlerts = false;
@@ -73,8 +96,7 @@ namespace RegistrationKiosk
                                                   , Missing.Value, Missing.Value, Missing.Value, Missing.Value
                                                  , Missing.Value, Missing.Value, Missing.Value, Missing.Value
                                                 , Missing.Value, Missing.Value, Missing.Value);
-                foreach (Worksheet sheet in book.Worksheets)
-                {
+                foreach (Worksheet sheet in book.Worksheets) {
                     // get a range to work with
                     range = sheet.get_Range("A1", Missing.Value);
                     // get the end of values to the right (will stop at the first empty cell)
@@ -91,7 +113,6 @@ namespace RegistrationKiosk
                     range = sheet.get_Range("A1", downAddress);
                     object[,] values = (object[,])range.Value2;
 
-
                     columns = "";
                     if (values.GetLength(1) > 0)
                         columns += values[1, 1];
@@ -99,8 +120,7 @@ namespace RegistrationKiosk
                         columns += "," + values[1, i];
 
                     // Enter into the database
-                    for ( i = 2; i <= values.GetLength(0); i++)
-                    {
+                    for ( i = 2; i <= values.GetLength(0); i++) {
                         data = "";
                         if (values.GetLength(1) > 0)
                         data += "'" + values[i, 1] + "'";
@@ -116,18 +136,14 @@ namespace RegistrationKiosk
                             sqlClient.Insert("employee", columns, data);
                     }
 
-
-
                     sheetNum++;
                 }
 
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 Console.WriteLine(e);
             }
-            finally
-            {
+            finally {
                 range = null;
                 if (book != null)
                     book.Close(false, Missing.Value, Missing.Value);
@@ -138,9 +154,15 @@ namespace RegistrationKiosk
             }
         }
 
-        public void exportExcel(string filename)
-        {
-            sqlClient.exportEvent(filename);
+        /// <summary>
+        /// Exports database entries to file.
+        /// </summary>
+        /// <param name="filename">Filename to export to</param>
+        public void ExportExcel(string filename) {
+            sqlClient.ExportDatabaseEntries(filename);
         }
+
+        #endregion
+        //===========================================================================
     }
 }

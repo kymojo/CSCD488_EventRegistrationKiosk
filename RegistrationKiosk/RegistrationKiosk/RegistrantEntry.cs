@@ -6,12 +6,18 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 
 namespace RegistrationKiosk {
-    class RegistrantEntry {
+
+    public class RegistrantEntry {
+
+        //===========================================================================
+        #region Enums
+        //===========================================================================
 
         public enum RegistrantType { General, Student, Employee }
         public enum ClassStandingType { None, Freshman, Junior, Sophomore, Senior, PostBac, Graduate, Alumnus }
         public enum SexType { Male, Female }
 
+        #endregion
         //===========================================================================
         #region Properties
         //===========================================================================
@@ -53,7 +59,7 @@ namespace RegistrationKiosk {
             set;
         }
         public string Phone {
-            get { return BeautifyPhone(phoneNormal); }
+            get { return FormatPhone(phoneNormal); }
             set { phoneNormal = NormalizePhone(value); }
         }
         
@@ -192,6 +198,11 @@ namespace RegistrationKiosk {
             return getstring;
         }
 
+        /// <summary>
+        /// Normalizes the phone number string to 10 digit number
+        /// </summary>
+        /// <param name="phone">Phone number</param>
+        /// <returns>Normalized phone number</returns>
         public string NormalizePhone(string phone) {
             string result = phone;
             result = Regex.Replace(result, "[^0-9]+", "");
@@ -200,7 +211,12 @@ namespace RegistrationKiosk {
             return result;
         }
 
-        public string BeautifyPhone(string phone) {
+        /// <summary>
+        /// Changes normalized phone number into (xxx) xxx-xxxx format.
+        /// </summary>
+        /// <param name="phone">Normalized phone number</param>
+        /// <returns>Formatted phone (or original if error)</returns>
+        public string FormatPhone(string phone) {
             try {
                 double num = Convert.ToDouble(phone);
                 string result = String.Format("{0:(###) ###-####}", num);

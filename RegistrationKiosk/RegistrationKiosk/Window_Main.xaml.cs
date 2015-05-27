@@ -89,9 +89,12 @@ namespace RegistrationKiosk {
         private void ChangeAppState(WindowView toState) {
 
             #region CHECK IN VIEW & EDIT VIEW
+            // =========================
             if (toState == WindowView.CheckIn || toState == WindowView.Edit) {
 
                 if (toState == WindowView.CheckIn) {
+                    #region Enable / Disable CheckIn Form Elements
+                    // =========================
                     lbl_PageHeader.Content = "Event Check In Form";
                     // Enable Admin Button
                     btn_AdminMenu.IsEnabled = true;
@@ -111,7 +114,11 @@ namespace RegistrationKiosk {
                     btn_Back.Visibility = System.Windows.Visibility.Hidden;
                     // Focus on RegCode Textbox
                     txtbx_RegCode.Focus();
+                    // =========================
+                    #endregion
                 } else {
+                    #region Enable / Disable Non-CheckIn Form Elements
+                    // =========================
                     lbl_PageHeader.Content = "Edit Registrant";
                     lbl_EditHeaderCode.Content = "Editing Entry #" + editingID;
                     // Disable Header & Footer
@@ -124,6 +131,8 @@ namespace RegistrationKiosk {
                     grid_EditFooter.Visibility = System.Windows.Visibility.Visible;
                     grid_EditHeader.IsEnabled = true;
                     grid_EditHeader.Visibility = System.Windows.Visibility.Visible;
+                    // =========================
+                    #endregion
                 }
                 // Enable View
                 grid_Registration.IsEnabled = true;
@@ -140,9 +149,11 @@ namespace RegistrationKiosk {
                 btn_Back.IsEnabled = true;
                 btn_Back.Visibility = System.Windows.Visibility.Visible;
             }
+            // =========================
             #endregion
 
             #region ADMIN VIEW
+            // =========================
             if (toState == WindowView.Admin) {
                 lbl_PageHeader.Content = "Administrator Tools";
                 // Enable View
@@ -159,6 +170,7 @@ namespace RegistrationKiosk {
                 btn_ExitProgram.IsEnabled = false;
                 btn_ExitProgram.Visibility = System.Windows.Visibility.Hidden;
             }
+            // =========================
             #endregion
 
             ClearRegistrationForm();
@@ -228,6 +240,7 @@ namespace RegistrationKiosk {
         private void ClearRegistrationForm() {
             
             #region CLEAR TEXT BOXES
+            // =========================
             // Prereg
             txtbx_RegCode.Text = "";
             // Name
@@ -241,13 +254,14 @@ namespace RegistrationKiosk {
             txtbx_Graduation.Text = "";
             combo_Colleges.Text = "";
             txtbx_Major.Text = "";
-
             // Employee
             txtbx_Business.Text = "";
             txtbx_Job.Text = "";
+            // =========================
             #endregion
 
             #region CLEAR RADIO BUTTONS
+            // =========================
             // Sex
             radio_Male.IsChecked = false;
             radio_Female.IsChecked = false;
@@ -263,9 +277,11 @@ namespace RegistrationKiosk {
             radio_Postbac.IsChecked = false;
             radio_Grad.IsChecked = false;
             radio_Alumnus.IsChecked = false;
+            // =========================
             #endregion
 
             #region CLEAR RECTANGLE COLORS
+            // =========================
             // General Info
             rec_RegName.Stroke = brush_FormBorder;
             rec_RegSex.Stroke = brush_FormBorder;
@@ -276,6 +292,7 @@ namespace RegistrationKiosk {
             rec_RegStudMore.Stroke = brush_FormBorder;
             // Employer Info
             rec_RegEmployer.Stroke = brush_FormBorder;
+            // =========================
             #endregion
 
             // Resets Registration View (after no radio selected)
@@ -296,6 +313,8 @@ namespace RegistrationKiosk {
             // -------------------------
             
             #region Name
+            // =========================
+
             // Set Regex Pattern
             regex_pattern = @"^[A-Za-z-.\s]{2,}$";
             if (!Regex.IsMatch(txtbx_FirstName.Text, regex_pattern)) {
@@ -315,9 +334,13 @@ namespace RegistrationKiosk {
             } else
                 // Set normal border color
                 rec_RegName.Stroke = brush_FormBorder;
+
+            // =========================
             #endregion
 
             #region Contact Info
+            // =========================
+
             // Set Regex Pattern for Email
             regex_pattern = "^[A-Za-z0-9!#$%&'*+\u002D/=?^_`{|}~]+@[A-Za-z0-9.-]+\u002E[A-Za-z]{2,6}$";
             if (!Regex.IsMatch(txtbx_Email.Text, regex_pattern)) {
@@ -341,18 +364,23 @@ namespace RegistrationKiosk {
             } else
                 // Set normal border color
                 rec_RegContact.Stroke = brush_FormBorder;
+
+            // =========================
             #endregion
 
             #region Sex
+            // =========================
             if (radio_Male.IsChecked == false && radio_Female.IsChecked == false) {
                 MessageBox.Show("Please indicate sex.");
                 rec_RegSex.Stroke = Brushes.Red;
                 return false;
             } else
                 rec_RegSex.Stroke = brush_FormBorder;
+            // =========================
             #endregion
 
             #region Registrant Type
+            // =========================
             // REGISTRANT TYPE
             if (radio_Student.IsChecked == false && radio_Employee.IsChecked == false && radio_General.IsChecked == false) {
                 MessageBox.Show("Please indicate registrant type.");
@@ -360,6 +388,7 @@ namespace RegistrationKiosk {
                 return false;
             } else
                 rec_RegRegistrant.Stroke = brush_FormBorder;
+            // =========================
             #endregion
 
             #endregion
@@ -369,6 +398,7 @@ namespace RegistrationKiosk {
             if (radio_Student.IsChecked == true) {
 
                 #region Class Standing
+                // =========================
                 if (radio_Freshman.IsChecked == false && radio_Sophomore.IsChecked == false &&
                     radio_Junior.IsChecked == false && radio_Senior.IsChecked == false &&
                     radio_Postbac.IsChecked == false && radio_Grad.IsChecked == false &&
@@ -378,26 +408,32 @@ namespace RegistrationKiosk {
                     return false;
                 } else
                     rec_RegClass.Stroke = brush_FormBorder;
+                // =========================
                 #endregion
 
                 #region College
+                // =========================
                 if (combo_Colleges.SelectedIndex == -1) {
                     MessageBox.Show("Please indicate college.");
                     rec_RegStudMore.Stroke = Brushes.Red;
                     return false;
                 }
+                // =========================
                 #endregion
 
                 #region Major
+                // =========================
                 regex_pattern = @"^[\w\s\d.+-]{2,24}$";
                 if (!Regex.IsMatch(txtbx_Major.Text, regex_pattern)) {
                     MessageBox.Show("Invalid major!/nMajors must be under 24 characters long.");
                     rec_RegStudMore.Stroke = Brushes.Red;
                     return false;
                 }
+                // =========================
                 #endregion
 
                 #region Student ID
+                // =========================
                 regex_pattern = @"^\d{5,10}$";
                 if (!Regex.IsMatch(txtbx_StudentID.Text, regex_pattern)) {
                     MessageBox.Show("Invalid student ID!");
@@ -406,9 +442,11 @@ namespace RegistrationKiosk {
                     rec_RegStudMore.Stroke = Brushes.Red;
                     return false;
                 }
+                // =========================
                 #endregion
 
                 #region Grad Year
+                // =========================
                 regex_pattern = @"^\d{4}$";
                 if (!Regex.IsMatch(txtbx_Graduation.Text, regex_pattern)) {
                     MessageBox.Show("Invalid graduation year!");
@@ -418,6 +456,7 @@ namespace RegistrationKiosk {
                     return false;
                 } else
                     rec_RegStudMore.Stroke = brush_FormBorder;
+                // =========================
                 #endregion
             }
 
@@ -428,6 +467,7 @@ namespace RegistrationKiosk {
             if (radio_Employee.IsChecked == true) {
 
                 #region Business Name
+                // =========================
                 regex_pattern = @"^[\w\s\d.+-]{3,}$";
                 if (!Regex.IsMatch(txtbx_Business.Text, regex_pattern)) {
                     MessageBox.Show("Invalid business name!");
@@ -436,9 +476,11 @@ namespace RegistrationKiosk {
                     rec_RegEmployer.Stroke = Brushes.Red;
                     return false;
                 }
+                // =========================
                 #endregion
 
                 #region Job Title
+                // =========================
                 regex_pattern = @"^[\w\s\d.+-]{3,}$";
                 if (!Regex.IsMatch(txtbx_Job.Text, regex_pattern)) {
                     MessageBox.Show("Invalid job title!");
@@ -448,6 +490,7 @@ namespace RegistrationKiosk {
                     return false;
                 } else
                     rec_RegEmployer.Stroke = brush_FormBorder;
+                // =========================
                 #endregion
             }
 
@@ -462,6 +505,7 @@ namespace RegistrationKiosk {
         private void ChangeSpecialView() {
 
             #region STUDENT VIEW
+            // =========================
             if (radio_Student.IsChecked == true) {
                 grid_RegStudent.IsEnabled = true;
                 grid_RegStudent.Visibility = System.Windows.Visibility.Visible;
@@ -469,9 +513,11 @@ namespace RegistrationKiosk {
                 grid_RegStudent.IsEnabled = false;
                 grid_RegStudent.Visibility = System.Windows.Visibility.Hidden;
             }
+            // =========================
             #endregion
 
             #region EMPLOYEE VIEW
+            // =========================
             if (radio_Employee.IsChecked == true) {
                 grid_RegEmployer.IsEnabled = true;
                 grid_RegEmployer.Visibility = System.Windows.Visibility.Visible;
@@ -479,9 +525,11 @@ namespace RegistrationKiosk {
                 grid_RegEmployer.IsEnabled = false;
                 grid_RegEmployer.Visibility = System.Windows.Visibility.Hidden;
             }
+            // =========================
             #endregion
 
             #region NO VIEW
+            // =========================
             if (radio_Employee.IsChecked == false && radio_Student.IsChecked == false) {
                 grid_RegBlank.IsEnabled = true;
                 grid_RegBlank.Visibility = System.Windows.Visibility.Visible;
@@ -489,6 +537,7 @@ namespace RegistrationKiosk {
                 grid_RegBlank.IsEnabled = false;
                 grid_RegBlank.Visibility = System.Windows.Visibility.Hidden;
             }
+            // =========================
             #endregion
 
         }
@@ -575,28 +624,42 @@ namespace RegistrationKiosk {
         /// </summary>
         /// <param name="entry">Registrant with data</param>
         private void PopulateFormFromRegistrant(RegistrantEntry entry) {
+
+            // If entry is null, return
             if (entry == null)
                 return;
+
+            // Get Name
             txtbx_LastName.Text = entry.Lname;
             txtbx_FirstName.Text = entry.Fname;
+
+            // Get Sex
             if (entry.Sex == RegistrantEntry.SexType.Male)
                 radio_Male.IsChecked = true;
             else
                 radio_Female.IsChecked = true;
+
+            // Get Contact
             txtbx_Email.Text = entry.Email;
             txtbx_Phone.Text = entry.Phone;
 
             if (entry.RegType == RegistrantEntry.RegistrantType.Student) {
+
+                // Get Student Info
                 radio_Student.IsChecked = true;
                 CheckClassStanding(entry.ClassStanding);
                 combo_Colleges.Text = entry.College;
                 txtbx_Major.Text = entry.Major;
                 txtbx_StudentID.Text = entry.StudentID;
                 txtbx_Graduation.Text = entry.GradYear.ToString();
+
             } else if (entry.RegType == RegistrantEntry.RegistrantType.Employee) {
+
+                // Get Employee Info
                 radio_Employee.IsChecked = true;
                 txtbx_Business.Text = entry.Business;
                 txtbx_Job.Text = entry.Job;
+
             } else
                 radio_General.IsChecked = true;
         }
@@ -620,26 +683,18 @@ namespace RegistrationKiosk {
         /// Queries the database for search string and populates DataGrid with entries.
         /// </summary>
         /// <param name="search">The search parameter</param>
-    
-
         private void GetSearchResults(string search) {
             // Clear entries from previous search
             searchEntries.Clear();
-            /* add entries to search box */
-            //MessageBox.Show("Dummy entries.");
+            // Get the list of search results
             List<RegistrantEntry> Registrants = dbConnection.SelectRegistrant("Code = '" + search + "' or Fname = '" + search + "' or Lname = '" + search + "' or Phone = '" + search + "' or Email = '" + search + "' or Sex = '" + search + "' or RegType = '" + search + "'");
-            foreach (RegistrantEntry entry in Registrants)
-            {
+            // Add results to datagrid collection
+            foreach (RegistrantEntry entry in Registrants) {
                 searchEntries.Add(entry);
             }
-         
+            // Display results
             datagrid_AdminEntries.DataContext = searchEntries;
             datagrid_AdminEntries.UpdateLayout();
-            //searchEntries.Add(new RegistrantEntry("Johnson", "Kyle", RegistrantEntry.SexType.Male, "myEmail@hotmail.com", "123-456-7890"));
-            //searchEntries.Add(new RegistrantEntry("Xia", "Zhenyu", RegistrantEntry.SexType.Male, "myEmail@hotmail.com", "123-456-7890"));
-            //searchEntries.Add(new RegistrantEntry("Holliday", "Dylan", RegistrantEntry.SexType.Male, "myEmail@hotmail.com", "123-456-7890"));
-            //searchEntries.Add(new RegistrantEntry("Reynolds", "Kevin", RegistrantEntry.SexType.Male, "myEmail@hotmail.com", "123-456-7890"));
-        
         }
 
         #endregion
@@ -808,8 +863,8 @@ namespace RegistrationKiosk {
         /// </summary>
         private void btn_AdminEntriesImport_Click(object sender, RoutedEventArgs e) {
             // Get File Name and Import
-            string filename = ioXL.selectFile();
-            ioXL.importExcel(filename);
+            string filename = ioXL.SelectFile();
+            ioXL.ImportExcel(filename);
         }
 
         /// <summary>
@@ -817,8 +872,8 @@ namespace RegistrationKiosk {
         /// </summary>
         private void btn_AdminEntriesExport_Click(object sender, RoutedEventArgs e) {
             // Export Entries based upon export type
-            string filename = ioXL.selectSaveFile();
-            ioXL.exportExcel(filename);
+            string filename = ioXL.SelectSaveFile();
+            ioXL.ExportExcel(filename);
         }
 
         #endregion

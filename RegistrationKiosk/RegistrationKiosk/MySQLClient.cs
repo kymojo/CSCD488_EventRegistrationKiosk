@@ -7,81 +7,129 @@ using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using Excel = Microsoft.Office.Interop.Excel;
 
-namespace RegistrationKiosk
-{
+namespace RegistrationKiosk {
 
-    //Don't forget to add the MySQL.Data dll to your projects references
-    //It can be downloaded for free from MySQL's official website.
-    //Link to the .NET Connector (MS Installer) http://dev.mysql.com/downloads/connector/net/
-
-
-    class MySQLClient
+    public class MySQLClient
     {
+        //===========================================================================
+        #region Class Variables
+        //===========================================================================
+        
         MySqlConnection conn = null;
         MySqlCommand cmd;
 
-
-        #region Constructors
-        public MySQLClient(string hostname, string database, string username, string password)
-        {
-            conn = new MySqlConnection("host=" + hostname + ";database=" + database +";username=" + username +";password=" + password +";");
-        }
-
-        public MySQLClient(string hostname, string database, string username, string password, int portNumber)
-        {
-            conn = new MySqlConnection("host=" + hostname + ";database=" + database + ";username=" + username + ";password=" + password + ";port=" + portNumber.ToString() +";");
-        }
-
-        public MySQLClient(string hostname, string database, string username, string password, int portNumber, int connectionTimeout)
-        {
-            conn = new MySqlConnection("host=" + hostname + ";database=" + database + ";username=" + username + ";password=" + password + ";port=" + portNumber.ToString() + ";Connection Timeout=" + connectionTimeout.ToString() +";");
-        }
         #endregion
+        //===========================================================================
+        #region Class Constructors
+        //===========================================================================
 
-        #region Open/Close Connection
-        private bool Open()
-        {
+        /// <summary>
+        /// Creates an instance of MySQLClient
+        /// </summary>
+        /// <param name="hostname">Host name</param>
+        /// <param name="database">Database name</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        public MySQLClient(string hostname, string database, string username, string password) {
+            conn = new MySqlConnection("host=" + hostname + ";database=" + database +
+                                       ";username="+ username +";password=" + password +";");
+        }
+
+        /// <summary>
+        /// Creates an instance of MySQLClient
+        /// </summary>
+        /// <param name="hostname">Host name</param>
+        /// <param name="database">Database name</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="portNumber">Port number</param>
+        public MySQLClient(string hostname, string database, string username, string password, int portNumber) {
+            conn = new MySqlConnection("host=" + hostname + ";database=" + database +
+                                       ";username=" + username + ";password=" + password +
+                                       ";port=" + portNumber.ToString() +";");
+        }
+
+        /// <summary>
+        /// Creates an instance of MySQLClient
+        /// </summary>
+        /// <param name="hostname">Host name</param>
+        /// <param name="database">Database name</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="portNumber">Port number</param>
+        /// <param name="connectionTimeout">Connection Timeout time</param>
+        public MySQLClient(string hostname, string database, string username, string password, int portNumber, int connectionTimeout) {
+            conn = new MySqlConnection("host=" + hostname + ";database=" + database +
+                                       ";username=" + username + ";password=" + password +
+                                       ";port=" + portNumber.ToString() + ";Connection Timeout=" +
+                                       connectionTimeout.ToString() +";");
+        }
+
+        #endregion
+        //===========================================================================
+        #region Class Methods
+        //===========================================================================
+
+        //---------------------------------------------------------------------------
+        #region OPEN/CLOSE CONNECTION
+        //---------------------------------------------------------------------------
+        
+        /// <summary>
+        /// Open the connection to database
+        /// </summary>
+        /// <returns>Connection success flag</returns>
+        private bool Open() {
             //This opens temporary connection
-            try
-            {
+            try {
                 conn.Open();
                 return true;
             }
-            catch
-            {
+            catch {
                 //Here you could add a message box or something like that so you know if there were an error.
                 Console.WriteLine("Failed to open");
                 return false;
             }
         }
 
+        /// <summary>
+        /// Closes the connection to database
+        /// </summary>
+        /// <returns>Close success flag</returns>
         private bool Close()
         {
             //This method closes the open connection
-            try
-            {
+            try {
                 conn.Close();
                 return true;
             }
-            catch
-            {
+            catch {
                 return false;
             }
         }
-        #endregion
 
+        #endregion
+        //---------------------------------------------------------------------------
+        #region DATABASE
+        //---------------------------------------------------------------------------
+
+        // -------------------------
+        #region INSERT
+        // -------------------------
+
+        /// <summary>
+        /// Insert values into the database.
+        /// </summary>
+        /// <param name="table">Name of db table</param>
+        /// <param name="column">Columns to write to</param>
+        /// <param name="value">Values of columns</param>
         public void Insert(string table, string column, string value)
         {
-            //Insert values into the database.
-
             //Example: INSERT INTO names (name, age) VALUES('John Smith', '33')
             //Code: MySQLClient.Insert("names", "name, age", "'John Smith, '33'");
             string query = "INSERT INTO " + table + " (" + column + ") VALUES(" + value + ")";
 
-            try
-            {
-                if (this.Open())
-                {
+            try {
+                if (this.Open()) {
                     //Opens a connection, if succefull; run the query and then close the connection.
 
                     MySqlCommand cmd = new MySqlCommand(query, conn);
@@ -94,13 +142,20 @@ namespace RegistrationKiosk
             return;
         }
 
+        /// <summary>
+        /// Inserts a new registrant into the database from RegistrantEntry object
+        /// </summary>
+        /// <param name="registrant">RegistrantEntry to insert</param>
         public void InsertRegistrant(RegistrantEntry registrant) {
 
+            // If the registrant is null, return.
             if (registrant == null)
                 return;
 
             string generalQuery, value, specialQuery = null;
 
+            #region Initialize General Query
+            // =========================
             value =  "'" + registrant.Code + "', ";
             value += "'" + registrant.Fname + "', ";
             value += "'" + registrant.Lname + "', ";
@@ -110,8 +165,12 @@ namespace RegistrationKiosk
             value += "'" + registrant.RegType.ToString() + "', ";
             value += "'Yes'";
             generalQuery = "INSERT INTO registrant (Code, Fname, Lname, Phone, Email, Sex, RegType, CheckedIn) VALUES(" + value + ");";
+            // =========================
+            #endregion
 
             if (registrant.RegType == RegistrantEntry.RegistrantType.Student) {
+                #region Initialize Special Query for Student
+                // =========================
                 value = "'" + registrant.Code + "', ";
                 value += "'" + registrant.GradYear + "', ";
                 value += "'" + registrant.StudentID + "', ";
@@ -119,20 +178,28 @@ namespace RegistrationKiosk
                 value += "'" + registrant.College + "', ";
                 value += "'" + registrant.ClassStanding.ToString() + "'";
                 specialQuery = "INSERT INTO student (Code, Graduation, StudentID, Major, College, ClassStanding) VALUES(" + value + ");";
+                // =========================
+                #endregion
             } else if (registrant.RegType == RegistrantEntry.RegistrantType.Employee) {
+                #region Initialize Special Query for Employee
+                // =========================
                 value = "'" + registrant.Code + "', ";
                 value += "'" + registrant.Business + "', ";
                 value += "'" + registrant.Job + "'";
                 specialQuery = "INSERT INTO employee (Code, Business, Job) VALUES(" + value + ");";
+                // =========================
+                #endregion
             }
 
             try {
                 if (this.Open()) {
                     //Opens a connection, if succefull; run the query and then close the connection.
 
+                    // Execute general query
                     MySqlCommand cmd = new MySqlCommand(generalQuery, conn);
                     cmd.ExecuteNonQuery();
 
+                    // If special query initialized, execute special query
                     if (specialQuery != null) {
                         cmd = new MySqlCommand(specialQuery, conn);
                         cmd.ExecuteNonQuery();
@@ -143,16 +210,52 @@ namespace RegistrationKiosk
             } catch { }
             return;
         }
+        
+        #endregion
+        // -------------------------
+        #region UPDATE
+        // -------------------------
 
+        /// <summary>
+        /// Update existing values in the database.
+        /// </summary>
+        /// <param name="table">The table containing the entry to update</param>
+        /// <param name="SET">Set string (eg. name = 'Joe')</param>
+        /// <param name="WHERE">Where string (eg. code = 123)</param>
+        public void Update(string table, string SET, string WHERE) {
+            
+            //Example: UPDATE names SET name='Joe', age='22' WHERE name='John Smith'
+            //Code: MySQLClient.Update("names", "name='Joe', age='22'", "name='John Smith'");
+            string query = "UPDATE " + table + " SET " + SET + " WHERE " + WHERE + "";
+
+            if (this.Open()) {
+                try {
+                    //Opens a connection, if succefull; run the query and then close the connection.
+
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.ExecuteNonQuery();
+                    this.Close();
+                }
+                catch { this.Close(); }
+            }
+            return;
+        }
+
+        /// <summary>
+        /// Updates a registrant entry in the database.
+        /// </summary>
+        /// <param name="code">The entry code to update entry at</param>
+        /// <param name="registrant">Registrant data to use for update</param>
         public void UpdateRegistrant(string code, RegistrantEntry registrant) {
 
             string SET;
             string query;
-            if (this.Open())
-            {
+            if (this.Open()) {
                 MySqlCommand cmd;
-                try
-                {
+                try {
+                    // Update registrant Table
+                    #region Set General SET Query
+                    // =========================
                     SET = "";
                     SET += "Fname = '" + registrant.Fname + "', ";
                     SET += "Lname = '" + registrant.Lname + "', ";
@@ -162,11 +265,15 @@ namespace RegistrationKiosk
                     SET += "RegType = '" + registrant.RegType.ToString() + "', ";
                     SET += "CheckedIn = 'Yes'";
                     query = "UPDATE registrant SET " + SET + " WHERE Code = '" + code + "';";
+                    // =========================
+                    #endregion
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
                     if (registrant.RegType == RegistrantEntry.RegistrantType.Student) {
-
+                        // Update student Table
+                        #region Set Student SET Query
+                        // =========================
                         SET = "";
                         SET += "Graduation = '" + registrant.GradYear + "', ";
                         SET += "StudentID = '" + registrant.StudentID + "', ";
@@ -174,40 +281,52 @@ namespace RegistrationKiosk
                         SET += "College = '" + registrant.College + "', ";
                         SET += "ClassStanding = '" + registrant.ClassStanding.ToString() + "'";
                         query = "UPDATE student SET " + SET + " WHERE Code = '" + code + "';";
+                        // =========================
+                        #endregion
                         cmd = new MySqlCommand(query, conn);
                         cmd.ExecuteNonQuery();
 
                     } else if (registrant.RegType == RegistrantEntry.RegistrantType.Employee) {
-
+                        // Update employee Table
+                        #region Set Employee SET Query
+                        // =========================
                         SET = "";
                         SET += "Business = '" + registrant.Business + "', ";
                         SET += "Job = '" + registrant.Job + "'";
                         query = "UPDATE employee SET " + SET + " WHERE Code = '" + code + "';";
+                        // =========================
+                        #endregion
                         cmd = new MySqlCommand(query, conn);
                         cmd.ExecuteNonQuery();
 
                     }
 
                     this.Close();
-                }
-                catch { this.Close(); }
+
+                } catch { this.Close(); }
             }
             return;
 
         }
 
-        public void Update(string table, string SET, string WHERE)
-        {
-            //Update existing values in the database.
+        #endregion
+        // -------------------------
+        #region DELETE
+        // -------------------------
 
-            //Example: UPDATE names SET name='Joe', age='22' WHERE name='John Smith'
-            //Code: MySQLClient.Update("names", "name='Joe', age='22'", "name='John Smith'");
-            string query = "UPDATE " + table + " SET " + SET + " WHERE " + WHERE + "";
+        /// <summary>
+        /// Removes an entry from the database.
+        /// </summary>
+        /// <param name="table">The table containing the entries</param>
+        /// <param name="WHERE">Where string (eg. code = 123)</param>
+        public void Delete(string table, string WHERE) {
 
-            if (this.Open())
-            {
-                try
-                {
+            //Example: DELETE FROM names WHERE name='John Smith'
+            //Code: MySQLClient.Delete("names", "name='John Smith'");
+            string query = "DELETE FROM " + table + " WHERE " + WHERE + "";
+
+            if (this.Open()) {
+                try {
                     //Opens a connection, if succefull; run the query and then close the connection.
 
                     MySqlCommand cmd = new MySqlCommand(query, conn);
@@ -219,68 +338,50 @@ namespace RegistrationKiosk
             return;
         }
 
+        /// <summary>
+        /// Delete a registrant entry from database.
+        /// </summary>
+        /// <param name="code">The entry code of entry to delete</param>
         public void DeleteRegistrant(int code) {
             string query;
             MySqlCommand cmd;
 
             if (this.Open()) {
                 try {
-                    //Opens a connection, if succefull; run the query and then close the connection.
+                    // Delete Registrant From registrant Table
                     query = "DELETE FROM registrant WHERE Code = '" + code + "';";
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
+                    // Delete Registrant From student Table
                     query = "DELETE FROM student WHERE Code = '" + code + "';";
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
+                    // Delete Registrant From employee Table
                     query = "DELETE FROM employee WHERE Code = '" + code + "';";
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
                     this.Close();
+
                 } catch { this.Close(); }
             }
             return;
         }
 
-        public void Delete(string table, string WHERE) 
-        {
-            //Removes an entry from the database.
+        #endregion
+        // -------------------------
+        #region SELECT
+        // -------------------------
 
-            //Example: DELETE FROM names WHERE name='John Smith'
-            //Code: MySQLClient.Delete("names", "name='John Smith'");
-            string query = "DELETE FROM " + table + " WHERE " + WHERE + "";
-
-            if (this.Open())
-            {
-                try
-                {
-                    //Opens a connection, if succefull; run the query and then close the connection.
-
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.ExecuteNonQuery();
-                    this.Close();
-                }
-                catch { this.Close(); }
-            }
-            return;
-        }
-
+        /// <summary>
+        /// Retrieves a list of RegistrantEntries from database.
+        /// </summary>
+        /// <param name="WHERE">Where string (eg. name = "Bob")</param>
+        /// <returns></returns>
         public List<RegistrantEntry> SelectRegistrant(string WHERE)
-        {
-            //This methods selects from the database, it retrieves data from it.
-            //You must make a dictionary to use this since it both saves the column
-            //and the value. i.e. "age" and "33" so you can easily search for values.
-
-            //Example: SELECT * FROM names WHERE name='John Smith'
-            // This example would retrieve all data about the entry with the name "John Smith"
-
-            //Code = Dictionary<string, string> myDictionary = Select("names", "name='John Smith'");
-            //This code creates a dictionary and fills it with info from the database.
-
-            //string query = "SELECT * FROM registrant WHERE " + WHERE + ";";
-            
+        {   
             RegistrantEntry registrant;
             List<RegistrantEntry> regList = new List<RegistrantEntry>();
             MySqlCommand cmd;
@@ -297,6 +398,8 @@ namespace RegistrationKiosk
                     while (dataReader.Read())
                     {
                         registrant = new RegistrantEntry();
+                        #region Set registrant Properties
+                        // =========================
                         registrant.Code = (string)dataReader[0];
                         registrant.Fname = (string)dataReader[1];
                         registrant.Lname = (string)dataReader[2];
@@ -305,7 +408,8 @@ namespace RegistrationKiosk
                         registrant.Sex = (RegistrantEntry.SexType) Enum.Parse(typeof(RegistrantEntry.SexType), (string)dataReader[5]);
                         registrant.RegType = (RegistrantEntry.RegistrantType)Enum.Parse(typeof(RegistrantEntry.RegistrantType), (string)dataReader[6]);
                         // CheckedIn [7]
-
+                        // =========================
+                        #endregion
                         regList.Add(registrant);
                     }
                     dataReader.Close();
@@ -318,11 +422,15 @@ namespace RegistrationKiosk
                         string code = (string)dataReader[0];
                         int index = regList.FindIndex(reg => reg.Code.Equals(code));
                         if (index != -1) {
+                            #region Set registrant Properties for Students
+                            // =========================
                             regList[index].GradYear = (int)dataReader[1];
                             regList[index].StudentID = ((int)dataReader[2]).ToString();
                             regList[index].Major = (string)dataReader[3];
                             regList[index].College = (string)dataReader[4];
                             regList[index].ClassStanding = (RegistrantEntry.ClassStandingType)Enum.Parse(typeof(RegistrantEntry.ClassStandingType), (string)dataReader[5]);
+                            // =========================
+                            #endregion
                         }
                     }
                     dataReader.Close();
@@ -335,8 +443,12 @@ namespace RegistrationKiosk
                         string code = (string)dataReader[0];
                         int index = regList.FindIndex(reg => reg.Code.Equals(code));
                         if (index != -1) {
+                            #region Set registrant Properties for Employees
+                            // =========================
                             regList[index].Business = (string)dataReader[1];
                             regList[index].Job = (string)dataReader[2];
+                            // =========================
+                            #endregion
                         }
                     }
                     dataReader.Close();
@@ -348,8 +460,17 @@ namespace RegistrationKiosk
             return regList;
         }
 
-        public int Count(string table)
-        {
+        #endregion
+        // -------------------------
+        #region OTHER
+        // -------------------------
+
+        /// <summary>
+        /// Counts the number of entries in the given table.
+        /// </summary>
+        /// <param name="table">Table to count from</param>
+        /// <returns>Number of entries in table</returns>
+        public int Count(string table) {
             //This counts the numbers of entries in a table and returns it as an integear
 
             //Example: SELECT Count(*) FROM names
@@ -357,10 +478,8 @@ namespace RegistrationKiosk
 
             string query = "SELECT Count(*) FROM " + table + "";
             int Count = -1;
-            if (this.Open() == true)
-            {
-                try
-                {
+            if (this.Open() == true) {
+                try {
                     MySqlCommand cmd = new MySqlCommand(query, conn);
                     Count = int.Parse(cmd.ExecuteScalar() + "");
                     this.Close();
@@ -368,97 +487,114 @@ namespace RegistrationKiosk
                 catch { this.Close(); }
                 return Count;
             }
-            else
-            {
+            else {
                 return Count;
             }
         }
 
-        public void createEvent(string dbname)
-        {
+        #endregion
+        // -------------------------
+        #region CREATE / DROP TABLES
+        // -------------------------
+
+        /// <summary>
+        /// Creates tables for new event
+        /// </summary>
+        /// <param name="dbname">Event name</param>
+        public void CreateEventTables(string dbname) {
             string query;
 
-            try
-            {
-                if (this.Open())
-                {
-                    query = @"CREATE TABLE IF NOT EXISTS `" + dbname + "_employees` (" +
-                            "`code` INT," +
-                            "`businessname` TEXT," +
-                            "`jobtitle` TEXT, " +
-                            "PRIMARY KEY(code))";
-
+            try {
+                if (this.Open()) {
+                    #region Set _employee Table Query
+                    // =========================
+                    query = @"CREATE TABLE IF NOT EXISTS `" + dbname + "_employee` (" +
+                            "`Code` VARCHAR(6)," +
+                            "`Business` VARCHAR(45)," +
+                            "`Job` VARCHAR(45), " +
+                            "PRIMARY KEY(Code))";
+                    // =========================
+                    #endregion
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
-                    query = @"CREATE TABLE IF NOT EXISTS `" + dbname + "_registrants` (" +
-                            "`code` INT," +
-                            "`fname` TEXT," +
-                            "`lname` TEXT," +
-                            "`email` TEXT," +
-                            "`phone` VARCHAR(11)," +
-                            "`sex` VARCHAR(1)," +
-                            "`type` TEXT, " +
-                            "PRIMARY KEY(code))";
-
+                    #region Set _registrant Table Query
+                    // =========================
+                    query = @"CREATE TABLE IF NOT EXISTS `" + dbname + "_registrant` (" +
+                            "`Code` VARCHAR(6)," +
+                            "`Fname` VARCHAR(45)," +
+                            "`Lname` VARCHAR(45)," +
+                            "`Phone` VARCHAR(11)," +
+                            "`Email` VARCHAR(45)," +
+                            "`Sex` ENUM('Male', 'Female')," +
+                            "`RegType` ENUM('General', 'Student', 'Employee'), " +
+                            "`CheckedIn` ENUM('Yes', 'No'), " +
+                            "PRIMARY KEY(Code))";
+                    // =========================
+                    #endregion
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
-                    query = @"CREATE TABLE IF NOT EXISTS `" + dbname + "_students` (" +
-                            "`code` INT," +
-                            "`studentid` INT," +
-                            "`college` TEXT," +
-                            "`major` TEXT," +
-                            "`gyear` int," +
-                            "`standing` TEXT, " +
-                            "PRIMARY KEY(code))";
-
+                    #region Set _student Table Query
+                    // =========================
+                    query = @"CREATE TABLE IF NOT EXISTS `" + dbname + "_student` (" +
+                            "`Code` VARCHAR(6)," +
+                            "`Graduation' YEAR(4)," +
+                            "`StudentID` INT(11)," +
+                            "`Major` VARCHAR(45)," +
+                            "`College` VARCHAR(45)," +
+                            "`ClassStanding` ENUM('None','Freshman','Junior','Sophomore'," +
+                                              "'Senior','PostBac','Graduate','Alumnus'), " +
+                            "PRIMARY KEY(Code))";
+                    // =========================
+                    #endregion
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
                     this.Close();
                 }
             }
-            catch 
-            {
-                
-            }
+            catch { }
         }
 
-        public void dropEvent(string dbname)
-        {
+        /// <summary>
+        /// Deletes tables for a given event
+        /// </summary>
+        /// <param name="dbname">Event name</param>
+        public void DropEventTables(string dbname) {
             string query;
 
-            try
-            {
-                if (this.Open())
-                {
-                    query = @"DROP TABLE IF EXISTS " + dbname + "_employees";
+            try {
+                if (this.Open()) {
 
+                    query = @"DROP TABLE IF EXISTS " + dbname + "_employee";
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
-                    query = @"DROP TABLE IF EXISTS " + dbname + "_registrants";
-
+                    query = @"DROP TABLE IF EXISTS " + dbname + "_registrant";
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
-                    query = @"DROP TABLE IF EXISTS " + dbname + "_students";
-
+                    query = @"DROP TABLE IF EXISTS " + dbname + "_student";
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
                     this.Close();
                 }
             }
-            catch
-            {
-
-            }
+            catch { }
         }
 
-        public void exportEvent(string filename)
-        {
+        #endregion
+        // -------------------------
+        #region EXPORT DATABASE
+        // -------------------------
+
+        /// <summary>
+        /// Exports entries from database to an Excel file
+        /// </summary>
+        /// <param name="filename">Filename to export to</param>
+        public void ExportDatabaseEntries(string filename) {
             int sheetNum;
             string tableName = "";
             string query = "";
@@ -543,5 +679,14 @@ namespace RegistrationKiosk
                 MessageBox.Show("The file was exported successfully.");
             }
         }
+
+        #endregion
+        // -------------------------
+
+        #endregion
+        //---------------------------------------------------------------------------
+
+        #endregion
+        //===========================================================================
     }
 }
