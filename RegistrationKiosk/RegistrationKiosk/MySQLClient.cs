@@ -501,16 +501,16 @@ namespace RegistrationKiosk {
         /// Creates tables for new event
         /// </summary>
         /// <param name="dbname">Event name</param>
-        public void CreateEventTables(string dbname) {
+        public void CreateDatabaseTables() {
             string query;
 
             try {
                 if (this.Open()) {
                     #region Set _employee Table Query
                     // =========================
-                    query = @"CREATE TABLE IF NOT EXISTS `" + dbname + "_employee` (" +
-                            "`Code` VARCHAR(6)," +
-                            "`Business` VARCHAR(45)," +
+                    query = @"CREATE TABLE IF NOT EXISTS `employee` (" +
+                            "`Code` VARCHAR(6), " +
+                            "`Business` VARCHAR(45), " +
                             "`Job` VARCHAR(45), " +
                             "PRIMARY KEY(Code))";
                     // =========================
@@ -520,13 +520,13 @@ namespace RegistrationKiosk {
 
                     #region Set _registrant Table Query
                     // =========================
-                    query = @"CREATE TABLE IF NOT EXISTS `" + dbname + "_registrant` (" +
-                            "`Code` VARCHAR(6)," +
-                            "`Fname` VARCHAR(45)," +
-                            "`Lname` VARCHAR(45)," +
-                            "`Phone` VARCHAR(11)," +
-                            "`Email` VARCHAR(45)," +
-                            "`Sex` ENUM('Male', 'Female')," +
+                    query = @"CREATE TABLE IF NOT EXISTS `registrant` (" +
+                            "`Code` VARCHAR(6), " +
+                            "`Fname` VARCHAR(45), " +
+                            "`Lname` VARCHAR(45), " +
+                            "`Phone` VARCHAR(20), " +
+                            "`Email` VARCHAR(45), " +
+                            "`Sex` ENUM('Male', 'Female'), " +
                             "`RegType` ENUM('General', 'Student', 'Employee'), " +
                             "`CheckedIn` ENUM('Yes', 'No'), " +
                             "PRIMARY KEY(Code))";
@@ -537,14 +537,14 @@ namespace RegistrationKiosk {
 
                     #region Set _student Table Query
                     // =========================
-                    query = @"CREATE TABLE IF NOT EXISTS `" + dbname + "_student` (" +
-                            "`Code` VARCHAR(6)," +
-                            "`Graduation' YEAR(4)," +
-                            "`StudentID` INT(11)," +
-                            "`Major` VARCHAR(45)," +
-                            "`College` VARCHAR(45)," +
-                            "`ClassStanding` ENUM('None','Freshman','Junior','Sophomore'," +
-                                              "'Senior','PostBac','Graduate','Alumnus'), " +
+                    query = @"CREATE TABLE IF NOT EXISTS `student` (" +
+                            "`Code` VARCHAR(6), " +
+                            "`Graduation` INT(4), " +
+                            "`StudentID` VARCHAR(11), " +
+                            "`Major` VARCHAR(45), " +
+                            "`College` VARCHAR(45), " +
+                            "`ClassStanding` ENUM('None', 'Freshman', 'Junior', 'Sophomore', " +
+                                              "'Senior', 'PostBac', 'Graduate', 'Alumnus'), " +
                             "PRIMARY KEY(Code))";
                     // =========================
                     #endregion
@@ -553,8 +553,7 @@ namespace RegistrationKiosk {
 
                     this.Close();
                 }
-            }
-            catch { }
+            } catch { }
         }
 
         /// <summary>

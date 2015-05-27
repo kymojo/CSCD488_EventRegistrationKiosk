@@ -72,7 +72,8 @@ namespace RegistrationKiosk {
             ChangeAppState(AppState);
             ChangeSpecialView();
             datagrid_AdminEntries.DataContext = searchEntries;
-            dbConnection = new MySQLClient("cscd379.com", "excelimport", "jobfair", "ewu2015");
+            dbConnection = new MySQLClient("cscd379.com", "jobfair", "jobfair", "ewu2015");
+            dbConnection.CreateDatabaseTables();
             ioXL = new IOExcel(dbConnection);
         }
 
@@ -782,10 +783,10 @@ namespace RegistrationKiosk {
             if (ValidateRegistrationForms()) {
                 // If entry already exists
                 if (validCodeEntered) {
-                    //dbConnection.UpdateRegistrant(editingID, RegistrantFromForm());
+                    dbConnection.UpdateRegistrant(editingID, RegistrantFromForm());
                 }
                 else {
-                    //dbConnection.InsertRegistrant(RegistrantFromForm());
+                    dbConnection.InsertRegistrant(RegistrantFromForm());
                 }
                 printer.Print(RegistrantFromForm());
                 ClearRegistrationForm();
@@ -793,6 +794,9 @@ namespace RegistrationKiosk {
             }
         }
 
+        /// <summary>
+        /// Click event for Forgot Code button on CheckIn page.
+        /// </summary>
         private void btn_ForgotCode_Click(object sender, RoutedEventArgs e) {
             // Create admin window and display
             forgotcodeWindow = new Window_ForgotCode(this);
@@ -955,6 +959,17 @@ namespace RegistrationKiosk {
             if (e.Key == Key.Return) {
                 // Simulate search button
                 btn_AdminEntriesSearch_Click(sender, e);
+            }
+        }
+
+        /// <summary>
+        /// KeyDown event for Colleges combo box on Admin page.
+        /// </summary>
+        private void combo_Colleges_KeyDown(object sender, KeyEventArgs e) {
+            // Check Enter key
+            if (e.Key == Key.Return) {
+                // Drop down to focus on Major textbox
+                txtbx_Major.Focus();
             }
         }
 

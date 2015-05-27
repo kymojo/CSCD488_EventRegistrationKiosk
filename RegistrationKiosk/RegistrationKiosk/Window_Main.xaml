@@ -208,7 +208,7 @@
                     <Label x:Name="lbl_StudentID" Content="Student ID" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="100" Grid.Row="3" Margin="10,0,0,0"/>
                     <Label x:Name="lbl_Graduation" Content="Graduation Year" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="100" Grid.Row="4" Margin="10,0,0,0" HorizontalContentAlignment="Center"/>
                     <Label x:Name="lbl_Major" Content="Major" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="73" Grid.Row="2" Margin="10,1,0,0"/>
-                    <ComboBox x:Name="combo_Colleges" HorizontalAlignment="Left" Margin="83,4,0,4" Grid.Row="1" VerticalAlignment="Center" Width="209" IsEditable="True">
+                    <ComboBox x:Name="combo_Colleges" HorizontalAlignment="Left" Margin="83,4,0,4" Grid.Row="1" VerticalAlignment="Center" Width="209" IsEditable="True" KeyDown="combo_Colleges_KeyDown">
                         <ComboBoxItem x:Name="cmbItem_Eastern" Content="Eastern Washington University"/>
                         <ComboBoxItem x:Name="cmbItem_Gonzaga" Content="Gonzaga University"/>
                         <ComboBoxItem x:Name="cmbItem_WSU" Content="Washington State University"/>
