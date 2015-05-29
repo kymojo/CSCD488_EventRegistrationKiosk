@@ -44,7 +44,8 @@ namespace RegistrationKiosk {
                 this.Close();
             } else {
                 MessageBox.Show("Invalid Password!\n(Default password is 'pass')");
-                txtbx_Admin.Focus();
+                pass_Admin.Focus();
+                pass_Admin.Password = "";
             }
         }
         

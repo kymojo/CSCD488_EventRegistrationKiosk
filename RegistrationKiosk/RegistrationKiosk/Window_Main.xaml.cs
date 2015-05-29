@@ -252,7 +252,7 @@ namespace RegistrationKiosk {
             txtbx_LastName.Text = "";
             // Contact
             txtbx_Email.Text = "";
-            txtbx_Phone.Text = "";
+            txtbx_Phone.Text = "(xxx) xxx-xxxx";
             // Student
             txtbx_StudentID.Text = "";
             txtbx_Graduation.Text = "";
@@ -439,7 +439,7 @@ namespace RegistrationKiosk {
                 #region Student ID
                 // =========================
                 regex_pattern = @"^\d{5,10}$";
-                if (!Regex.IsMatch(txtbx_StudentID.Text, regex_pattern)) {
+                if (!Regex.IsMatch(txtbx_StudentID.Text, regex_pattern) || txtbx_StudentID.Text != "") {
                     MessageBox.Show("Invalid student ID!");
                     txtbx_StudentID.Focus();
                     txtbx_StudentID.SelectAll();
@@ -859,11 +859,17 @@ namespace RegistrationKiosk {
         /// </summary>
         private void btn_AdminEntriesClear_Click(object sender, RoutedEventArgs e) {
             // Ask admin if this action is correct
-            MessageBoxResult result = MessageBox.Show("Are you sure you want to clear the database?\nTHIS CANNOT BE UNDONE!", "Clear Database", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            MessageBoxResult result = MessageBox.Show("Clear all entries in database?", "Clear Database", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result == MessageBoxResult.Yes) {
-                // Clear entry database
-                MessageBox.Show("I'll do that later.");
-                txtbx_AdminEntriesCode.Text = "";
+                // Ask again to verify
+                result = MessageBox.Show("Are you sure you want to clear the database?\nTHIS CANNOT BE UNDONE!", "Clear Database", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes) {
+                    // Clear entry database
+                    MessageBox.Show("Database successfully cleared.");
+                    dbConnection.DropDatabaseTables();
+                    dbConnection.CreateDatabaseTables();
+                    txtbx_AdminEntriesCode.Text = "";
+                }
             }
         }
 
@@ -940,6 +946,46 @@ namespace RegistrationKiosk {
         }
 
         /// <summary>
+        /// TextChanged event for Phone text box on CheckIn page
+        /// </summary>
+        private void txtbx_Phone_TextChanged(object sender, TextChangedEventArgs e) {
+            if (txtbx_Phone.Text == "(xxx) xxx-xxxx") {
+                // If changed to default string
+                return;
+            } else if (txtbx_Phone.Text == "" || txtbx_Phone.Text == "(") {
+                txtbx_Phone.Text = "(";
+            } else {
+                String phone = Regex.Replace(txtbx_Phone.Text, @"[^0-9]", "");
+                if (phone.Length > 0)
+                    phone = phone.Insert(0, "(");
+                if (phone.Length > 4)
+                    phone = phone.Insert(4, ") ");
+                if (phone.Length > 9)
+                    phone = phone.Insert(9, "-");
+                if (phone.Length > 14)
+                    phone = phone.Substring(0, 14);
+                txtbx_Phone.Text = phone;
+            }
+            txtbx_Phone.CaretIndex = txtbx_Phone.Text.Length;
+        }
+
+        /// <summary>
+        /// GotKeyboardFocus event for Phone text box on CheckIn page
+        /// </summary>
+        private void txtbx_Phone_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
+            if (txtbx_Phone.Text == "(xxx) xxx-xxxx")
+                txtbx_Phone.Text = "(";
+        }
+
+        /// <summary>
+        /// LostKeyboardFocus event for Phone text box on CheckIn page
+        /// </summary>
+        private void txtbx_Phone_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
+            if (txtbx_Phone.Text == "(")
+                txtbx_Phone.Text = "(xxx) xxx-xxxx";
+        }
+
+        /// <summary>
         /// Change selection event for Admin Entries datagrid on Admin page.
         /// </summary>
         private void datagrid_AdminEntries_SelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -974,6 +1020,7 @@ namespace RegistrationKiosk {
         }
 
         #endregion
+
         //---------------------------------------------------------------------------
 
         #endregion

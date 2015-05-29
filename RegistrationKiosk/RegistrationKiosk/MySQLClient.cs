@@ -559,21 +559,21 @@ namespace RegistrationKiosk {
         /// Deletes tables for a given event
         /// </summary>
         /// <param name="dbname">Event name</param>
-        public void DropEventTables(string dbname) {
+        public void DropDatabaseTables() {
             string query;
 
             try {
                 if (this.Open()) {
 
-                    query = @"DROP TABLE IF EXISTS " + dbname + "_employee";
+                    query = @"DROP TABLE IF EXISTS `employee`";
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
-                    query = @"DROP TABLE IF EXISTS " + dbname + "_registrant";
+                    query = @"DROP TABLE IF EXISTS `registrant`";
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
-                    query = @"DROP TABLE IF EXISTS " + dbname + "_student";
+                    query = @"DROP TABLE IF EXISTS `student`";
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
