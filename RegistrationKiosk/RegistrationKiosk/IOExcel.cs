@@ -77,9 +77,6 @@ namespace RegistrationKiosk {
 
             int i, j, sheetNum = 0;
             string columns = "", data = "";
-            
-            /*string eventName = Path.GetFileNameWithoutExtension(filename);
-            sqlClient.createEvent(eventName);*/
 
             ApplicationClass app = new ApplicationClass();
             Workbook book = null;
@@ -97,51 +94,56 @@ namespace RegistrationKiosk {
                                                  , Missing.Value, Missing.Value, Missing.Value, Missing.Value
                                                 , Missing.Value, Missing.Value, Missing.Value);
                 foreach (Worksheet sheet in book.Worksheets) {
-                    // get a range to work with
-                    range = sheet.get_Range("A1", Missing.Value);
-                    // get the end of values to the right (will stop at the first empty cell)
-                    range = range.get_End(XlDirection.xlToRight);
-                    // get the end of values toward the bottom, looking in the last column (will stop at first empty cell)
-                    range = range.get_End(XlDirection.xlDown);
+                    if (sheet.Name.ToLower().Equals("registrant") || sheet.Name.ToLower().Equals("student") || sheet.Name.ToLower().Equals("employee"))
+                    {
+                        // get a range to work with
+                        range = sheet.get_Range("A1", Missing.Value);
+                        // get the end of values to the right (will stop at the first empty cell)
+                        range = range.get_End(XlDirection.xlToRight);
+                        // get the end of values toward the bottom, looking in the last column (will stop at first empty cell)
+                        range = range.get_End(XlDirection.xlDown);
 
-                    // get the address of the bottom, right cell
-                    string downAddress = range.get_Address(
-                        false, false, XlReferenceStyle.xlA1,
-                        Type.Missing, Type.Missing);
+                        // get the address of the bottom, right cell
+                        string downAddress = range.get_Address(
+                            false, false, XlReferenceStyle.xlA1,
+                            Type.Missing, Type.Missing);
 
-                    // Get the range, then values from a1
-                    range = sheet.get_Range("A1", downAddress);
-                    object[,] values = (object[,])range.Value2;
+                        // Get the range, then values from a1
+                        range = sheet.get_Range("A1", downAddress);
+                        object[,] values = (object[,])range.Value2;
 
-                    columns = "";
-                    if (values.GetLength(1) > 0)
-                        columns += values[1, 1];
-                    for (i = 2; i <= values.GetLength(1); i++)
-                        columns += "," + values[1, i];
-
-                    // Enter into the database
-                    for ( i = 2; i <= values.GetLength(0); i++) {
-                        data = "";
+                        columns = "";
                         if (values.GetLength(1) > 0)
-                        data += "'" + values[i, 1] + "'";
+                            columns += values[1, 1];
+                        for (i = 2; i <= values.GetLength(1); i++)
+                            columns += "," + values[1, i];
 
-                        for (j = 2; j <= values.GetLength(1); j++)
-                            data += ", '" + values[i, j] + "'";
+                        // Enter into the database
+                        for (i = 2; i <= values.GetLength(0); i++)
+                        {
+                            data = "";
+                            if (values.GetLength(1) > 0)
+                                data += "'" + values[i, 1] + "'";
 
-                        if (sheetNum == 0)
-                            sqlClient.Insert("registrant", columns, data);
-                        else if (sheetNum == 1)
-                            sqlClient.Insert("student", columns, data);
-                        else if (sheetNum == 2)
-                            sqlClient.Insert("employee", columns, data);
+                            for (j = 2; j <= values.GetLength(1); j++)
+                                data += ", '" + values[i, j] + "'";
+
+                            if (sheetNum == 0)
+                                sqlClient.Insert("registrant", columns, data);
+                            else if (sheetNum == 1)
+                                sqlClient.Insert("student", columns, data);
+                            else if (sheetNum == 2)
+                                sqlClient.Insert("employee", columns, data);
+                        }
+
+                        sheetNum++;
                     }
-
-                    sheetNum++;
                 }
 
+                MessageBox.Show("File was successfully uploaded.");
             }
-            catch (Exception e) {
-                Console.WriteLine(e);
+            catch (Exception) {
+                MessageBox.Show("File failed to upload.");
             }
             finally {
                 range = null;
@@ -152,6 +154,8 @@ namespace RegistrationKiosk {
                     app.Quit();
                 app = null;
             }
+
+            
         }
 
         /// <summary>

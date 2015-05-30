@@ -2,7 +2,7 @@ TO-DO:
 
 01.	Figure out DYMO label character limits on fields	[ ]	
 02.	Import/export spreadsheet formats			[X]
-03.	Import/export from database				[ ]	Needed ?
+03.	Import/export from database				[X]
 04.	Phone textbox entry masking				[X]
 05.	Close database if catch					[X]	
 06.	Remove admin password disclosure			[ ]	Issue: user tampering

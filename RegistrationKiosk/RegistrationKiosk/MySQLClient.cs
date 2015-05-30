@@ -599,9 +599,10 @@ namespace RegistrationKiosk {
             if (this.Open())
             {
                 MySqlDataAdapter dataAdapter;
-                DataSet ds = new DataSet("ExcelImport");
+                DataSet ds = new DataSet("jobfair");
                 //Creae an Excel application instance
                 Excel.Application excelApp = new Excel.Application();
+                
 
                 //Create an Excel workbook instance and open it from the predefined location
 
@@ -629,8 +630,15 @@ namespace RegistrationKiosk {
                     dataAdapter.Fill(ds, tableName);
                 }
 
+                query = "SELECT StudentID, Fname, Lname, College, Major, ClassStanding, Email, RegType, CheckedIn FROM registrant R LEFT JOIN student S ON S.Code = R.Code LEFT JOIN employee E ON E.Code = S.Code";
+
+                dataAdapter = new MySqlDataAdapter(query, conn);
+                dataAdapter.FillSchema(ds, SchemaType.Source);
+                dataAdapter.Fill(ds, "data");
+
                 foreach (DataTable table in ds.Tables)
                 {
+                    Console.WriteLine(table.TableName);
                     //Add a new worksheet to workbook with the Datatable name
                     Excel.Worksheet excelWorkSheet = (Excel.Worksheet)excelWorkBook.Sheets.Add();
                     excelWorkSheet.Name = table.TableName;
@@ -647,16 +655,18 @@ namespace RegistrationKiosk {
                             excelWorkSheet.Cells[j + 2, k + 1] = table.Rows[j].ItemArray[k].ToString();
                         }
                     }
+
+                    excelWorkSheet.Cells.Columns.AutoFit();
                 }
 
                 try
                 {
-                    Excel.Worksheet worksheet = (Excel.Worksheet)excelWorkBook.Worksheets[4];
+                    Excel.Worksheet worksheet = (Excel.Worksheet)excelWorkBook.Worksheets[5];
                     excelApp.DisplayAlerts = false;
                     worksheet.Delete();
                     excelApp.DisplayAlerts = true;
 
-                    worksheet = (Excel.Worksheet)excelWorkBook.Worksheets[4];
+                    worksheet = (Excel.Worksheet)excelWorkBook.Worksheets[5];
                     excelApp.DisplayAlerts = false;
                     worksheet.Delete();
                     excelApp.DisplayAlerts = true;
@@ -665,6 +675,7 @@ namespace RegistrationKiosk {
                 {
                     //It doesn't matter if this failed
                 }
+
 
                 excelWorkBook.SaveAs(filename, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
                     Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
