@@ -11,123 +11,61 @@
 		</Path>
 	</DrawCommands>
 	<ObjectInfo>
-		<ShapeObject>
-			<Name>SHAPE</Name>
-			<ForeColor Alpha="255" Red="0" Green="0" Blue="0" />
-			<BackColor Alpha="0" Red="255" Green="255" Blue="255" />
-			<LinkedObjectName></LinkedObjectName>
-			<Rotation>Rotation0</Rotation>
-			<IsMirrored>False</IsMirrored>
-			<IsVariable>False</IsVariable>
-			<ShapeType>Rectangle</ShapeType>
-			<LineWidth>45</LineWidth>
-			<LineAlignment>Center</LineAlignment>
-			<FillColor Alpha="255" Red="255" Green="255" Blue="255" />
-		</ShapeObject>
-		<Bounds X="336" Y="930" Width="5160" Height="1815" />
-	</ObjectInfo>
-	<ObjectInfo>
 		<TextObject>
-			<Name>Fname</Name>
+			<Name>Text</Name>
 			<ForeColor Alpha="255" Red="0" Green="0" Blue="0" />
 			<BackColor Alpha="0" Red="255" Green="255" Blue="255" />
 			<LinkedObjectName></LinkedObjectName>
 			<Rotation>Rotation0</Rotation>
 			<IsMirrored>False</IsMirrored>
 			<IsVariable>True</IsVariable>
-			<HorizontalAlignment>Center</HorizontalAlignment>
+			<HorizontalAlignment>Left</HorizontalAlignment>
 			<VerticalAlignment>Middle</VerticalAlignment>
 			<TextFitMode>ShrinkToFit</TextFitMode>
 			<UseFullFontHeight>True</UseFullFontHeight>
 			<Verticalized>False</Verticalized>
 			<StyledText>
 				<Element>
-					<String>First Name</String>
+					<String>Fname Lname
+</String>
 					<Attributes>
-						<Font Family="Arial" Size="26" Bold="True" Italic="False" Underline="False" Strikeout="False" />
+						<Font Family="Arial" Size="20" Bold="False" Italic="False" Underline="False" Strikeout="False" />
 						<ForeColor Alpha="255" Red="0" Green="0" Blue="0" />
 					</Attributes>
 				</Element>
-			</StyledText>
-		</TextObject>
-		<Bounds X="426" Y="1034.29132080078" Width="4995.3544921875" Height="774.212646484375" />
-	</ObjectInfo>
-	<ObjectInfo>
-		<TextObject>
-			<Name>Title</Name>
-			<ForeColor Alpha="255" Red="0" Green="0" Blue="0" />
-			<BackColor Alpha="0" Red="255" Green="255" Blue="255" />
-			<LinkedObjectName></LinkedObjectName>
-			<Rotation>Rotation0</Rotation>
-			<IsMirrored>False</IsMirrored>
-			<IsVariable>False</IsVariable>
-			<HorizontalAlignment>Center</HorizontalAlignment>
-			<VerticalAlignment>Middle</VerticalAlignment>
-			<TextFitMode>ShrinkToFit</TextFitMode>
-			<UseFullFontHeight>True</UseFullFontHeight>
-			<Verticalized>False</Verticalized>
-			<StyledText>
 				<Element>
-					<String>Participant</String>
+					<String>
+</String>
 					<Attributes>
 						<Font Family="Arial" Size="12" Bold="False" Italic="False" Underline="False" Strikeout="False" />
 						<ForeColor Alpha="255" Red="0" Green="0" Blue="0" />
 					</Attributes>
 				</Element>
-			</StyledText>
-		</TextObject>
-		<Bounds X="375" Y="420" Width="5055" Height="465" />
-	</ObjectInfo>
-	<ObjectInfo>
-		<TextObject>
-			<Name>Lname</Name>
-			<ForeColor Alpha="255" Red="0" Green="0" Blue="0" />
-			<BackColor Alpha="0" Red="255" Green="255" Blue="255" />
-			<LinkedObjectName></LinkedObjectName>
-			<Rotation>Rotation0</Rotation>
-			<IsMirrored>False</IsMirrored>
-			<IsVariable>True</IsVariable>
-			<HorizontalAlignment>Center</HorizontalAlignment>
-			<VerticalAlignment>Middle</VerticalAlignment>
-			<TextFitMode>ShrinkToFit</TextFitMode>
-			<UseFullFontHeight>True</UseFullFontHeight>
-			<Verticalized>False</Verticalized>
-			<StyledText>
 				<Element>
-					<String>Last Name</String>
+					<String>Major/Position/Member
+</String>
 					<Attributes>
-						<Font Family="Arial" Size="28" Bold="True" Italic="False" Underline="False" Strikeout="False" />
+						<Font Family="Arial" Size="20" Bold="False" Italic="False" Underline="False" Strikeout="False" />
 						<ForeColor Alpha="255" Red="0" Green="0" Blue="0" />
 					</Attributes>
 				</Element>
-			</StyledText>
-		</TextObject>
-		<Bounds X="412.32275390625" Y="1769.29132080078" Width="5010.3544921875" Height="819.212646484375" />
-	</ObjectInfo>
-	<ObjectInfo>
-		<TextObject>
-			<Name>College</Name>
-			<ForeColor Alpha="255" Red="0" Green="0" Blue="0" />
-			<BackColor Alpha="0" Red="255" Green="255" Blue="255" />
-			<LinkedObjectName></LinkedObjectName>
-			<Rotation>Rotation0</Rotation>
-			<IsMirrored>False</IsMirrored>
-			<IsVariable>False</IsVariable>
-			<HorizontalAlignment>Center</HorizontalAlignment>
-			<VerticalAlignment>Top</VerticalAlignment>
-			<TextFitMode>ShrinkToFit</TextFitMode>
-			<UseFullFontHeight>True</UseFullFontHeight>
-			<Verticalized>False</Verticalized>
-			<StyledText>
 				<Element>
-					<String>General</String>
+					<String>
+</String>
 					<Attributes>
 						<Font Family="Arial" Size="12" Bold="False" Italic="False" Underline="False" Strikeout="False" />
 						<ForeColor Alpha="255" Red="0" Green="0" Blue="0" />
 					</Attributes>
 				</Element>
+				<Element>
+					<String>School/Company</String>
+					<Attributes>
+						<Font Family="Arial" Size="20" Bold="False" Italic="False" Underline="False" Strikeout="False" />
+						<ForeColor Alpha="255" Red="0" Green="0" Blue="0" />
+					</Attributes>
+				</Element>
 			</StyledText>
 		</TextObject>
-		<Bounds X="336" Y="2844" Width="5083" Height="405" />
+		<Bounds X="336" Y="475.2" Width="5085.3544921875" Height="2619.21264648438" />
 	</ObjectInfo>
 </DieCutLabel>
