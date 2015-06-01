@@ -11,8 +11,15 @@ TO-DO:
 09.	Figure out label format					[X]
 10.	Standardize label font size				[ ]	Issue: funky look
 11.	Make Student ID not mandatory for check-in		[X]
-12.	Barcode Email Display					[ ]	Issue: invisible barcode
+12.	Barcode Email Display					[X]	Issue: invisible barcode
 13.	Clear Database button functionality			[X]
 14.	Admin Add/Remove School Option				[ ]	Issue: unimplemented
+15.	Email format for preregistration			[ ]	Ask Shannon
+16.	Format web form to look nice (similar to kiosk?)	[ ]
+17.	Question stuff						[ ]
+18.	Give webpage dynamic content (event title, etc.)	[ ]
 
-(xxx) xxx-xxxx
+Kevin:	Printer and Spreadsheet Stuff, Webpage format (CSS)
+Dylan:	Hash function stuff, Display questions on webpage
+Zhenyu:	Question stuff and database
+Kyle:	Admin controls and security	

@@ -439,7 +439,7 @@ namespace RegistrationKiosk {
                 #region Student ID
                 // =========================
                 regex_pattern = @"^\d{5,10}$";
-                if (!Regex.IsMatch(txtbx_StudentID.Text, regex_pattern) || txtbx_StudentID.Text != "") {
+                if (!Regex.IsMatch(txtbx_StudentID.Text, regex_pattern) && txtbx_StudentID.Text != "") {
                     MessageBox.Show("Invalid student ID!");
                     txtbx_StudentID.Focus();
                     txtbx_StudentID.SelectAll();
