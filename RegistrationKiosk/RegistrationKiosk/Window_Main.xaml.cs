@@ -31,16 +31,14 @@ namespace RegistrationKiosk {
         private enum WindowView { CheckIn, Admin, Edit };
         private WindowView AppState = WindowView.CheckIn;
 
-        // Admin Window stuff
+        // Other Windows
         private Window_Admin adminWindow = null;
-        public delegate void AdminDelegateType();
-        public AdminDelegateType Delegate_OnAdminSuccess;
-
-        // Forgot Code Window
+        private Window_Password changepassWindow = null;
         private Window_ForgotCode forgotcodeWindow = null;
+        private Window_Database databaseWindow = null;
 
         // Database Connection Object
-        MySQLClient dbConnection;
+        public MySQLClient dbConnection;
 
         // Excel Interop Object
         IOExcel ioXL;
@@ -185,24 +183,8 @@ namespace RegistrationKiosk {
         /// <summary>
         /// Calls ChangeAppState(Admin) used by delegate for Window_Admin.
         /// </summary>
-        private void GotoAdminPage() {
+        public void GotoAdminPage() {
             ChangeAppState(WindowView.Admin);
-        }
-
-        /// <summary>
-        /// Calls the method referred to by admin window success delegate.
-        /// </summary>
-        public void RunAdminDelegate() {
-            if (Delegate_OnAdminSuccess != null)
-                Delegate_OnAdminSuccess();
-        }
-
-        /// <summary>
-        /// Sets the method for admin window success delegate.
-        /// </summary>
-        /// <param name="del">Method to delegate</param>
-        private void SetAdminDelegate(AdminDelegateType del) {
-            Delegate_OnAdminSuccess = del;
         }
 
         /// <summary>
@@ -724,8 +706,6 @@ namespace RegistrationKiosk {
             // Create admin window and display
             adminWindow = new Window_Admin(this);
             adminWindow.Show();
-            // Set method for successful validation
-            SetAdminDelegate(new AdminDelegateType(GotoAdminPage));
             // Disable this window (until admin window closes)
             this.IsEnabled = false;
         }
@@ -889,6 +869,22 @@ namespace RegistrationKiosk {
             // Export Entries based upon export type
             string filename = ioXL.SelectSaveFile();
             ioXL.ExportExcel(filename);
+        }
+
+        private void btn_ChangePass_Click(object sender, RoutedEventArgs e) {
+            // Create changePass window and display
+            changepassWindow = new Window_Password(this);
+            changepassWindow.Show();
+            // Disable this window (until admin window closes)
+            this.IsEnabled = false;
+        }
+
+        private void btn_DatabaseConnection_Click(object sender, RoutedEventArgs e) {
+            // Create database window and display
+            databaseWindow = new Window_Database(this);
+            databaseWindow.Show();
+            // Disable this window (until admin window closes)
+            this.IsEnabled = false;
         }
 
         #endregion

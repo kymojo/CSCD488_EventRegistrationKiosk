@@ -20,7 +20,7 @@
         <Button x:Name="btn_AdminMenu" Content="Admin" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="56" Height="36" Click="btn_AdminMenu_Click"/>
 
         <!-- REGISTRATION GRID -->
-        <Grid x:Name="grid_Registration" Grid.Column="1" Grid.Row="1" Visibility="Visible">
+        <Grid x:Name="grid_Registration" Grid.Column="1" Grid.Row="1" Visibility="Visible" d:IsHidden="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
@@ -259,12 +259,16 @@
                 <Button x:Name="btn_EditCancel" Content="Cancel" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="120" Height="60" FontSize="24" FontWeight="Bold" Grid.Column="2" Click="btn_EditCancel_Click"/>
             </Grid>
         </Grid>
-        <Grid x:Name="grid_Admin" Grid.Column="1" Grid.Row="1" d:IsHidden="True">
+        <Grid x:Name="grid_Admin" Grid.Column="1" Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="237*"/>
                 <RowDefinition Height="357*"/>
             </Grid.RowDefinitions>
-            <Rectangle x:Name="rec_AdminOther" Fill="#FFC6E8E8" Stroke="#FF81ADAA" RadiusX="5" RadiusY="5" StrokeThickness="3" Grid.Row="2" d:IsLocked="True"/>
+            <Grid x:Name="grid_AdminOther" Grid.Row="1">
+                <Rectangle x:Name="rec_AdminOther" Fill="#FFC6E8E8" Stroke="#FF81ADAA" RadiusX="5" RadiusY="5" StrokeThickness="3"/>
+                <Button x:Name="btn_ChangePass" Content="Change Admin Password" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="150" Click="btn_ChangePass_Click"/>
+                <Button x:Name="btn_DatabaseConnection" Content="Database Connection" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="150" Click="btn_DatabaseConnection_Click"/>
+            </Grid>
             <Grid x:Name="grid_AdminEntries">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>

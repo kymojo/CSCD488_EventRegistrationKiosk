@@ -18,25 +18,36 @@ namespace RegistrationKiosk {
         MySqlConnection conn = null;
         MySqlCommand cmd;
 
+        private string hostname { get; set; }
+        private string database { get; set; }
+        private string username { get; set; }
+        private string password { get; set; }
+        private int portNumber { get; set; }
+
         #endregion
         //===========================================================================
         #region Class Constructors
         //===========================================================================
 
         /// <summary>
-        /// Creates an instance of MySQLClient
+        /// Creates an instance of MySQLClient without opening a connection.
+        /// </summary>
+        public MySQLClient() { }
+
+        /// <summary>
+        /// Creates an instance of MySQLClient and opens a connection.
         /// </summary>
         /// <param name="hostname">Host name</param>
         /// <param name="database">Database name</param>
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         public MySQLClient(string hostname, string database, string username, string password) {
-            conn = new MySqlConnection("host=" + hostname + ";database=" + database +
-                                       ";username="+ username +";password=" + password +";");
+            SetConnection(hostname, database, username, password, 3306);
+            Connect();
         }
 
         /// <summary>
-        /// Creates an instance of MySQLClient
+        /// Creates an instance of MySQLClient and opens a connection.
         /// </summary>
         /// <param name="hostname">Host name</param>
         /// <param name="database">Database name</param>
@@ -44,25 +55,8 @@ namespace RegistrationKiosk {
         /// <param name="password">Password</param>
         /// <param name="portNumber">Port number</param>
         public MySQLClient(string hostname, string database, string username, string password, int portNumber) {
-            conn = new MySqlConnection("host=" + hostname + ";database=" + database +
-                                       ";username=" + username + ";password=" + password +
-                                       ";port=" + portNumber.ToString() +";");
-        }
-
-        /// <summary>
-        /// Creates an instance of MySQLClient
-        /// </summary>
-        /// <param name="hostname">Host name</param>
-        /// <param name="database">Database name</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="portNumber">Port number</param>
-        /// <param name="connectionTimeout">Connection Timeout time</param>
-        public MySQLClient(string hostname, string database, string username, string password, int portNumber, int connectionTimeout) {
-            conn = new MySqlConnection("host=" + hostname + ";database=" + database +
-                                       ";username=" + username + ";password=" + password +
-                                       ";port=" + portNumber.ToString() + ";Connection Timeout=" +
-                                       connectionTimeout.ToString() +";");
+            SetConnection(hostname, database, username, password, portNumber);
+            Connect();
         }
 
         #endregion
@@ -95,14 +89,45 @@ namespace RegistrationKiosk {
         /// Closes the connection to database
         /// </summary>
         /// <returns>Close success flag</returns>
-        private bool Close()
-        {
+        private bool Close() {
             //This method closes the open connection
             try {
                 conn.Close();
                 return true;
             }
             catch {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Sets values for database connection.
+        /// </summary>
+        /// <param name="hostname">Host name</param>
+        /// <param name="database">Database name</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="portNumber">Port number</param>
+        public void SetConnection(string hostname, string database, string username, string password, int portNumber) {
+            this.hostname = hostname;
+            this.database = database;
+            this.username = username;
+            this.password = password;
+            this.portNumber = portNumber;
+        }
+
+        /// <summary>
+        /// Creates a new connection using connection parameters (set using SetConnection).
+        /// </summary>
+        /// <returns>Success flag</returns>
+        public bool Connect() {
+            try {
+                Close();
+                conn = new MySqlConnection("host=" + hostname + ";database=" + database +
+                                       ";username=" + username + ";password=" + password +
+                                       ";port=" + portNumber.ToString() + ";");
+                return true;
+            } catch {
                 return false;
             }
         }

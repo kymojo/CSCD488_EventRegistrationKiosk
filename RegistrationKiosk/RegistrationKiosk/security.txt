@@ -1,0 +1,6 @@
+Admin Pass: 47bce5c74f589f4867dbd57e9ca9f808
+Db Host: cscd379.com
+Db Port: 3306
+Db Name: jobfair
+Db User: jobfair
+Db Pass: 068797696407d2f65f89b82ec5aad84e

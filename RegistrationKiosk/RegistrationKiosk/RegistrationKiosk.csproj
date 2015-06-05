@@ -72,9 +72,18 @@
     <Compile Include="MySQLClient.cs" />
     <Compile Include="Printer.cs" />
     <Compile Include="RegistrantEntry.cs" />
+    <Compile Include="SecurityMeans.cs" />
     <Compile Include="Window_Admin.xaml.cs">
       <DependentUpon>Window_Admin.xaml</DependentUpon>
     </Compile>
+    <Page Include="Window_Password.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Window_Database.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Window_ForgotCode.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -86,6 +95,12 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Window_Password.xaml.cs">
+      <DependentUpon>Window_Password.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Window_Database.xaml.cs">
+      <DependentUpon>Window_Database.xaml</DependentUpon>
     </Compile>
     <Compile Include="Window_ForgotCode.xaml.cs">
       <DependentUpon>Window_ForgotCode.xaml</DependentUpon>

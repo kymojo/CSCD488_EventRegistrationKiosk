@@ -5,7 +5,7 @@ TO-DO:
 03.	Import/export from database				[X]
 04.	Phone textbox entry masking				[X]
 05.	Close database if catch					[X]	
-06.	Remove admin password disclosure			[ ]	Issue: user tampering
+06.	Remove admin password disclosure			[X]	Issue: user tampering
 07.	Hash code sync						[ ]	Issue: collision, lookup
 08.	Database credential setup (not hardcoded)		[ ]	Issue: db migration
 09.	Figure out label format					[X]
@@ -22,4 +22,8 @@ TO-DO:
 Kevin:	Printer and Spreadsheet Stuff, Webpage format (CSS)
 Dylan:	Hash function stuff, Display questions on webpage
 Zhenyu:	Question stuff and database
-Kyle:	Admin controls and security	
+Kyle:	Admin controls and security
+
+
+Admin password controls 
+Admin database setup controls (host, database name, username, password, port number) -- http://stackoverflow.com/a/12657970
