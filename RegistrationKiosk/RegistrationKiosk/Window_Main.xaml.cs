@@ -70,7 +70,8 @@ namespace RegistrationKiosk {
             ChangeAppState(AppState);
             ChangeSpecialView();
             datagrid_AdminEntries.DataContext = searchEntries;
-            dbConnection = new MySQLClient("cscd379.com", "jobfair", "jobfair", "ewu2015");
+            dbConnection = new MySQLClient();
+            //dbConnection = new MySQLClient("cscd379.com", "jobfair", "jobfair", "ewu2015");
             dbConnection.CreateDatabaseTables();
             ioXL = new IOExcel(dbConnection);
         }
@@ -714,6 +715,11 @@ namespace RegistrationKiosk {
         /// Click event for Back button (visible from admin and edit pages).
         /// </summary>
         private void btn_Back_Click(object sender, RoutedEventArgs e) {
+            // Check database connection
+            if (!dbConnection.IsConnected()) {
+                MessageBox.Show("Database not connected!");
+                return;
+            }
             // If admin page, return to check-in page
             if (AppState == WindowView.Admin)
                 ChangeAppState(WindowView.CheckIn);
@@ -741,6 +747,11 @@ namespace RegistrationKiosk {
         /// Click event for Registration Code button on CheckIn page.
         /// </summary>
         private void btn_RegCode_Click(object sender, RoutedEventArgs e) {
+            // Check database connection
+            if (!dbConnection.IsConnected()) {
+                MessageBox.Show("Database not connected!");
+                return;
+            }
             if (ValidateRegistrationCode(txtbx_RegCode.Text)) {
                 // Populate form
                 PopulateFormFromRegistrant(GetEditingRegistrant());
@@ -760,6 +771,11 @@ namespace RegistrationKiosk {
         /// Click event for Check-In button on CheckIn page.
         /// </summary>
         private void btn_Checkin_Click(object sender, RoutedEventArgs e) {
+            // Check database connection
+            if (!dbConnection.IsConnected()) {
+                MessageBox.Show("Database not connected!");
+                return;
+            }
             if (ValidateRegistrationForms()) {
                 // If entry already exists
                 if (validCodeEntered) {
@@ -778,6 +794,11 @@ namespace RegistrationKiosk {
         /// Click event for Forgot Code button on CheckIn page.
         /// </summary>
         private void btn_ForgotCode_Click(object sender, RoutedEventArgs e) {
+            // Check database connection
+            if (!dbConnection.IsConnected()) {
+                MessageBox.Show("Database not connected!");
+                return;
+            }
             // Create admin window and display
             forgotcodeWindow = new Window_ForgotCode(this);
             forgotcodeWindow.Show();
@@ -793,6 +814,11 @@ namespace RegistrationKiosk {
         /// Click event for Search button on Admin page.
         /// </summary>
         private void btn_AdminEntriesSearch_Click(object sender, RoutedEventArgs e) {
+            // Check database connection
+            if (!dbConnection.IsConnected()) {
+                MessageBox.Show("Database not connected!");
+                return;
+            }
             GetSearchResults(txtbx_AdminEntriesSearch.Text);
         }
 
@@ -800,6 +826,11 @@ namespace RegistrationKiosk {
         /// Click event for Edit Entry button on Admin page.
         /// </summary>
         private void btn_AdminEntriesEdit_Click(object sender, RoutedEventArgs e) {
+            // Check database connection
+            if (!dbConnection.IsConnected()) {
+                MessageBox.Show("Database not connected!");
+                return;
+            }
             // Validate code
             if (ValidateRegistrationCode(txtbx_AdminEntriesCode.Text)) {
                 // Set editingID, go to edit view, and populate form
@@ -818,6 +849,11 @@ namespace RegistrationKiosk {
         /// Click event for Remove Entry button on Admin page.
         /// </summary>
         private void btn_AdminEntriesRemove_Click(object sender, RoutedEventArgs e) {
+            // Check database connection
+            if (!dbConnection.IsConnected()) {
+                MessageBox.Show("Database not connected!");
+                return;
+            }
             // Validate code
             if (ValidateRegistrationCode(txtbx_AdminEntriesCode.Text)) {
                 // Ask admin if this action is correct
@@ -838,6 +874,11 @@ namespace RegistrationKiosk {
         /// Click event for Clear All Entries button on Admin page.
         /// </summary>
         private void btn_AdminEntriesClear_Click(object sender, RoutedEventArgs e) {
+            // Check database connection
+            if (!dbConnection.IsConnected()) {
+                MessageBox.Show("Database not connected!");
+                return;
+            }
             // Ask admin if this action is correct
             MessageBoxResult result = MessageBox.Show("Clear all entries in database?", "Clear Database", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result == MessageBoxResult.Yes) {
@@ -857,6 +898,11 @@ namespace RegistrationKiosk {
         /// Click event for Import Entries button on Admin page.
         /// </summary>
         private void btn_AdminEntriesImport_Click(object sender, RoutedEventArgs e) {
+            // Check database connection
+            if (!dbConnection.IsConnected()) {
+                MessageBox.Show("Database not connected!");
+                return;
+            }
             // Get File Name and Import
             string filename = ioXL.SelectFile();
             ioXL.ImportExcel(filename);
@@ -866,6 +912,11 @@ namespace RegistrationKiosk {
         /// Click event for Export Entries button on Admin page.
         /// </summary>
         private void btn_AdminEntriesExport_Click(object sender, RoutedEventArgs e) {
+            // Check database connection
+            if (!dbConnection.IsConnected()) {
+                MessageBox.Show("Database not connected!");
+                return;
+            }
             // Export Entries based upon export type
             string filename = ioXL.SelectSaveFile();
             ioXL.ExportExcel(filename);

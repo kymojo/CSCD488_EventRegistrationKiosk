@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.IO;
 
 namespace RegistrationKiosk {
 
@@ -18,11 +19,11 @@ namespace RegistrationKiosk {
         MySqlConnection conn = null;
         MySqlCommand cmd;
 
-        private string hostname { get; set; }
-        private string database { get; set; }
-        private string username { get; set; }
-        private string password { get; set; }
-        private int portNumber { get; set; }
+        public string hostname { get; set; }
+        public string database { get; set; }
+        public string username { get; set; }
+        public string password { get; set; }
+        public int portNumber { get; set; }
 
         #endregion
         //===========================================================================
@@ -32,7 +33,23 @@ namespace RegistrationKiosk {
         /// <summary>
         /// Creates an instance of MySQLClient without opening a connection.
         /// </summary>
-        public MySQLClient() { }
+        public MySQLClient() {
+            // Read from security.txt
+            if (File.Exists("../../security.txt")) {
+                try {
+                    string[] oldLines = File.ReadAllLines("../../security.txt");
+                    hostname = oldLines[1].Substring(9);
+                    portNumber = Convert.ToInt32(oldLines[2].Substring(9));
+                    database = oldLines[3].Substring(9);
+                    username = oldLines[4].Substring(9);
+                    password = oldLines[5].Substring(9);
+                    Connect();
+                } catch { }
+            }
+            // Check connection (notify if failed)
+            if (!IsConnected())
+                MessageBox.Show("Could not connect to database.");
+        }
 
         /// <summary>
         /// Creates an instance of MySQLClient and opens a connection.
@@ -126,10 +143,25 @@ namespace RegistrationKiosk {
                 conn = new MySqlConnection("host=" + hostname + ";database=" + database +
                                        ";username=" + username + ";password=" + password +
                                        ";port=" + portNumber.ToString() + ";");
+                if (!Open())
+                    throw new Exception();
+                Close();
                 return true;
             } catch {
+                Close();
+                conn = null;
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Returns whether or not the database is connected.
+        /// </summary>
+        /// <returns>IsConnected flag</returns>
+        public bool IsConnected() {
+            if (conn == null)
+                return false;
+            return true;
         }
 
         #endregion
@@ -525,7 +557,8 @@ namespace RegistrationKiosk {
         /// Creates tables for new event
         /// </summary>
         /// <param name="dbname">Event name</param>
-        public void CreateDatabaseTables() {
+        /// /// <returns>Success flag</returns>
+        public bool CreateDatabaseTables() {
             string query;
 
             try {
@@ -576,15 +609,17 @@ namespace RegistrationKiosk {
                     cmd.ExecuteNonQuery();
 
                     this.Close();
+                    return true;
                 }
             } catch { this.Close(); }
+            return false;
         }
 
         /// <summary>
         /// Deletes tables for a given event
         /// </summary>
-        /// <param name="dbname">Event name</param>
-        public void DropDatabaseTables() {
+        /// <returns>Success flag</returns>
+        public bool DropDatabaseTables() {
             string query;
 
             try {
@@ -603,8 +638,10 @@ namespace RegistrationKiosk {
                     cmd.ExecuteNonQuery();
 
                     this.Close();
+                    return true;
                 }
             } catch { this.Close(); }
+            return false;
         }
 
         #endregion

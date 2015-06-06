@@ -56,7 +56,7 @@ namespace RegistrationKiosk {
                                          "Db Port: 3306",
                                          "Db Name: jobfair",
                                          "Db User: jobfair",
-                                         "Db Pass: 068797696407d2f65f89b82ec5aad84e"
+                                         "Db Pass: pass"
                                      };
                     File.WriteAllLines("../../security.txt", lines);
                 } catch { }
