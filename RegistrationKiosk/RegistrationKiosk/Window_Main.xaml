@@ -268,6 +268,14 @@
                 <Rectangle x:Name="rec_AdminOther" Fill="#FFC6E8E8" Stroke="#FF81ADAA" RadiusX="5" RadiusY="5" StrokeThickness="3"/>
                 <Button x:Name="btn_ChangePass" Content="Change Admin Password" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="150" Click="btn_ChangePass_Click"/>
                 <Button x:Name="btn_DatabaseConnection" Content="Database Connection" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="150" Click="btn_DatabaseConnection_Click"/>
+                <TextBox x:Name="txtbox_questionText" HorizontalAlignment="Left" Height="23" Margin="181,32,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="223"/>
+                <TextBox x:Name="txtbox_questionID"  HorizontalAlignment="Left" Height="23" Margin="438,32,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="73"/>
+                <Label Content="Question" HorizontalAlignment="Left" Margin="181,1,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.105,-0.269"/>
+                <Label Content="Question ID" HorizontalAlignment="Left" Margin="438,6,0,0" VerticalAlignment="Top"/>
+                <Button x:Name="btn_addquestion" Content="Add" HorizontalAlignment="Left" Margin="181,60,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-0.107,-0.5" Click="btn_addquestion_Click"/>
+                <TextBox x:Name="txtbox_removequestionID" HorizontalAlignment="Left" Height="23" Margin="181,106,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="73"/>
+                <Label Content="Question ID" HorizontalAlignment="Left" Margin="181,80,0,0" VerticalAlignment="Top"/>
+                <Button x:Name ="btn_deletequestion" Content="Delete" HorizontalAlignment="Left" Margin="179,143,0,0" VerticalAlignment="Top" Width="75" Click="btn_deletequestion_Click"/>
             </Grid>
             <Grid x:Name="grid_AdminEntries">
                 <Grid.ColumnDefinitions>
@@ -307,7 +315,7 @@
                     <Rectangle x:Name="rec_AdminEntriesEdit" Fill="#FFC6E8E8" RadiusY="5" RadiusX="5" Stroke="#FF81ADAA" StrokeThickness="3" Grid.Row="1" d:IsLocked="True" Grid.RowSpan="5"/>
                     <Label x:Name="lbl_AdminEntriesEdit" Content="Manipulate Entries" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="-5.25,-1.25" Height="26" Grid.RowSpan="2"/>
                     <Label x:Name="lbl_AdminEntriesCode" Content="Registration Code" HorizontalAlignment="Center" Margin="0" Grid.Row="1" VerticalAlignment="Bottom"/>
-                    <TextBox x:Name="txtbx_AdminEntriesCode" HorizontalAlignment="Center" Height="23" Margin="0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Center" Width="150" HorizontalContentAlignment="Center"/>
+                    <TextBox x:Name="txtbx_AdminEntriesCode" HorizontalAlignment="Center" Height="23" Margin="0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Center" Width="150" HorizontalContentAlignment="Center" TextChanged="txtbx_AdminEntriesCode_TextChanged"/>
                     <Button x:Name="btn_AdminEntriesEdit" Content="Edit Entry" HorizontalAlignment="Center" Margin="54,13,55,14" Grid.Row="3" VerticalAlignment="Center" Width="100" Click="btn_AdminEntriesEdit_Click"/>
                     <Button x:Name="btn_AdminEntriesRemove" Content="Remove Entry" HorizontalAlignment="Center" Margin="54,14,55,13" Grid.Row="4" VerticalAlignment="Center" Width="100" Click="btn_AdminEntriesRemove_Click"/>
                     <Button x:Name="btn_AdminEntriesClear" Content="Clear All Entries" HorizontalAlignment="Center" Margin="54,13,55,14" Grid.Row="5" VerticalAlignment="Center" Width="100" Click="btn_AdminEntriesClear_Click"/>

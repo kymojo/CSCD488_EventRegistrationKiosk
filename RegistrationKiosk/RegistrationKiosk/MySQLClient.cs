@@ -198,6 +198,38 @@ namespace RegistrationKiosk {
             return;
         }
 
+        public void InsertQuestion(String question, String id)
+        {
+            if (question == null)
+            {
+                return;
+            }
+            String value;
+            value = "'" + question + "', ";
+            value += "'" + id + "'";
+            string query = "INSERT INTO questions (question, questionID) VALUES(" + value + ");";
+
+
+            try
+            {
+                if (this.Open())
+                {
+                    //Opens a connection, if succefull; run the query and then close the connection.
+
+                    // Execute query
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.ExecuteNonQuery();
+
+                   
+              
+
+                    this.Close();
+                }
+            }
+            catch { this.Close(); }
+            return;
+        }
+
         /// <summary>
         /// Inserts a new registrant into the database from RegistrantEntry object
         /// </summary>
@@ -393,7 +425,29 @@ namespace RegistrationKiosk {
             }
             return;
         }
+        public void deleteQuestion(String id)
+        {
+            string query;
+            MySqlCommand cmd;
 
+            if (this.Open())
+            {
+                try
+                {
+                   
+                    query = "DELETE FROM questions WHERE questionID = '" + id + "';";
+                    cmd = new MySqlCommand(query, conn);
+                    cmd.ExecuteNonQuery();
+
+                    
+
+                    this.Close();
+
+                }
+                catch { this.Close(); }
+            }
+            return;
+        }
         /// <summary>
         /// Delete a registrant entry from database.
         /// </summary>
