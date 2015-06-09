@@ -1,6 +1,6 @@
 TO-DO:
 
-01.	Figure out DYMO label character limits on fields	[ ]	
+01.	Figure out DYMO label character limits on fields	[X]	
 02.	Import/export spreadsheet formats			[X]
 03.	Import/export from database				[X]
 04.	Phone textbox entry masking				[X]
@@ -9,7 +9,7 @@ TO-DO:
 07.	Hash code sync						[ ]	Issue: collision, lookup
 08.	Database credential setup (not hardcoded)		[ ]	Issue: db migration
 09.	Figure out label format					[X]
-10.	Standardize label font size				[ ]	Issue: funky look
+10.	Standardize label font size				[X]
 11.	Make Student ID not mandatory for check-in		[X]
 12.	Barcode Email Display					[X]	Issue: invisible barcode
 13.	Clear Database button functionality			[X]

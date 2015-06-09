@@ -1,0 +1,22 @@
+body {
+    font-family: "Times New Roman", Georgia, Serif;
+    font-size: 16px;
+    background-color: #81ADAA;
+    color: #81ADAA"; 
+}
+
+#banner {
+	position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: "ewu_banner.jpg";
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+#EventText {
+	font-size: 26px;
+}
+

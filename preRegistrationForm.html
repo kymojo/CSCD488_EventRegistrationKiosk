@@ -1,9 +1,16 @@
 <html>
 	<head>
 		<title>Easter Washington University Pre-Registration</title>
+		<link href="jobfair.css" rel="stylesheet">
 	</head>
 	<body>
 		<form name = "Information" id="Information" action="preRegistrationForm.php" method="post" onsubmit="return validate();">
+			
+			<img src="ewu_banner.jpg" width="100%" alt=""/>
+			<div style="text-align: center;">
+				<span id="EventText" >Event Name</span>
+			</div>
+			
 			<fieldset>
 				<legend>General Information:</legend>
 				First Name: <input name="fName" id="fName" type="text" size="30"></br>
@@ -90,6 +97,7 @@
 				document.getElementById("studentInfo").style.display = 'none';
 				resetEmployer();
 				resetStudent();
+				ChangeText();
 			}
 
 		function validate()  
@@ -303,6 +311,14 @@
 
 		function capitalizeFirstLetter(string) {
 			return string.charAt(0).toUpperCase() + string.substr(1).toLowerCase();
+		}
+		
+		function ChangeText(){
+			var eventText = new XMLHttpRequest();
+			eventText.open("GET", './jobfairname.txt', false);
+			eventText.send(null);
+			
+			document.getElementById("EventText").innerHTML = "Pre-Registration Form for " + eventText.responseText;
 		}
 
 		</script>
