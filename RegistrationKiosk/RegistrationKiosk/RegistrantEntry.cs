@@ -31,6 +31,8 @@ namespace RegistrationKiosk {
             get;
             set;
         }
+
+        //Registrant Type
         public RegistrantType RegType {
             get;
             set;
@@ -41,6 +43,8 @@ namespace RegistrationKiosk {
             get;
             set;
         }
+
+        // last name
         public string Lname {
             get;
             set;
@@ -58,6 +62,7 @@ namespace RegistrationKiosk {
             get;
             set;
         }
+        //Phone
         public string Phone {
             get { return FormatPhone(phoneNormal); }
             set { phoneNormal = NormalizePhone(value); }
@@ -67,22 +72,28 @@ namespace RegistrationKiosk {
         // -------------------------
         #region Student Properties
         // -------------------------
+
+        //Class standing
         public ClassStandingType ClassStanding {
             get;
             set;
         }
+        //College
         public string College {
             get;
             set;
         }
+        //Major
         public string Major {
             get;
             set;
         }
+        //Student ID
         public string StudentID {
             get;
             set;
         }
+        //graduation year
         public int GradYear {
             get;
             set;
@@ -92,10 +103,13 @@ namespace RegistrationKiosk {
         // -------------------------
         #region Employee Properties
         // -------------------------
+
+        //business
         public string Business {
             get;
             set;
         }
+        //job
         public string Job {
             get;
             set;

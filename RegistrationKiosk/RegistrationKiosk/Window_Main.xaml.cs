@@ -1076,11 +1076,7 @@ namespace RegistrationKiosk {
 
         #endregion
 
-        private void txtbx_AdminEntriesCode_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
+        //add a question
         private void btn_addquestion_Click(object sender, RoutedEventArgs e)
         {
             if (!dbConnection.IsConnected())
@@ -1088,11 +1084,13 @@ namespace RegistrationKiosk {
                 MessageBox.Show("Database not connected!");
                 return;
             }
+            //inserts the question
             dbConnection.InsertQuestion(txtbox_questionText.Text, txtbox_questionID.Text);
             MessageBox.Show("Question added.");
             return;
         }
 
+        //delete a question
         private void btn_deletequestion_Click(object sender, RoutedEventArgs e)
         {
             if (!dbConnection.IsConnected())
@@ -1100,6 +1098,7 @@ namespace RegistrationKiosk {
                 MessageBox.Show("Database not connected!");
                 return;
             }
+            //deleting question
             dbConnection.deleteQuestion(txtbox_removequestionID.Text);
             MessageBox.Show("Question ID " + txtbox_removequestionID.Text + " deleted.");
             return;

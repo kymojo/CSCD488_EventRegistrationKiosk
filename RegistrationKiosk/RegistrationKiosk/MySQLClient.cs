@@ -198,6 +198,8 @@ namespace RegistrationKiosk {
             return;
         }
 
+        //Insert a question to the database
+        //the question and its id
         public void InsertQuestion(String question, String id)
         {
             if (question == null)
@@ -207,6 +209,7 @@ namespace RegistrationKiosk {
             String value;
             value = "'" + question + "', ";
             value += "'" + id + "'";
+            //The sql query
             string query = "INSERT INTO questions (question, questionID) VALUES(" + value + ");";
 
 
@@ -425,6 +428,7 @@ namespace RegistrationKiosk {
             }
             return;
         }
+        //deletes a question based on id
         public void deleteQuestion(String id)
         {
             string query;
@@ -434,7 +438,7 @@ namespace RegistrationKiosk {
             {
                 try
                 {
-                   
+                   //the sql query
                     query = "DELETE FROM questions WHERE questionID = '" + id + "';";
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
