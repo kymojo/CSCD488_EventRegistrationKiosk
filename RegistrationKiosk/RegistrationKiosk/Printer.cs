@@ -33,6 +33,7 @@ namespace RegistrationKiosk{
             }
             catch {
                 MessageBox.Show("File 'jobfair.label' not found.");
+                return;
             }
             finally {
                 label.SetObjectText("Text", text);
@@ -40,8 +41,7 @@ namespace RegistrationKiosk{
                 ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Printer");
                 string printerName = "";
 
-                foreach (ManagementObject printer in searcher.Get())
-                {
+                foreach (ManagementObject printer in searcher.Get()) {
                     printerName = printer["Name"].ToString();
                     if (printerName.Equals(@"DYMO LabelWriter 450 DUO Label"))
                         if (printer["WorkOffline"].ToString().ToLower().Equals("true"))
@@ -60,12 +60,7 @@ namespace RegistrationKiosk{
                             }
                         }
                 }
-
             }
-
-            
-
         }
-
     }
 }

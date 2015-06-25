@@ -662,6 +662,29 @@ namespace RegistrationKiosk {
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
+                    #region Set _questions Table Query
+                    // =========================
+                    query = @"CREATE TABLE IF NOT EXISTS `questions` (" +
+                            "`questionID` VARCHAR(3), " +
+                            "`question` TEXT, " +
+                            "PRIMARY KEY(questionID))";
+                    // =========================
+                    #endregion
+                    cmd = new MySqlCommand(query, conn);
+                    cmd.ExecuteNonQuery();
+
+                    #region Set _answers Table Query
+                    // =========================
+                    query = @"CREATE TABLE IF NOT EXISTS `answers` (" +
+                            "`Code` VARCHAR(6), " +
+                            "`questionID` VARCHAR(3), " +
+                            "`answer` TEXT, " +
+                            "PRIMARY KEY(Code))";
+                    // =========================
+                    #endregion
+                    cmd = new MySqlCommand(query, conn);
+                    cmd.ExecuteNonQuery();
+
                     this.Close();
                     return true;
                 }
@@ -688,6 +711,14 @@ namespace RegistrationKiosk {
                     cmd.ExecuteNonQuery();
 
                     query = @"DROP TABLE IF EXISTS `student`";
+                    cmd = new MySqlCommand(query, conn);
+                    cmd.ExecuteNonQuery();
+
+                    query = @"DROP TABLE IF EXISTS `questions`";
+                    cmd = new MySqlCommand(query, conn);
+                    cmd.ExecuteNonQuery();
+
+                    query = @"DROP TABLE IF EXISTS `answers`";
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
@@ -724,17 +755,23 @@ namespace RegistrationKiosk {
 
                 Excel.Workbook excelWorkBook = excelApp.Workbooks.Add(Type.Missing);
 
-                for (sheetNum = 1; sheetNum < 4; sheetNum++)
+                for (sheetNum = 1; sheetNum < 6; sheetNum++)
                 {
                     switch (sheetNum)
                     {
                         case 1:
-                            tableName = "employee";
+                            tableName = "answers";
                             break;
                         case 2:
-                            tableName = "student";
+                            tableName = "questions";
                             break;
                         case 3:
+                            tableName = "employee";
+                            break;
+                        case 4:
+                            tableName = "student";
+                            break;
+                        case 5:
                             tableName = "registrant";
                             break;
                     }
@@ -777,12 +814,12 @@ namespace RegistrationKiosk {
 
                 try
                 {
-                    Excel.Worksheet worksheet = (Excel.Worksheet)excelWorkBook.Worksheets[5];
+                    Excel.Worksheet worksheet = (Excel.Worksheet)excelWorkBook.Worksheets[7];
                     excelApp.DisplayAlerts = false;
                     worksheet.Delete();
                     excelApp.DisplayAlerts = true;
 
-                    worksheet = (Excel.Worksheet)excelWorkBook.Worksheets[5];
+                    worksheet = (Excel.Worksheet)excelWorkBook.Worksheets[7];
                     excelApp.DisplayAlerts = false;
                     worksheet.Delete();
                     excelApp.DisplayAlerts = true;

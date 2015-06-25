@@ -134,6 +134,10 @@ namespace RegistrationKiosk {
                                 sqlClient.Insert("student", columns, data);
                             else if (sheetNum == 2)
                                 sqlClient.Insert("employee", columns, data);
+                            else if (sheetNum == 2)
+                                sqlClient.Insert("questions", columns, data);
+                            else if (sheetNum == 2)
+                                sqlClient.Insert("employee", columns, data);
                         }
 
                         sheetNum++;
