@@ -265,17 +265,24 @@
                 <RowDefinition Height="357*"/>
             </Grid.RowDefinitions>
             <Grid x:Name="grid_AdminOther" Grid.Row="1">
-                <Rectangle x:Name="rec_AdminOther" Fill="#FFC6E8E8" Stroke="#FF81ADAA" RadiusX="5" RadiusY="5" StrokeThickness="3"/>
-                <Button x:Name="btn_ChangePass" Content="Change Admin Password" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="150" Click="btn_ChangePass_Click"/>
-                <Button x:Name="btn_DatabaseConnection" Content="Database Connection" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="150" Click="btn_DatabaseConnection_Click"/>
-                <TextBox x:Name="txtbox_questionText" HorizontalAlignment="Left" Height="23" Margin="181,32,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="223"/>
-                <TextBox x:Name="txtbox_questionID"  HorizontalAlignment="Left" Height="23" Margin="438,32,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="73"/>
-                <Label Content="Question" HorizontalAlignment="Left" Margin="181,1,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.105,-0.269"/>
-                <Label Content="Question ID" HorizontalAlignment="Left" Margin="438,6,0,0" VerticalAlignment="Top"/>
-                <Button x:Name="btn_addquestion" Content="Add" HorizontalAlignment="Left" Margin="181,60,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-0.107,-0.5" Click="btn_addquestion_Click"/>
-                <TextBox x:Name="txtbox_removequestionID" HorizontalAlignment="Left" Height="23" Margin="181,106,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="73"/>
-                <Label Content="Question ID" HorizontalAlignment="Left" Margin="181,80,0,0" VerticalAlignment="Top"/>
-                <Button x:Name ="btn_deletequestion" Content="Delete" HorizontalAlignment="Left" Margin="179,143,0,0" VerticalAlignment="Top" Width="75" Click="btn_deletequestion_Click"/>
+                <Rectangle x:Name="rec_AdminOther" Fill="#FFC6E8E8" Stroke="#FF81ADAA" RadiusX="5" RadiusY="5" StrokeThickness="3" RenderTransformOrigin="0.503,0.365" d:IsLocked="True"/>
+                <Button x:Name="btn_ChangePass" Content="Change Admin Password" HorizontalAlignment="Left" Margin="189,10,0,0" VerticalAlignment="Top" Width="150" Click="btn_ChangePass_Click"/>
+                <Button x:Name="btn_DatabaseConnection" Content="Database Connection" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="150" Click="btn_DatabaseConnection_Click"/>
+                <Grid HorizontalAlignment="Left" Height="127" Margin="10,35,0,0" VerticalAlignment="Top" Width="329">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="86"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Rectangle x:Name="rec_AdminEntries_Copy" Fill="#FFC6E8E8" Stroke="#FF81ADAA" RadiusX="5" RadiusY="5" StrokeThickness="3" Grid.ColumnSpan="2" d:IsLocked="True"/>
+                    <TextBox x:Name="txtbox_questionText" HorizontalAlignment="Left" Height="23" Margin="0,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="223" Grid.Column="1"/>
+                    <TextBox x:Name="txtbox_questionID"  HorizontalAlignment="Left" Height="23" Margin="0,38,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="73" Grid.Column="1"/>
+                    <Label Content="Question" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.105,-0.269" Width="67" Height="26"/>
+                    <Label Content="Question ID" HorizontalAlignment="Left" Margin="10,89,0,0" VerticalAlignment="Top" Height="26" Width="79" Grid.ColumnSpan="2"/>
+                    <Button x:Name="btn_addquestion" Content="Add" HorizontalAlignment="Left" Margin="78,41,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-0.107,-0.5" Click="btn_addquestion_Click" Height="20" Grid.Column="1"/>
+                    <TextBox x:Name="txtbox_removequestionID" HorizontalAlignment="Left" Height="23" Margin="0,92,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="73" Grid.Column="1"/>
+                    <Label Content="Question ID" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top" Height="26" Width="73"/>
+                    <Button x:Name ="btn_deletequestion" Content="Delete" HorizontalAlignment="Left" Margin="78,92,0,0" VerticalAlignment="Top" Width="75" Click="btn_deletequestion_Click" Height="20" Grid.Column="1"/>
+                </Grid>
             </Grid>
             <Grid x:Name="grid_AdminEntries">
                 <Grid.ColumnDefinitions>

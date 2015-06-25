@@ -82,15 +82,17 @@ namespace RegistrationKiosk {
         
         private void btn_Find_Click(object sender, RoutedEventArgs e) {
             if (ValidateInfo()) {
-                RegistrantEntry entry = new RegistrantEntry();
-                entry.Lname = txtbx_LastName.Text;
-                entry.Fname = txtbx_FirstName.Text;
-                entry.Phone = txtbx_Phone.Text;
-                entry.GenerateHashCode();
-                if (main.ValidateRegistrationCode(entry.Code)) {
+                string Lname = txtbx_LastName.Text;
+                string Fname = txtbx_FirstName.Text;
+                string Phone = txtbx_Phone.Text;
+                string where = "Lname = '" + Lname + "' AND Fname = '" + Fname + "' AND Phone = '" + RegistrantEntry.FormatPhone(Phone) + "'";
+                List<RegistrantEntry> select = main.dbConnection.SelectRegistrant(where);
+                if (select.Count > 0) {
                     main.IsEnabled = true;
-                    main.txtbx_RegCode.Text = entry.Code;
+                    main.txtbx_RegCode.Text = select[0].Code;
                     this.Close();
+                } else {
+                    MessageBox.Show("No entries found!");
                 }
             }
         }

@@ -782,6 +782,14 @@ namespace RegistrationKiosk {
                     dbConnection.UpdateRegistrant(editingID, RegistrantFromForm());
                 }
                 else {
+                    RegistrantEntry newEntry = RegistrantFromForm();
+                    List<RegistrantEntry> select = dbConnection.SelectRegistrant("Code = '" + newEntry.Code + "'");
+                    // Check for collision
+                    while (select.Count != 0) {
+                        // If collision, reroll
+                        newEntry.GenerateCode();
+                        select = dbConnection.SelectRegistrant("Code = " + newEntry.Code);
+                    }
                     dbConnection.InsertRegistrant(RegistrantFromForm());
                 }
                 printer.Print(RegistrantFromForm());

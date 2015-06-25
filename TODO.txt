@@ -1,29 +1,22 @@
 TO-DO:
 
-01.	Figure out DYMO label character limits on fields	[X]	
-02.	Import/export spreadsheet formats			[X]
-03.	Import/export from database				[X]
-04.	Phone textbox entry masking				[X]
-05.	Close database if catch					[X]	
-06.	Remove admin password disclosure			[X]	Issue: user tampering
-07.	Hash code sync						[ ]	Issue: collision, lookup
-08.	Database credential setup (not hardcoded)		[ ]	Issue: db migration
-09.	Figure out label format					[X]
-10.	Standardize label font size				[X]
-11.	Make Student ID not mandatory for check-in		[X]
-12.	Barcode Email Display					[X]	Issue: invisible barcode
-13.	Clear Database button functionality			[X]
-14.	Admin Add/Remove School Option				[ ]	Issue: unimplemented
-15.	Email format for preregistration			[ ]	Ask Shannon
-16.	Format web form to look nice (similar to kiosk?)	[ ]
-17.	Question stuff						[ ]
-18.	Give webpage dynamic content (event title, etc.)	[ ]
+Hash code sync						[ ]	Issue: collision, lookup
+Admin Add/Remove School Option				[ ]	Issue: unimplemented
+Email format for preregistration			[ ]	Ask Shannon
+Format web form to look nice (similar to kiosk?)	[ ]
+Question stuff						[ ]
+Give webpage dynamic content (event title, etc.)	[ ]
 
-Kevin:	Printer and Spreadsheet Stuff, Webpage format (CSS)
-Dylan:	Hash function stuff, Display questions on webpage
-Zhenyu:	Question stuff and database
-Kyle:	Admin controls and security
-
-
-Admin password controls 
-Admin database setup controls (host, database name, username, password, port number) -- http://stackoverflow.com/a/12657970
+FINISHED:
+Database credential setup (not hardcoded)		[X]	Issue: db migration
+Figure out label format					[X]
+Standardize label font size				[X]
+Make Student ID not mandatory for check-in		[X]
+Barcode Email Display					[X]	Issue: invisible barcode
+Clear Database button functionality			[X]
+Figure out DYMO label character limits on fields	[X]	
+Import/export spreadsheet formats			[X]
+Import/export from database				[X]
+Phone textbox entry masking				[X]
+Close database if catch					[X]	
+Remove admin password disclosure			[X]	Issue: user tampering

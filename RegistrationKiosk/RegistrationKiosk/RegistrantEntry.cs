@@ -129,7 +129,7 @@ namespace RegistrationKiosk {
             this.Email = email;
             this.Phone = phone;
             SetTypeGeneral();
-            GenerateHashCode();
+            GenerateCode();
         }
 
         #endregion
@@ -168,8 +168,9 @@ namespace RegistrationKiosk {
         /// Returns a six-digit integer for database lookup of the registrant.
         /// </summary>
         /// <returns>Six-digit hash code</returns>
-        public void GenerateHashCode() {
-            Code = HashFunction(Lname.ToLower() + Fname.ToLower() + phoneNormal);
+        public void GenerateCode() {
+            Random r = new Random(this.GetHashCode());
+            Code = r.Next(1000000).ToString("000000");
         }
  
         /// <summary>
@@ -179,23 +180,10 @@ namespace RegistrationKiosk {
         /// <returns></returns>
         public static string HashFunction(string s)
         {
-            uint hash = 0;
-            // if you care this can be done much faster with unsafe 
-            // using fixed char* reinterpreted as a byte*
-            foreach (byte b in System.Text.Encoding.Unicode.GetBytes(s))
-            {   
-                hash += b;
-                hash += (hash << 10);
-                hash ^= (hash >> 6);
-            }
-            // final avalanche
-            hash += (hash << 3);
-            hash ^= (hash >> 11);
-            hash += (hash << 15);
-            // helpfully we only want positive integer < MUST_BE_LESS_THAN
-            // so simple truncate cast is ok if not perfect
-            string getstring = ((int)(hash % 1000000)).ToString("000000");
-            return getstring;
+            SecurityMeans security = new SecurityMeans();
+            string hash = security.GetMd5Hash(s);
+            hash = hash.Substring(0, 5);
+            return hash;
         }
 
         /// <summary>
@@ -216,7 +204,7 @@ namespace RegistrationKiosk {
         /// </summary>
         /// <param name="phone">Normalized phone number</param>
         /// <returns>Formatted phone (or original if error)</returns>
-        public string FormatPhone(string phone) {
+        public static string FormatPhone(string phone) {
             try {
                 double num = Convert.ToDouble(phone);
                 string result = String.Format("{0:(###) ###-####}", num);
