@@ -28,8 +28,8 @@
 			
 			<fieldset name="employerInfo" id="employerInfo" style="display:none;">
 				<legend>Employer Information</legend>
-				Business Name <input name="business" id="business" type="text" size="30"></br>
-				Temp <input name="temp" id="temp" type="text" size="30"></br>
+				Business Name: <input name="business" id="business" type="text" size="30"></br>
+				Job Title: <input name="jobTitle" id="jobTitle" type="text" size="30"></br>
 			</fieldset>
 			
 			<fieldset name="studentInfo" id="studentInfo" style="display:none;">
@@ -44,15 +44,16 @@
 				
 				</br></br>
 				
-				College:
-				<select name="college">
-					<option value="EWU">Eastern Washington University</option>
-					<option value="ZAG">Gonzaga University</option>
-					<option value="Whitworth">Whitworth University</option>
-					<option value="WSU">Washington State University</option>
-					<option value="Other">Other</option>
-				</select>
-				
+				College: 
+				<form>
+				<input list="colleges"/>
+				<datalist id="college">
+					<option value="Eastern Washington University">
+					<option value="Gonzaga University">
+					<option value="Whitworth University">
+					<option value="Washington State University">
+				</datalist>
+				Type in your college if it is not listed
 				</br></br>
 				
 				Major:
@@ -66,8 +67,8 @@
 				
 				</br></br>
 				
-				Student ID<input name="id" id="id" type="text" size="30">Leave this blank if Alumnus</br>
-				Year of Graduation<input name="graduationYear" id="graduationYear" type="text" size="30"></br>
+				Student ID: <input name="id" id="id" type="text" size="30">Leave this blank if Alumnus</br>
+				Year of Graduation: <input name="graduationYear" id="graduationYear" type="text" size="30"></br>
 			</fieldset>
 			
 			</br>
@@ -75,23 +76,28 @@
 			<input type="submit" name="submit" value="submit">
 		</form>
 
+<!-- Start the Javascript -->
 		<script>
+			<!-- Will hide the student and employer section when the page is first loaded -->
 			window.onload = function() {
 					IfGeneral();
 			}
 			
+			<!-- Will show the student section and hide the employer section -->
 			function IfStudent(){
 					document.getElementById("studentInfo").style.display = 'block';
 					document.getElementById("employerInfo").style.display = 'none';
 					resetEmployer();
 			}
 			
+			<!-- Will show the employer section and hide the student section -->
 			function IfEmployer(){
 				document.getElementById("employerInfo").style.display = 'block';
 				document.getElementById("studentInfo").style.display = 'none';
 				resetStudent();
 			}
 			
+			<!-- Will hide the employer and student section. Usually called when page is first loaded -->
 			function IfGeneral(){
 				document.getElementById("employerInfo").style.display = 'none';
 				document.getElementById("studentInfo").style.display = 'none';
@@ -99,227 +105,255 @@
 				resetStudent();
 				ChangeText();
 			}
-
-		function validate()  
-		{
-			//Added in so it never validates
-			return false;
-			//Check if user has entered a valid firstname
-			fName = document.getElementById("fName");
-			var b = true;
-			var a = false;
-			if(fName == null || fName.value == "" || !isNaN(fName.value))
+			<!-- Will check if the info entered is valid. If valid, it will submit the info. If not it will stay on page. -->
+			function validate()  
 			{
-				fName.style.backgroundColor = "red";
-				alert("Please enter your first name using only letters");
-				a = true;
-				b = false;
-			}
-			else
-			{
-				fName.value = capitalizeFirstLetter(fName.value);
-				fName.style.backgroundColor = "white";
-			}
-			
-			//Check if user has entered a valid lastname
-			lName = document.getElementById("lName");
-			if(lName == null || lName.value == "" || !isNaN(lName.value))
-			{
-				lName.style.backgroundColor = "red";
-				b = false;
-				if(!a) { alert("Please enter your last name using only letters");
-				a = true; }
-			}
-			else
-			{
-				lName.value = capitalizeFirstLetter(lName.value);
-				lName.style.backgroundColor = "white";
-			}
-			
-			//Check if user has selected a gender
-			var radios = document.getElementsByName("sex");
-			if(!checkRadios(radios))
-			{
-				b = false;
-				if(!a)
+				var isValid = true;
+				var hasAlerted = false;
+				
+				//Start general info validation
+				
+				//Check if user has entered a valid firstname
+				fName = document.getElementById("fName");
+				if(fName == null || fName.value == "" || !isNaN(fName.value)) //If true, info is invalid
 				{
-					alert("Please select your gender");
-					a = true;
+					fName.style.backgroundColor = "red";
+					alert("Please enter your first name using only letters");
+					hasAlerted = true;
+					isValid = false;
 				}
-			}
-			
-			var radios = document.getElementsByName("registrantType");
-			if(!checkRadios(radios))
-			{
-				b = false;
-				if(!a)
+				else
+				{	//info is valid, change color back to white and capitalize first character
+					fName.value = capitalizeFirstLetter(fName.value);
+					fName.style.backgroundColor = "white";
+				}
+				
+				//Check if user has entered a valid lastname
+				lName = document.getElementById("lName");
+				if(lName == null || lName.value == "" || !isNaN(lName.value)) //If true, info is invalid
 				{
-					alert("Please select your registrant type");
-					a = true;
+					lName.style.backgroundColor = "red";
+					isValid = false;
+					if(!hasAlerted) { 
+						alert("Please enter your last name using only letters");
+						hasAlerted = true; 
+					}
 				}
-			}
+				else
+				{   //info is valid, change color back to white and capitalize first character
+					lName.value = capitalizeFirstLetter(lName.value);
+					lName.style.backgroundColor = "white";
+				}
+				
+				//Check if user has selected a gender
+				var radios = document.getElementsByName("sex");
+				if(!checkRadios(radios)) //If user hasn't selected a gender
+				{
+					isValid = false;
+					if(!hasAlerted)
+					{
+						alert("Please select your gender");
+						hasAlerted = true;
+					}
+				}
+				
+				var radios = document.getElementsByName("registrantType");
+				if(!checkRadios(radios)) //if user hasn't selected a registrant type (i.e. Freshman)
+				{
+					isValid = false;
+					if(!hasAlerted)
+					{
+						alert("Please select your registrant type");
+						hasAlerted = true;
+					}
+				}
+				
+				//Check if user has entered a valid email
+				email = document.getElementById("email");
+				if(email == null || email.value == "" || !checkEmail(email)) //if true, info is invalid
+				{
+					email.style.backgroundColor = "red";
+					isValid = false;
+					if(!hasAlerted) { alert("Please enter a valid email");
+					hasAlerted = true; }
+				}
+				else
+				{   //info is valid, change color back to white and capitalize first character
+					email.value = capitalizeFirstLetter(email.value);
+					email.style.backgroundColor = "white";
+				}
+				
+				//Check if user has entered a valid phone number
+				phone = document.getElementById("phone");
+				if(phone == null || phone.value == "" || isNaN(phone.value) || phone.value.length != 10) //If true, info is invalid
+				{
+					phone.style.backgroundColor = "red";
+					isValid = false;
+					if(!hasAlerted) { 
+						alert("Please enter a 10 digit phone number in the format(xxxxxxxxxx)");
+						hasAlerted = true; 
+					}
+				}
+				else
+				{
+					//info is valid, change color back to white
+					phone.style.backgroundColor = "white";
+				}
 			
-			//Check if user has entered a valid email
-			email = document.getElementById("email");
-			if(email == null || email.value == "" || !checkEmail(email))
-			{
-				email.style.backgroundColor = "red";
-				b = false;
-				if(!a) { alert("Please enter a valid email");
-				a = true; }
-			}
-			else
-			{
-				email.value = capitalizeFirstLetter(email.value);
-				email.style.backgroundColor = "white";
-			}
-			
-			//Check if user has entered a valid phone number
-			phone = document.getElementById("phone");
-			if(phone == null || phone.value == "" || isNaN(phone.value) || phone.value.length != 10)
-			{
-				phone.style.backgroundColor = "red";
-				b = false;
-				if(!a) { alert("Please enter a 10 digit phone number in the format(xxxxxxxxxx)");
-				a = true; }
-			}
-			else
-			{
-				phone.style.backgroundColor = "white";
+				//End general info validation
+				
+				/*
+				Don't do this part of error checking if Employer is not selected
+				*/
+				
+				//Start employer info validation
+				
+				if(document.getElementById('Employer').checked){
+					//Check if user has entered a valid business
+					business = document.getElementById("business");
+					if(business == null || business.value == "") //If true, info is invalid
+					{
+						business.style.backgroundColor = "red";
+						isValid = false;
+						if(!hasAlerted)
+						{
+							alert("Please enter your business name");
+							hasAlerted = true;
+						}
+					}
+					else
+					{
+						//info is valid, change color back to white and capitalize first character
+						business.style.backgroundColor = "white";
+						business.value = capitalizeFirstLetter(business.value);
+					}
+					//Check if user has entered a valid job title
+					jobTitle = document.getElementById("jobTitle");
+					if(jobTitle == null || jobTitle.value == "") //If true, info is invalid
+					{
+						jobTitle.style.backgroundColor = "red";
+						isValid = false;
+						if(!hasAlerted){
+							alert("Please enter a job title");
+							hasAlerted = true;
+						}
+					}
+					else
+					{
+						//info is valid, change color back to white and capitalize first character
+						jobTitle.style.backgroundColor = "white";
+						jobTitle.value = capitalizeFirstLetter(jobTitle.value);
+					}
+
+				}
+					
+				//End employer info validation
+					
+				/*
+				Don't do this part of error checking if Student/Alumnus is not selected
+				*/
+
+				//Start Student/Alumnus info validation
+				
+				//Check if user has selected a class standing
+				if(document.getElementById('Student').checked){	
+					var classStanding = document.getElementsByName("Class");
+					if(!checkRadios(classStanding)) //If true, user hasn't selected a class standing (i.e. Freshman)
+					{
+						isValid = false;
+						if(!hasAlerted)
+						{
+							alert("Please select your class standing");
+							hasAlerted = true;
+						}
+					}
+					
+					//Check is user has entered a valid student ID
+					studentID = document.getElementById("id");
+					if(studentID == null || studentID.value == "" || isNaN(studentID.value))
+					{
+						studentID.style.backgroundColor = "red";
+						isValid = false;
+						if(!hasAlerted){
+							alert("Please enter student ID using only numeric values");
+							hasAlerted = true;
+						}
+					}
+					else
+					{
+						//info is valid, change color back to white
+						studentID.style.backgroundColor = "white";
+					}
+					
+					//Check if user has entered a valid graduation year
+					graduation = document.getElementById("graduationYear");
+					if(graduation == null || graduation.value == "" || isNaN(graduation.value) || graduation.value.length != 4) //If true, info is invalid
+					{
+						graduation.style.backgroundColor = "red";
+						isValid = false;
+						if(!hasAlerted)
+						{
+							alert("Please enter your graduation year using only four numeric values");
+							hasAlerted = true;
+						}
+					}
+					else
+					{
+						//info is valid, change color back to white
+						graduation.style.backgroundColor = "white";
+					}
+				}
+				
+				//End Student/Alumnus info validation
+					
+				return isValid;
 			}
 
-		/*
-		Don't do this part of error checking if Employer is not selected
-		*/
-		if(document.getElementById('Employer').checked){
-			business = document.getElementById("business");
-			if(business == null || business.value == "")
-			{
-				business.style.backgroundColor = "red";
-				b = false;
-				if(!a){
-					alert("Please enter your business name");
-					a = true;
-				}
-			}
-			else
-			{
+			function resetEmployer(){
+				business = document.getElementById("business");
 				business.style.backgroundColor = "white";
-			}
-			
-			temp = document.getElementById("temp");
-			if(temp == null || temp.value == "")
-			{
-				temp.style.backgroundColor = "red";
-				b = false;
-				if(!a){
-					alert("Please enter a temp");
-					a = true;
-				}
-			}
-			else
-			{
-				temp.style.backgroundColor = "white";
+				jobTitle = document.getElementById("jobTitle");
+				jobTitle.style.backgroundColor = "white";
 			}
 
-		}
-			
-		/*
-		Don't do this part of error checking if Student/Alumnus is not selected
-		*/
-
-		if(document.getElementById('Student').checked){	
-			//Check if user has selected a class standing
-			var classStanding = document.getElementsByName("Class");
-			if(!checkRadios(classStanding))
-			{
-				b = false;
-				if(!a)
-				{
-					alert("Please select your class standing");
-					a = true;
-				}
-			}
-
-			
-			studentID = document.getElementById("id");
-			if(studentID == null || studentID.value == "" || isNaN(studentID.value))
-			{
-				studentID.style.backgroundColor = "red";
-				b = false;
-				if(!a){
-					alert("Please enter student ID using only numeric values");
-					a = true;
-				}
-			}
-			else
-			{
+			function resetStudent(){
+				studentID = document.getElementById("id");
 				studentID.style.backgroundColor = "white";
-			}
-			
-			graduation = document.getElementById("graduationYear");
-			if(graduation == null || graduation.value == "" || isNaN(graduation.value) || graduation.value.length != 4)
-			{
-				graduation.style.backgroundColor = "red";
-				b = false;
-				if(!a){
-					alert("Please enter your graduation year using only four numeric values");
-					a = true;
-				}
-			}
-			else
-			{
+				graduation = document.getElementById("graduationYear");
 				graduation.style.backgroundColor = "white";
 			}
-		}
-			return b;
-		}
 
-		function resetEmployer(){
-			business = document.getElementById("business");
-			business.style.backgroundColor = "white";
-			temp = document.getElementById("temp");
-			temp.style.backgroundColor = "white";
-		}
-
-		function resetStudent(){
-			studentID = document.getElementById("id");
-			studentID.style.backgroundColor = "white";
-			graduation = document.getElementById("graduationYear");
-			graduation.style.backgroundColor = "white";
-		}
-
-		function checkEmail(email)   
-		{  
-		 if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email.value))  
-		  {  
-			return (true)  
-		  }   
-			return (false)  
-		}  
+			function checkEmail(email)   
+			{  
+			 if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email.value))  
+			  {  
+				return (true)  
+			  }   
+				return (false)  
+			}  
 
 
-		function checkRadios(radios){
-			for(var i = 0, len = radios.length; i < len; i++){
-				if(radios[i].checked){
-				return true;
+			function checkRadios(radios){
+				for(var i = 0, len = radios.length; i < len; i++){
+					if(radios[i].checked){
+					return true;
+					}
 				}
+				return false;
 			}
-			return false;
-		}
 
 
-		function capitalizeFirstLetter(string) {
-			return string.charAt(0).toUpperCase() + string.substr(1).toLowerCase();
-		}
-		
-		function ChangeText(){
-			var eventText = new XMLHttpRequest();
-			eventText.open("GET", './jobfairname.txt', false);
-			eventText.send(null);
+			function capitalizeFirstLetter(string) {
+				return string.charAt(0).toUpperCase() + string.substr(1).toLowerCase();
+			}
 			
-			document.getElementById("EventText").innerHTML = "Pre-Registration Form for " + eventText.responseText;
-		}
+			function ChangeText(){
+				var eventText = new XMLHttpRequest();
+				eventText.open("GET", './jobfairname.txt', false);
+				eventText.send(null);
+				
+				document.getElementById("EventText").innerHTML = "Pre-Registration Form for " + eventText.responseText;
+			}
 
 		</script>
 	</body>
