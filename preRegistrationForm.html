@@ -45,25 +45,21 @@
 				</br></br>
 				
 				College: 
-				<form>
-				<input list="colleges"/>
-				<datalist id="college">
-					<option value="Eastern Washington University">
-					<option value="Gonzaga University">
-					<option value="Whitworth University">
-					<option value="Washington State University">
-				</datalist>
-				Type in your college if it is not listed
+				<select name="college" id="college" onchange="javascript:CheckUniversity()">
+					<option value="EWU">Eastern Washington University</option>
+					<option value="ZAG">Gonzaga University</option>
+					<option value="WSU">Washington State University</option>
+					<option value="WHIT">Whithworth University</option>
+					<option value="Other">Other</option>
+				</select>
+				</br>
+				
+				<input name="otherUniversity" id="otherUniversity" onfocus="this.value='';" value="Please type in your college here" style="display:none" type="text" size="30">
+				
 				</br></br>
 				
 				Major:
-				<select name="major">
-					<option value="Bus">Business</option>
-					<option value="CS">Computer Science</option>
-					<option value="MecEng">Mechanical Engineering</option>
-					<option value="SecEngl">Secondary English</option>
-					<option value="Other">Other</option>
-				</select>
+				<input name="major" id="major" type="text" size="30">
 				
 				</br></br>
 				
@@ -105,6 +101,19 @@
 				resetStudent();
 				ChangeText();
 			}
+			
+			<!-- Will check to see what university is selected. If other is selected, it will display the 'other' input box. If not, it will hide it -->
+			function CheckUniversity(){
+				list = document.getElementById("college");
+				var university = list.options[list.selectedIndex].value;
+				if(university == "Other"){
+					document.getElementById("otherUniversity").style.display = 'block';
+				}
+				else{
+					document.getElementById("otherUniversity").style.display = 'none';
+				}
+			}
+			
 			<!-- Will check if the info entered is valid. If valid, it will submit the info. If not it will stay on page. -->
 			function validate()  
 			{
@@ -268,13 +277,55 @@
 						}
 					}
 					
+					//Check if user has entered a valid college
+					list = document.getElementById("college");
+					var university = list.options[list.selectedIndex].value;
+					if(university == "Other"){
+						var other = document.getElementById("otherUniversity");
+						if(other.value == "" || other.value == "Please type in your college here") //If true, users college isn't listed and the user hasn't entered in their college
+						{
+							isValid = false;
+							other.style.backgroundColor = "red";
+							if(!hasAlerted)
+							{
+								alert("Please type in your college");
+								hasAlerted = true;
+							}
+						}
+						else
+						{
+							other.value = toTitleCase(other.value);
+							other.style.backgroundColor = "white";
+						}
+					}
+					
+					//Check if user has entered a valid major
+					var major = document.getElementById("major");
+					if(major == null || major.value == "" || !isNaN(major.value)) //If true, users college isn't listed and the user hasn't entered in their college
+					{
+						isValid = false;
+						major.style.backgroundColor = "red";
+						if(!hasAlerted)
+						{
+							alert("Please enter your major");
+							hasAlerted = true;
+						}
+					}
+					else
+					{
+						major.value = toTitleCase(major.value);
+						major.style.backgroundColor = "white";
+					}
+
+					
 					//Check is user has entered a valid student ID
 					studentID = document.getElementById("id");
 					if(studentID == null || studentID.value == "" || isNaN(studentID.value))
 					{
 						studentID.style.backgroundColor = "red";
 						isValid = false;
-						if(!hasAlerted){
+						if(!hasAlerted)
+						{
 							alert("Please enter student ID using only numeric values");
 							hasAlerted = true;
 						}
@@ -342,9 +393,15 @@
 				return false;
 			}
 
+			
+			function toTitleCase(str)
+			{
+				return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+			}
 
 			function capitalizeFirstLetter(string) {
 				return string.charAt(0).toUpperCase() + string.substr(1).toLowerCase();
+				//return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 			}
 			
 			function ChangeText(){
