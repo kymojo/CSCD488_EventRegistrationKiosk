@@ -671,10 +671,31 @@ namespace RegistrationKiosk {
         /// </summary>
         /// <param name="search">The search parameter</param>
         private void GetSearchResults(string search) {
+            List<RegistrantEntry> Registrants;
+            List<string> words = new List<string>();
             // Clear entries from previous search
             searchEntries.Clear();
-            // Get the list of search results
-            List<RegistrantEntry> Registrants = dbConnection.SelectRegistrant("Code = '" + search + "' or Fname = '" + search + "' or Lname = '" + search + "' or Phone = '" + search + "' or Email = '" + search + "' or Sex = '" + search + "' or RegType = '" + search + "'");
+
+            // Find number of spaces in search
+            int num = 1, i = 0, temp = 0;
+            while ((i = search.IndexOf(' ', i)) != -1) {
+                words.Add(search.Substring(temp, i - temp));
+                temp = i + 1;
+
+                num++;  // counts amount of ' ' characters
+                i++;    // moves index through string
+            }
+            words.Add(search.Substring(temp, search.Length - temp));
+
+            if (search.Equals("")) {
+                // select all registrants if search is empty
+                Registrants = dbConnection.SelectRegistrant("EXISTS (SELECT * FROM registrant);");
+            }
+            else {
+                // Get the list of search results
+                Registrants = dbConnection.SelectRegistrant(createQueryString(words));
+            }
+
             // Add results to datagrid collection
             foreach (RegistrantEntry entry in Registrants) {
                 searchEntries.Add(entry);
@@ -682,6 +703,29 @@ namespace RegistrationKiosk {
             // Display results
             datagrid_AdminEntries.DataContext = searchEntries;
             datagrid_AdminEntries.UpdateLayout();
+        }
+
+        /// <summary>
+        /// creates strings for query based on parameters
+        /// </summary>
+        private string createQueryString(List<string> words) {
+            int i;
+            string queryPart = "";
+
+            for (i = 0; i < words.Count; i++) {
+                queryPart += "(INSTR(Code, '" + words[i] + "') > 0 or " +
+                             "INSTR(Fname, '" + words[i] + "') > 0 or " +
+                             "INSTR(Lname, '" + words[i] + "') > 0 or " +
+                             "INSTR(Phone, '" + words[i] + "') > 0 or " +
+                             "INSTR(Email, '" + words[i] + "') > 0 or " +
+                             "INSTR(Sex, '" + words[i] + "') > 0 or " +
+                             "INSTR(RegType, '" + words[i] + "') > 0)";
+
+                if (i != words.Count - 1)
+                    queryPart += " and ";
+            }
+
+            return queryPart;
         }
 
         #endregion
