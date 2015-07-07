@@ -54,6 +54,11 @@ namespace RegistrationKiosk {
         private string editingID = "123456";
         private RegistrantEntry editingRegistrant;
 
+        // Questions
+        private ObservableCollection<QuestionEntry> questionsList = new ObservableCollection<QuestionEntry>();
+        private ObservableCollection<string> choicesList = new ObservableCollection<string>();
+        bool questionsChanged = false;
+
         // Flag indicating if user used pre-registration code
         private bool validCodeEntered = false;
 
@@ -70,6 +75,8 @@ namespace RegistrationKiosk {
             ChangeAppState(AppState);
             ChangeSpecialView();
             datagrid_AdminEntries.DataContext = searchEntries;
+            datagrid_QuestionsBox.DataContext = questionsList;
+            listbx_AnswerBox.DataContext = choicesList;
             dbConnection = new MySQLClient();
             //dbConnection = new MySQLClient("cscd379.com", "jobfair", "jobfair", "ewu2015");
             dbConnection.CreateDatabaseTables();
@@ -983,23 +990,48 @@ namespace RegistrationKiosk {
         // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
         #region ADMIN FORM - QUESTION DATABASE BUTTONS
         private void btn_QuestionBoxLoad_Click(object sender, RoutedEventArgs e) {
-
+            /*
+            if (!questionsChanged) {
+                MessageBoxResult result = MessageBox.Show("This will erase all recent changes and load old questions and choices. Continue?", "Reload", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.No) {
+                    return;
+                }      
+            }
+            */
+            // ! ! ASK USER  ! !
+            if (!dbConnection.IsConnected()) {
+                MessageBox.Show("Database not connected!");
+                return;
+            }
+            questionsList = new ObservableCollection<QuestionEntry>(dbConnection.SelectQuestions());
+            datagrid_QuestionsBox.DataContext = questionsList;
+            datagrid_QuestionsBox.UpdateLayout();
+            MessageBox.Show("Questions loaded!");
         }
 
         private void btn_QuestionBoxSave_Click(object sender, RoutedEventArgs e) {
-
+            // ! ! ASK USER  ! !
+            dbConnection.InsertQuestions(new List<QuestionEntry>(questionsList));
         }
 
         private void btn_QuestionsClearResponses_Click(object sender, RoutedEventArgs e) {
-
+            // ! ! ASK USER  ! !
+            dbConnection.DeleteAnswers();
         }
 
         private void btn_QuestionBoxAdd_Click(object sender, RoutedEventArgs e) {
-
+            string text = txtbx_QuestionAnswerInput.Text;
+            if (text != "") {
+                questionsList.Clear();
+                questionsList.Add(new QuestionEntry(text));
+                datagrid_QuestionsBox.DataContext = questionsList;
+                datagrid_QuestionsBox.UpdateLayout();
+            }
+                
         }
 
         private void btn_QuestionBoxEdit_Click(object sender, RoutedEventArgs e) {
-
+            
         }
 
         private void btn_QuestionBoxRemove_Click(object sender, RoutedEventArgs e) {

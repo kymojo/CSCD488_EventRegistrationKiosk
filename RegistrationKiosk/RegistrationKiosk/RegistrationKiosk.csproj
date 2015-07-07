@@ -71,6 +71,7 @@
     <Compile Include="IOExcel.cs" />
     <Compile Include="MySQLClient.cs" />
     <Compile Include="Printer.cs" />
+    <Compile Include="QuestionEntry.cs" />
     <Compile Include="RegistrantEntry.cs" />
     <Compile Include="SecurityMeans.cs" />
     <Compile Include="Window_Admin.xaml.cs">

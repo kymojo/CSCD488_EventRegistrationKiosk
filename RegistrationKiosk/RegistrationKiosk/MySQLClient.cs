@@ -198,38 +198,42 @@ namespace RegistrationKiosk {
             return;
         }
 
-        //Insert a question to the database
-        //the question and its id
-        public void InsertQuestion(String question, String id)
-        {
-            if (question == null)
-            {
+        /// <summary>
+        /// Insert questions into the database. Clear beforehand to avoid collisions.
+        /// </summary>
+        /// <param name="questions"></param>
+        public void InsertQuestions(List<QuestionEntry> questions) {
+            
+            if (questions == null) {
                 return;
             }
-            String value;
-            value = "'" + question + "', ";
-            value += "'" + id + "'";
-            //The sql query
-            string query = "INSERT INTO questions (question, questionID) VALUES(" + value + ");";
 
-
-            try
-            {
-                if (this.Open())
-                {
-                    //Opens a connection, if succefull; run the query and then close the connection.
-
-                    // Execute query
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.ExecuteNonQuery();
-
-                   
-              
-
+            try {
+                MySqlCommand cmd;
+                if (this.Open()) {
+                    int i = 0, ii, choiceCount;
+                    string questionValues, query, choiceValues;
+                    while (i < questions.Count) {
+                        // The Question
+                        questionValues = "'" + (i + 1) + "', '" + questions[i].GetQuestionText() + "'";
+                        query = "INSERT INTO questions (questionID, question) VALUES(" + questionValues + ");";
+                        cmd = new MySqlCommand(query, conn);
+                        cmd.ExecuteNonQuery();
+                        // Its Choices
+                        choiceCount = questions[i].GetChoiceCount();
+                        ii = 0;
+                        while (ii < choiceCount) {
+                            choiceValues = "'" + (i + 1) + "', '" + questions[i].GetChoiceAt(ii) + "'";
+                            query = "INSERT INTO choices (questionID, answer) VALUES(" + questionValues + ");";
+                            cmd = new MySqlCommand(query, conn);
+                            cmd.ExecuteNonQuery();
+                            ii++;
+                        }
+                        i++;
+                    }
                     this.Close();
                 }
-            }
-            catch { this.Close(); }
+            } catch { this.Close(); }
             return;
         }
 
@@ -428,30 +432,50 @@ namespace RegistrationKiosk {
             }
             return;
         }
-        //deletes a question based on id
-        public void deleteQuestion(String id)
-        {
+
+        /// <summary>
+        /// Deletes a question based on id
+        /// </summary>
+        /// <param name="id"></param>
+        public void DeleteQuestions() {
             string query;
             MySqlCommand cmd;
 
-            if (this.Open())
-            {
-                try
-                {
-                   //the sql query
-                    query = "DELETE FROM questions WHERE questionID = '" + id + "';";
+            if (this.Open()) {
+                try {
+                    // Delete all questions
+                    query = "DELETE FROM questions;";
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
-
-                    
-
+                    // Delete all question choices
+                    query = "DELETE FROM choices;";
+                    cmd = new MySqlCommand(query, conn);
+                    cmd.ExecuteNonQuery();
                     this.Close();
-
-                }
-                catch { this.Close(); }
+                } catch { this.Close(); }
             }
             return;
         }
+
+        /// <summary>
+        /// Deletes all registrant question responses in database.
+        /// </summary>
+        public void DeleteAnswers() {
+            string query;
+            MySqlCommand cmd;
+
+            if (this.Open()) {
+                try {
+                    // Delete all answers
+                    query = "DELETE FROM answers;";
+                    cmd = new MySqlCommand(query, conn);
+                    cmd.ExecuteNonQuery();
+                    this.Close();
+                } catch { this.Close(); }
+            }
+            return;
+        }
+        
         /// <summary>
         /// Delete a registrant entry from database.
         /// </summary>
@@ -574,6 +598,49 @@ namespace RegistrationKiosk {
             return regList;
         }
 
+        /// <summary>
+        /// Grabs all the questions and their choices from the database.
+        /// </summary>
+        /// <returns></returns>
+        public List<QuestionEntry> SelectQuestions() {
+
+            QuestionEntry question;
+            List<QuestionEntry> result = new List<QuestionEntry>();
+            MySqlCommand cmd;
+            MySqlDataReader dataReader;
+
+            if (this.Open()) {
+                try {
+                    // GET QUESTIONS
+                    string query = "SELECT * FROM questions ORDER BY questionID;";
+                    cmd = new MySqlCommand(query, conn);
+                    dataReader = cmd.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        question = new QuestionEntry((string)dataReader[1]);
+                        result.Add(question);
+                    }
+                    dataReader.Close();
+
+                    // GET CHOICES (expects question id's to be sequential, starting with 1)
+                    query = "SELECT * FROM choices ORDER BY questionID;";
+                    cmd = new MySqlCommand(query, conn);
+                    dataReader = cmd.ExecuteReader();
+                    int i;
+                    while (dataReader.Read()) {
+                        i = (int)dataReader[0]-1;
+                        if (result[i] != null)
+                            result[i].AddNewChoice((string)dataReader[1]);
+                    }
+                    dataReader.Close();
+                } catch {
+                    this.Close();
+                    result = null;
+                }
+            }
+            return result;
+        }
+
         #endregion
         // -------------------------
         #region OTHER
@@ -669,7 +736,7 @@ namespace RegistrationKiosk {
                     #region Set _questions Table Query
                     // =========================
                     query = @"CREATE TABLE IF NOT EXISTS `questions` (" +
-                            "`questionID` VARCHAR(3), " +
+                            "`questionID` INT, " +
                             "`question` TEXT, " +
                             "PRIMARY KEY(questionID))";
                     // =========================
@@ -681,7 +748,7 @@ namespace RegistrationKiosk {
                     // =========================
                     query = @"CREATE TABLE IF NOT EXISTS `answers` (" +
                             "`Code` VARCHAR(6), " +
-                            "`questionID` VARCHAR(3), " +
+                            "`questionID` INT, " +
                             "`answer` TEXT, " +
                             "PRIMARY KEY(Code))";
                     // =========================
@@ -692,9 +759,8 @@ namespace RegistrationKiosk {
                     #region Set _choices Table Query
                     // =========================
                     query = @"CREATE TABLE IF NOT EXISTS `choices` (" +
-                            "`questionID` VARCHAR(3), " +
-                            "`answer` TEXT, " +
-                            "PRIMARY KEY(questionID))";
+                            "`questionID` INT, " +
+                            "`answer` TEXT)";
                     // =========================
                     #endregion
                     cmd = new MySqlCommand(query, conn);

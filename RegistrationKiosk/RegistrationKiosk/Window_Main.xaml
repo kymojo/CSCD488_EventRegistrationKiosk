@@ -296,10 +296,10 @@
                     <Button x:Name="btn_AnswerBoxAdd" Content="Add Answer" HorizontalAlignment="Center" VerticalAlignment="Top" Width="100" Height="20" Margin="48,0,49,0" Grid.Column="1" Grid.Row="3" Click="btn_AnswerBoxAdd_Click"/>
                     <Button x:Name="btn_AnswerBoxEdit" Content="Edit Answer" HorizontalAlignment="Center" Margin="48,28,49,38" VerticalAlignment="Center" Width="100" Height="20" Grid.Column="1" Grid.Row="3" Click="btn_AnswerBoxEdit_Click"/>
                     <Button x:Name="btn_AnswerBoxRemove" Content="Remove Answer" HorizontalAlignment="Center" Margin="48,0,49,10" VerticalAlignment="Bottom" Width="100" Height="20" Grid.Column="1" Grid.Row="3" Click="btn_AnswerBoxRemove_Click"/>
-                    <ListBox x:Name="listbx_QuestionBox" Margin="10,0,0,0" Grid.Row="1"/>
                     <ListBox x:Name="listbx_AnswerBox" Margin="0,0,10,0" Grid.Column="1" Grid.Row="1"/>
                     <Label x:Name="lbl_Questions" Content="Questions" HorizontalAlignment="Left" Margin="10,0,0,0" Width="68" Height="26" VerticalAlignment="Top"/>
                     <Label x:Name="lbl_Answers" Content="Answers" HorizontalAlignment="Left" Width="68" Height="26" VerticalAlignment="Top" Grid.Column="1"/>
+                    <DataGrid x:Name="datagrid_QuestionsBox" Margin="10,0,0,0" Grid.Row="1" HeadersVisibility="None"/>
                 </Grid>
                 <Grid x:Name="grid_QuestionsEtc" Height="65" Margin="10,0,11,0" VerticalAlignment="Top" Grid.Row="1">
                     <Grid.ColumnDefinitions>
