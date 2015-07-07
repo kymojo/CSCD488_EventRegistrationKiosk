@@ -860,7 +860,7 @@ namespace RegistrationKiosk {
 
         #endregion
         // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-        #region ADMIN FORM BUTTONS
+        #region ADMIN FORM - REGISTRANT DATABASE BUTTONS
         
         /// <summary>
         /// Click event for Search button on Admin page.
@@ -973,7 +973,47 @@ namespace RegistrationKiosk {
             string filename = ioXL.SelectSaveFile();
             ioXL.ExportExcel(filename);
         }
+        #endregion
+        // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+        #region ADMIN FORM - QUESTION DATABASE BUTTONS
+        private void btn_QuestionBoxLoad_Click(object sender, RoutedEventArgs e) {
 
+        }
+
+        private void btn_QuestionBoxSave_Click(object sender, RoutedEventArgs e) {
+
+        }
+
+        private void btn_QuestionsClearResponses_Click(object sender, RoutedEventArgs e) {
+
+        }
+
+        private void btn_QuestionBoxAdd_Click(object sender, RoutedEventArgs e) {
+
+        }
+
+        private void btn_QuestionBoxEdit_Click(object sender, RoutedEventArgs e) {
+
+        }
+
+        private void btn_QuestionBoxRemove_Click(object sender, RoutedEventArgs e) {
+
+        }
+
+        private void btn_AnswerBoxAdd_Click(object sender, RoutedEventArgs e) {
+
+        }
+
+        private void btn_AnswerBoxEdit_Click(object sender, RoutedEventArgs e) {
+
+        }
+
+        private void btn_AnswerBoxRemove_Click(object sender, RoutedEventArgs e) {
+
+        }
+        #endregion
+        // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+        #region ADMIN FORM - OTHER BUTTONS
         private void btn_ChangePass_Click(object sender, RoutedEventArgs e) {
             // Create changePass window and display
             changepassWindow = new Window_Password(this);
@@ -989,7 +1029,6 @@ namespace RegistrationKiosk {
             // Disable this window (until admin window closes)
             this.IsEnabled = false;
         }
-
         #endregion
         // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
         #region EDIT FORM BUTTONS

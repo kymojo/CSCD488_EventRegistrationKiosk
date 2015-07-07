@@ -265,30 +265,54 @@
                 <RowDefinition Height="357*"/>
             </Grid.RowDefinitions>
             <Grid x:Name="grid_AdminOther" Grid.Row="1">
-                <Rectangle x:Name="rec_AdminOther" Fill="#FFC6E8E8" Stroke="#FF81ADAA" RadiusX="5" RadiusY="5" StrokeThickness="3" RenderTransformOrigin="0.503,0.365" d:IsLocked="True"/>
-                <Button x:Name="btn_ChangePass" Content="Change Admin Password" HorizontalAlignment="Left" Margin="709,116,0,0" VerticalAlignment="Top" Width="150" Click="btn_ChangePass_Click"/>
-                <Button x:Name="btn_DatabaseConnection" Content="Database Connection" HorizontalAlignment="Left" Margin="709,153,0,0" VerticalAlignment="Top" Width="150" Click="btn_DatabaseConnection_Click"/>
-                <Grid x:Name="grid_Questions" HorizontalAlignment="Left" Height="268" Margin="10,79,0,0" VerticalAlignment="Top" Width="428">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="243*"/>
+                    <ColumnDefinition Width="329*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="34"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Rectangle x:Name="rec_AdminOther" Fill="#FFC6E8E8" Stroke="#FF81ADAA" RadiusX="5" RadiusY="5" StrokeThickness="3" RenderTransformOrigin="0.503,0.365" Grid.RowSpan="2"/>
+                <Rectangle x:Name="rec_AdminOtherOther" Fill="#FFC6E8E8" Stroke="#FF81ADAA" RadiusX="5" RadiusY="5" StrokeThickness="3" RenderTransformOrigin="0.503,0.365" Grid.RowSpan="2" Grid.Column="1"/>
+                <Button x:Name="btn_ChangePass" Content="Change Admin Password" Margin="0,0,0,30" Width="150" Click="btn_ChangePass_Click" Grid.Row="1" Grid.Column="1" Height="20"/>
+                <Button x:Name="btn_DatabaseConnection" Content="Database Connection" Margin="0,30,0,0" Width="150" Click="btn_DatabaseConnection_Click" Grid.Row="1" Grid.Column="1" Height="20"/>
+                <Grid x:Name="grid_Questions" Height="252" Margin="10,70,11,0" VerticalAlignment="Top" Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="32"/>
+                        <RowDefinition Height="86"/>
+                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
-                        <ColumnDefinition/>
+                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="24"/>
-                        <RowDefinition Height="111*"/>
-                        <RowDefinition Height="133*"/>
-                    </Grid.RowDefinitions>
-                    <Rectangle x:Name="rec_Questions" Fill="#FFC6E8E8" Stroke="#FF81ADAA" RadiusX="5" RadiusY="5" StrokeThickness="3" Grid.Row="1" d:IsLocked="True" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
-                    <Label x:Name="lbl_Questions" Content="Questions" HorizontalAlignment="Left" Margin="10,1,0,0" Width="136" Height="26" VerticalAlignment="Top" Grid.RowSpan="2"/>
-                    <ListBox x:Name="listbx_QuestionBox" Margin="10,10,10,9" Grid.Row="1"/>
-                    <ListBox x:Name="listbx_AnswerBox" Margin="10,0,10,52" Grid.Row="2"/>
-                    <Button x:Name="btn_QuestionBoxAdd" Content="Add Question" HorizontalAlignment="Center" Margin="0,13,110,0" VerticalAlignment="Top" Width="100" Height="20" Grid.Row="1" Grid.Column="1"/>
-                    <Button x:Name="btn_QuestionBoxEdit" Content="Edit Question" HorizontalAlignment="Center" Margin="0,38,110,0" VerticalAlignment="Top" Width="100" Height="20" Grid.Row="1" Grid.Column="1"/>
-                    <Button x:Name="btn_AnswerBoxAdd" Content="Add Answer" HorizontalAlignment="Center" VerticalAlignment="Top" Width="100" Height="20" Margin="2,0,112,0" Grid.Row="2" Grid.Column="1"/>
-                    <Button x:Name="btn_AnswerBoxEdit" Content="Edit Answer" HorizontalAlignment="Center" Margin="2,25,112,0" VerticalAlignment="Top" Width="100" Height="20" Grid.Row="2" Grid.Column="1"/>
-                    <Button x:Name="btn_QuestionBoxRemove" Content="Remove Question" HorizontalAlignment="Center" Margin="0,63,110,0" VerticalAlignment="Top" Width="100" Height="20" Grid.Row="1" Grid.Column="1"/>
-                    <Button x:Name="btn_AnswerBoxRemove" Content="Remove Answer" HorizontalAlignment="Center" Margin="2,50,112,0" VerticalAlignment="Top" Width="100" Height="20" Grid.Row="2" Grid.Column="1"/>
+                    <Rectangle x:Name="rec_Questions" Fill="#FFC6E8E8" Stroke="#FF81ADAA" RadiusX="5" RadiusY="5" StrokeThickness="3" d:IsLocked="True" Grid.ColumnSpan="2" Grid.RowSpan="4"/>
+                    <Button x:Name="btn_QuestionBoxAdd" Content="Add Question" HorizontalAlignment="Center" Margin="50,0,48,0" VerticalAlignment="Top" Width="100" Height="20" Grid.Row="3" Click="btn_QuestionBoxAdd_Click"/>
+                    <Button x:Name="btn_QuestionBoxEdit" Content="Edit Question" HorizontalAlignment="Center" Margin="50,28,48,38" VerticalAlignment="Center" Width="100" Height="20" Grid.Row="3" Click="btn_QuestionBoxEdit_Click"/>
+                    <Button x:Name="btn_QuestionBoxRemove" Content="Remove Question" HorizontalAlignment="Center" Margin="50,0,48,10" VerticalAlignment="Bottom" Width="100" Height="20" Grid.Row="3" Click="btn_QuestionBoxRemove_Click"/>
+                    <TextBox x:Name="txtbx_QuestionAnswerInput" Height="23" Margin="10,5,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.ColumnSpan="2" Grid.Row="2"/>
+                    <Button x:Name="btn_AnswerBoxAdd" Content="Add Answer" HorizontalAlignment="Center" VerticalAlignment="Top" Width="100" Height="20" Margin="48,0,49,0" Grid.Column="1" Grid.Row="3" Click="btn_AnswerBoxAdd_Click"/>
+                    <Button x:Name="btn_AnswerBoxEdit" Content="Edit Answer" HorizontalAlignment="Center" Margin="48,28,49,38" VerticalAlignment="Center" Width="100" Height="20" Grid.Column="1" Grid.Row="3" Click="btn_AnswerBoxEdit_Click"/>
+                    <Button x:Name="btn_AnswerBoxRemove" Content="Remove Answer" HorizontalAlignment="Center" Margin="48,0,49,10" VerticalAlignment="Bottom" Width="100" Height="20" Grid.Column="1" Grid.Row="3" Click="btn_AnswerBoxRemove_Click"/>
+                    <ListBox x:Name="listbx_QuestionBox" Margin="10,0,0,0" Grid.Row="1"/>
+                    <ListBox x:Name="listbx_AnswerBox" Margin="0,0,10,0" Grid.Column="1" Grid.Row="1"/>
+                    <Label x:Name="lbl_Questions" Content="Questions" HorizontalAlignment="Left" Margin="10,0,0,0" Width="68" Height="26" VerticalAlignment="Top"/>
+                    <Label x:Name="lbl_Answers" Content="Answers" HorizontalAlignment="Left" Width="68" Height="26" VerticalAlignment="Top" Grid.Column="1"/>
                 </Grid>
+                <Grid x:Name="grid_QuestionsEtc" Height="65" Margin="10,0,11,0" VerticalAlignment="Top" Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Rectangle x:Name="rec_QuestionsEtc" Fill="#FFC6E8E8" Stroke="#FF81ADAA" RadiusX="5" RadiusY="5" StrokeThickness="3" RenderTransformOrigin="0.503,0.365" Margin="0" d:IsLocked="True" Grid.ColumnSpan="2"/>
+                    <Button x:Name="btn_QuestionBoxLoad" Content="Load Questions" HorizontalAlignment="Center" VerticalAlignment="Top" Width="150" Margin="0,10,0,0" Click="btn_QuestionBoxLoad_Click"/>
+                    <Button x:Name="btn_QuestionBoxSave" Content="Save Changes" HorizontalAlignment="Center" VerticalAlignment="Top" Width="150" Margin="0,35,0,0" Click="btn_QuestionBoxSave_Click"/>
+                    <Button x:Name="btn_QuestionsClearResponses" Content="Clear Registrant Answers" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150" Margin="44,0,0,0" Grid.Column="1" Click="btn_QuestionsClearResponses_Click"/>
+                </Grid>
+                <Label x:Name="lbl_FormQuestions" Content="Pre-Reg Form Questions" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" FontSize="18" FontWeight="Bold" Margin="88,0,85,0"/>
+                <Label x:Name="lbl_OtherOptions" Content="Other Admin Options" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" FontSize="18" FontWeight="Bold" Margin="0" Grid.Column="1"/>
             </Grid>
             <Grid x:Name="grid_AdminEntries">
                 <Grid.ColumnDefinitions>
@@ -301,6 +325,7 @@
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
                 <Rectangle x:Name="rec_AdminEntries" Fill="#FFC6E8E8" Stroke="#FF81ADAA" RadiusX="5" RadiusY="5" StrokeThickness="3" Grid.RowSpan="2" Grid.ColumnSpan="3" d:IsLocked="True"/>
+                <Label x:Name="lbl_RegistrantDatabase" Content="Registrant Database" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" FontSize="18" FontWeight="Bold" Grid.ColumnSpan="3" Margin="0" VerticalAlignment="Center"/>
                 <Grid x:Name="grid_AdminEntriesIO" Margin="10" Grid.Row="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="24"/>
