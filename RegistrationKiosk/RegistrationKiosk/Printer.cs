@@ -15,14 +15,14 @@ namespace RegistrationKiosk{
             // Prints a jobfair nametag
 
             var label = (DYMO.Label.Framework.ILabel)null;
-            string text = registrant.Fname + " " + registrant.Lname + "\n\n";
+            string text = registrant.Fname + "\n" + registrant.Lname + "\n";
 
             if (registrant.RegType.ToString() == "Student") {
-                text += registrant.Major + "\n\n";
+                text += registrant.Major + "\n";
                 text += registrant.College;
             }
             else if (registrant.RegType.ToString() == "Employee" ) {
-                text += registrant.Job + "\n\n";
+                text += registrant.Job + "\n";
                 text += registrant.Business;
             }
             else

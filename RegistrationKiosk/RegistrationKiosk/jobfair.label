@@ -19,53 +19,24 @@
 			<Rotation>Rotation0</Rotation>
 			<IsMirrored>False</IsMirrored>
 			<IsVariable>True</IsVariable>
-			<HorizontalAlignment>Left</HorizontalAlignment>
+			<HorizontalAlignment>Center</HorizontalAlignment>
 			<VerticalAlignment>Middle</VerticalAlignment>
 			<TextFitMode>ShrinkToFit</TextFitMode>
 			<UseFullFontHeight>True</UseFullFontHeight>
 			<Verticalized>False</Verticalized>
 			<StyledText>
 				<Element>
-					<String>Fname Lname
-</String>
+					<String>Fname 
+Lname
+Major/Position/
+School/Company</String>
 					<Attributes>
-						<Font Family="Arial" Size="20" Bold="False" Italic="False" Underline="False" Strikeout="False" />
-						<ForeColor Alpha="255" Red="0" Green="0" Blue="0" />
-					</Attributes>
-				</Element>
-				<Element>
-					<String>
-</String>
-					<Attributes>
-						<Font Family="Arial" Size="12" Bold="False" Italic="False" Underline="False" Strikeout="False" />
-						<ForeColor Alpha="255" Red="0" Green="0" Blue="0" />
-					</Attributes>
-				</Element>
-				<Element>
-					<String>Major/Position/Member
-</String>
-					<Attributes>
-						<Font Family="Arial" Size="20" Bold="False" Italic="False" Underline="False" Strikeout="False" />
-						<ForeColor Alpha="255" Red="0" Green="0" Blue="0" />
-					</Attributes>
-				</Element>
-				<Element>
-					<String>
-</String>
-					<Attributes>
-						<Font Family="Arial" Size="12" Bold="False" Italic="False" Underline="False" Strikeout="False" />
-						<ForeColor Alpha="255" Red="0" Green="0" Blue="0" />
-					</Attributes>
-				</Element>
-				<Element>
-					<String>School/Company</String>
-					<Attributes>
-						<Font Family="Arial" Size="20" Bold="False" Italic="False" Underline="False" Strikeout="False" />
+						<Font Family="Arial" Size="36" Bold="False" Italic="False" Underline="False" Strikeout="False" />
 						<ForeColor Alpha="255" Red="0" Green="0" Blue="0" />
 					</Attributes>
 				</Element>
 			</StyledText>
 		</TextObject>
-		<Bounds X="336" Y="475.2" Width="5085.3544921875" Height="2619.21264648438" />
+		<Bounds X="336" Y="475.200012207031" Width="5085.3544921875" Height="2619.21264648438" />
 	</ObjectInfo>
 </DieCutLabel>
