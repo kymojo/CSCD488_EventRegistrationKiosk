@@ -689,6 +689,17 @@ namespace RegistrationKiosk {
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
+                    #region Set _choices Table Query
+                    // =========================
+                    query = @"CREATE TABLE IF NOT EXISTS `choices` (" +
+                            "`questionID` VARCHAR(3), " +
+                            "`answer` TEXT, " +
+                            "PRIMARY KEY(questionID))";
+                    // =========================
+                    #endregion
+                    cmd = new MySqlCommand(query, conn);
+                    cmd.ExecuteNonQuery();
+
                     this.Close();
                     return true;
                 }
@@ -726,6 +737,10 @@ namespace RegistrationKiosk {
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
 
+                    query = @"DROP TABLE IF EXISTS `choices`";
+                    cmd = new MySqlCommand(query, conn);
+                    cmd.ExecuteNonQuery();
+
                     this.Close();
                     return true;
                 }
@@ -753,29 +768,31 @@ namespace RegistrationKiosk {
                 DataSet ds = new DataSet("jobfair");
                 //Creae an Excel application instance
                 Excel.Application excelApp = new Excel.Application();
-                
 
                 //Create an Excel workbook instance and open it from the predefined location
 
                 Excel.Workbook excelWorkBook = excelApp.Workbooks.Add(Type.Missing);
 
-                for (sheetNum = 1; sheetNum < 6; sheetNum++)
+                for (sheetNum = 1; sheetNum < 7; sheetNum++)
                 {
                     switch (sheetNum)
                     {
                         case 1:
-                            tableName = "answers";
+                            tableName = "choices";
                             break;
                         case 2:
-                            tableName = "questions";
+                            tableName = "answers";
                             break;
                         case 3:
-                            tableName = "employee";
+                            tableName = "questions";
                             break;
                         case 4:
-                            tableName = "student";
+                            tableName = "employee";
                             break;
                         case 5:
+                            tableName = "student";
+                            break;
+                        case 6:
                             tableName = "registrant";
                             break;
                     }
@@ -795,7 +812,6 @@ namespace RegistrationKiosk {
 
                 foreach (DataTable table in ds.Tables)
                 {
-                    Console.WriteLine(table.TableName);
                     //Add a new worksheet to workbook with the Datatable name
                     Excel.Worksheet excelWorkSheet = (Excel.Worksheet)excelWorkBook.Sheets.Add();
                     excelWorkSheet.Name = table.TableName;
@@ -818,12 +834,12 @@ namespace RegistrationKiosk {
 
                 try
                 {
-                    Excel.Worksheet worksheet = (Excel.Worksheet)excelWorkBook.Worksheets[7];
+                    Excel.Worksheet worksheet = (Excel.Worksheet)excelWorkBook.Worksheets[8];
                     excelApp.DisplayAlerts = false;
                     worksheet.Delete();
                     excelApp.DisplayAlerts = true;
 
-                    worksheet = (Excel.Worksheet)excelWorkBook.Worksheets[7];
+                    worksheet = (Excel.Worksheet)excelWorkBook.Worksheets[8];
                     excelApp.DisplayAlerts = false;
                     worksheet.Delete();
                     excelApp.DisplayAlerts = true;

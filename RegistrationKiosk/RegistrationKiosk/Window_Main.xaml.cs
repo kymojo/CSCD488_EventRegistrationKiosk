@@ -718,8 +718,14 @@ namespace RegistrationKiosk {
                              "INSTR(Lname, '" + words[i] + "') > 0 or " +
                              "INSTR(Phone, '" + words[i] + "') > 0 or " +
                              "INSTR(Email, '" + words[i] + "') > 0 or " +
-                             "INSTR(Sex, '" + words[i] + "') > 0 or " +
-                             "INSTR(RegType, '" + words[i] + "') > 0)";
+                             "INSTR(RegType, '" + words[i] + "') > 0";
+
+                if ( words[i].Equals("male") || words[i].Equals("female")) {
+                    queryPart += " or Sex = '" + words[i] + "')";
+                }
+                else {
+                    queryPart += ")";
+                }
 
                 if (i != words.Count - 1)
                     queryPart += " and ";

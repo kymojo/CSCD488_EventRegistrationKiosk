@@ -94,7 +94,8 @@ namespace RegistrationKiosk {
                                                  , Missing.Value, Missing.Value, Missing.Value, Missing.Value
                                                 , Missing.Value, Missing.Value, Missing.Value);
                 foreach (Worksheet sheet in book.Worksheets) {
-                    if (sheet.Name.ToLower().Equals("registrant") || sheet.Name.ToLower().Equals("student") || sheet.Name.ToLower().Equals("employee"))
+                    if (sheet.Name.ToLower().Equals("registrant") || sheet.Name.ToLower().Equals("student") || sheet.Name.ToLower().Equals("employee") ||
+                            sheet.Name.ToLower().Equals("questions") || sheet.Name.ToLower().Equals("answers") || sheet.Name.ToLower().Equals("choices"))
                     {
                         // get a range to work with
                         range = sheet.get_Range("A1", Missing.Value);
@@ -134,10 +135,13 @@ namespace RegistrationKiosk {
                                 sqlClient.Insert("student", columns, data);
                             else if (sheetNum == 2)
                                 sqlClient.Insert("employee", columns, data);
-                            else if (sheetNum == 2)
+                            else if (sheetNum == 3)
                                 sqlClient.Insert("questions", columns, data);
-                            else if (sheetNum == 2)
-                                sqlClient.Insert("employee", columns, data);
+                            else if (sheetNum == 4)
+                                sqlClient.Insert("answers", columns, data);
+                            else if (sheetNum == 5)
+                                sqlClient.Insert("choices", columns, data);
+
                         }
 
                         sheetNum++;
