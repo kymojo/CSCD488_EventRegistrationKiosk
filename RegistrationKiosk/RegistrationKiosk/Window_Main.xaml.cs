@@ -56,7 +56,7 @@ namespace RegistrationKiosk {
 
         // Questions
         private ObservableCollection<QuestionEntry> questionsList = new ObservableCollection<QuestionEntry>();
-        private ObservableCollection<string> choicesList = new ObservableCollection<string>();
+        private ObservableCollection<ChoiceEntry> choicesList = new ObservableCollection<ChoiceEntry>();
         bool questionsChanged = false;
 
         // Flag indicating if user used pre-registration code
@@ -76,7 +76,7 @@ namespace RegistrationKiosk {
             ChangeSpecialView();
             datagrid_AdminEntries.DataContext = searchEntries;
             datagrid_QuestionsBox.DataContext = questionsList;
-            listbx_AnswerBox.DataContext = choicesList;
+            datagrid_AnswersBox.DataContext = choicesList;
             dbConnection = new MySQLClient();
             //dbConnection = new MySQLClient("cscd379.com", "jobfair", "jobfair", "ewu2015");
             dbConnection.CreateDatabaseTables();
@@ -708,8 +708,9 @@ namespace RegistrationKiosk {
                 searchEntries.Add(entry);
             }
             // Display results
+            datagrid_AdminEntries.SelectedIndex = -1;
             datagrid_AdminEntries.DataContext = searchEntries;
-            datagrid_AdminEntries.UpdateLayout();
+            //datagrid_AdminEntries.UpdateLayout();
         }
 
         /// <summary>
@@ -1005,13 +1006,26 @@ namespace RegistrationKiosk {
             }
             questionsList = new ObservableCollection<QuestionEntry>(dbConnection.SelectQuestions());
             datagrid_QuestionsBox.DataContext = questionsList;
-            datagrid_QuestionsBox.UpdateLayout();
             MessageBox.Show("Questions loaded!");
+        }
+
+        private void datagrid_QuestionsBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            choicesList.Clear();
+            int index = datagrid_QuestionsBox.SelectedIndex;
+            if (index == -1)
+                return;
+            int count = questionsList[index].GetChoiceCount();
+            for (int i = 0; i < count; i++) {
+                choicesList.Add(questionsList[index].GetChoiceAt(i));
+            }
+            datagrid_AnswersBox.DataContext = choicesList;
         }
 
         private void btn_QuestionBoxSave_Click(object sender, RoutedEventArgs e) {
             // ! ! ASK USER  ! !
+            dbConnection.DeleteQuestions();
             dbConnection.InsertQuestions(new List<QuestionEntry>(questionsList));
+            MessageBox.Show("Questions and Answers successfully written to database!");
         }
 
         private void btn_QuestionsClearResponses_Click(object sender, RoutedEventArgs e) {
@@ -1020,34 +1034,66 @@ namespace RegistrationKiosk {
         }
 
         private void btn_QuestionBoxAdd_Click(object sender, RoutedEventArgs e) {
-            string text = txtbx_QuestionAnswerInput.Text;
-            if (text != "") {
-                questionsList.Clear();
-                questionsList.Add(new QuestionEntry(text));
-                datagrid_QuestionsBox.DataContext = questionsList;
-                datagrid_QuestionsBox.UpdateLayout();
-            }
-                
-        }
-
-        private void btn_QuestionBoxEdit_Click(object sender, RoutedEventArgs e) {
-            
+            questionsList.Add(new QuestionEntry("<<NEW QUESTION>>"));
+            int index = questionsList.Count - 1;
+            datagrid_QuestionsBox.DataContext = questionsList;
+            datagrid_QuestionsBox.Focus();
+            datagrid_QuestionsBox.SelectedIndex = index;
+            datagrid_QuestionsBox.CurrentCell = new DataGridCellInfo(datagrid_QuestionsBox.Items[index], datagrid_QuestionsBox.Columns[0]);
+            datagrid_QuestionsBox.BeginEdit();
         }
 
         private void btn_QuestionBoxRemove_Click(object sender, RoutedEventArgs e) {
-
+            int index = datagrid_QuestionsBox.SelectedIndex;
+            if (index == -1) {
+                MessageBox.Show("No question selected!");
+                return;
+            }
+            // ! ! ASK USER  ! !
+            questionsList.RemoveAt(index);
+            choicesList.Clear();
+            datagrid_QuestionsBox.DataContext = questionsList;
+            datagrid_AnswersBox.DataContext = choicesList;
+            datagrid_QuestionsBox.Focus();
+            if (index != 0)
+                datagrid_QuestionsBox.SelectedIndex = index - 1;
+            else
+                datagrid_QuestionsBox.SelectedIndex = 0;
         }
 
         private void btn_AnswerBoxAdd_Click(object sender, RoutedEventArgs e) {
+            int index = datagrid_QuestionsBox.SelectedIndex;
+            if (index == -1)
+                return;
+            questionsList[index].AddNewChoice("<<NEW CHOICE>>");
 
-        }
-
-        private void btn_AnswerBoxEdit_Click(object sender, RoutedEventArgs e) {
-
+            choicesList.Clear();
+            int count = questionsList[index].GetChoiceCount();
+            for (int i = 0; i < count; i++) {
+                choicesList.Add(questionsList[index].GetChoiceAt(i));
+            }
+            datagrid_AnswersBox.DataContext = choicesList;
+            datagrid_AnswersBox.Focus();
+            datagrid_AnswersBox.SelectedIndex = count - 1;
+            datagrid_AnswersBox.CurrentCell = new DataGridCellInfo(datagrid_AnswersBox.Items[count - 1], datagrid_AnswersBox.Columns[0]);
+            datagrid_AnswersBox.BeginEdit();
         }
 
         private void btn_AnswerBoxRemove_Click(object sender, RoutedEventArgs e) {
-
+            int q_index = datagrid_QuestionsBox.SelectedIndex;
+            int a_index = datagrid_AnswersBox.SelectedIndex;
+            if (a_index == -1) {
+                MessageBox.Show("No answer selected!");
+                return;
+            }
+            choicesList.RemoveAt(a_index);
+            questionsList[q_index].RemoveChoiceAt(a_index);
+            datagrid_AnswersBox.DataContext = choicesList;
+            datagrid_AnswersBox.Focus();
+            if (a_index != 0)
+                datagrid_AnswersBox.SelectedIndex = a_index - 1;
+            else
+                datagrid_AnswersBox.SelectedIndex = 0;
         }
         #endregion
         // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -1165,8 +1211,9 @@ namespace RegistrationKiosk {
         /// Change selection event for Admin Entries datagrid on Admin page.
         /// </summary>
         private void datagrid_AdminEntries_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            int index = datagrid_AdminEntries.SelectedIndex;
             // Make sure selected index is valid (changes between searches)
-            if (datagrid_AdminEntries.SelectedIndex >= searchEntries.Count - 1)
+            if (index > searchEntries.Count - 1 || index == -1)
                 return;
             // Sets admin code box to entry selected
             string code = searchEntries.ElementAt<RegistrantEntry>(datagrid_AdminEntries.SelectedIndex).Code;

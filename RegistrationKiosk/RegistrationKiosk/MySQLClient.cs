@@ -95,9 +95,10 @@ namespace RegistrationKiosk {
                 conn.Open();
                 return true;
             }
-            catch {
+            catch (Exception e) {
                 //Here you could add a message box or something like that so you know if there were an error.
                 Console.WriteLine("Failed to open");
+                Console.WriteLine(e.Message);
                 return false;
             }
         }
@@ -211,11 +212,11 @@ namespace RegistrationKiosk {
             try {
                 MySqlCommand cmd;
                 if (this.Open()) {
-                    int i = 0, ii, choiceCount;
+                    int i = 0, ii, choiceCount, questionsCount = questions.Count;
                     string questionValues, query, choiceValues;
-                    while (i < questions.Count) {
+                    while (i < questionsCount) {
                         // The Question
-                        questionValues = "'" + (i + 1) + "', '" + questions[i].GetQuestionText() + "'";
+                        questionValues = "'" + (i + 1) + "', '" + questions[i].questionText.Replace("'","''") + "'";
                         query = "INSERT INTO questions (questionID, question) VALUES(" + questionValues + ");";
                         cmd = new MySqlCommand(query, conn);
                         cmd.ExecuteNonQuery();
@@ -223,8 +224,8 @@ namespace RegistrationKiosk {
                         choiceCount = questions[i].GetChoiceCount();
                         ii = 0;
                         while (ii < choiceCount) {
-                            choiceValues = "'" + (i + 1) + "', '" + questions[i].GetChoiceAt(ii) + "'";
-                            query = "INSERT INTO choices (questionID, answer) VALUES(" + questionValues + ");";
+                            choiceValues = "'" + (i + 1) + "', '" + questions[i].GetChoiceAt(ii).choiceText.Replace("'", "''") + "'";
+                            query = "INSERT INTO choices (questionID, answer) VALUES(" + choiceValues + ");";
                             cmd = new MySqlCommand(query, conn);
                             cmd.ExecuteNonQuery();
                             ii++;
@@ -434,7 +435,7 @@ namespace RegistrationKiosk {
         }
 
         /// <summary>
-        /// Deletes a question based on id
+        /// Deletes all questions and choices in database
         /// </summary>
         /// <param name="id"></param>
         public void DeleteQuestions() {
@@ -525,10 +526,8 @@ namespace RegistrationKiosk {
             MySqlCommand cmd;
             MySqlDataReader dataReader;
 
-            if (this.Open())
-            {
-                try
-                {
+            if (this.Open()) {
+                try {
                     // GENERAL REGISTRANT INFO
                     string query = "SELECT * FROM registrant WHERE " + WHERE + ";";
                     cmd = new MySqlCommand(query, conn);
@@ -591,8 +590,7 @@ namespace RegistrationKiosk {
                     }
                     dataReader.Close();
                     
-                }
-                catch { }
+                } catch { }
                 this.Close();
             }
             return regList;
@@ -633,6 +631,7 @@ namespace RegistrationKiosk {
                             result[i].AddNewChoice((string)dataReader[1]);
                     }
                     dataReader.Close();
+                    this.Close();
                 } catch {
                     this.Close();
                     result = null;
@@ -659,7 +658,7 @@ namespace RegistrationKiosk {
 
             string query = "SELECT Count(*) FROM " + table + "";
             int Count = -1;
-            if (this.Open() == true) {
+            if (this.Open()) {
                 try {
                     MySqlCommand cmd = new MySqlCommand(query, conn);
                     Count = int.Parse(cmd.ExecuteScalar() + "");
@@ -828,8 +827,7 @@ namespace RegistrationKiosk {
             string tableName = "";
             string query = "";
 
-            if (this.Open())
-            {
+            if (this.Open()) {
                 MySqlDataAdapter dataAdapter;
                 DataSet ds = new DataSet("jobfair");
                 //Creae an Excel application instance
@@ -839,10 +837,8 @@ namespace RegistrationKiosk {
 
                 Excel.Workbook excelWorkBook = excelApp.Workbooks.Add(Type.Missing);
 
-                for (sheetNum = 1; sheetNum < 7; sheetNum++)
-                {
-                    switch (sheetNum)
-                    {
+                for (sheetNum = 1; sheetNum < 7; sheetNum++) {
+                    switch (sheetNum) {
                         case 1:
                             tableName = "choices";
                             break;
@@ -876,30 +872,24 @@ namespace RegistrationKiosk {
                 dataAdapter.FillSchema(ds, SchemaType.Source);
                 dataAdapter.Fill(ds, "data");
 
-                foreach (DataTable table in ds.Tables)
-                {
+                foreach (DataTable table in ds.Tables) {
                     //Add a new worksheet to workbook with the Datatable name
                     Excel.Worksheet excelWorkSheet = (Excel.Worksheet)excelWorkBook.Sheets.Add();
                     excelWorkSheet.Name = table.TableName;
 
-                    for (int i = 1; i < table.Columns.Count + 1; i++)
-                    {
+                    for (int i = 1; i < table.Columns.Count + 1; i++) {
                         excelWorkSheet.Cells[1, i] = table.Columns[i - 1].ColumnName;
                     }
 
-                    for (int j = 0; j < table.Rows.Count; j++)
-                    {
-                        for (int k = 0; k < table.Columns.Count; k++)
-                        {
+                    for (int j = 0; j < table.Rows.Count; j++) {
+                        for (int k = 0; k < table.Columns.Count; k++) {
                             excelWorkSheet.Cells[j + 2, k + 1] = table.Rows[j].ItemArray[k].ToString();
                         }
                     }
-
                     excelWorkSheet.Cells.Columns.AutoFit();
                 }
 
-                try
-                {
+                try {
                     Excel.Worksheet worksheet = (Excel.Worksheet)excelWorkBook.Worksheets[8];
                     excelApp.DisplayAlerts = false;
                     worksheet.Delete();
@@ -909,12 +899,7 @@ namespace RegistrationKiosk {
                     excelApp.DisplayAlerts = false;
                     worksheet.Delete();
                     excelApp.DisplayAlerts = true;
-                }
-                catch (Exception)
-                {
-                    //It doesn't matter if this failed
-                }
-
+                } catch  { }
 
                 excelWorkBook.SaveAs(filename, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
                     Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);

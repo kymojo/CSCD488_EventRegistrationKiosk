@@ -6,14 +6,20 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 
 namespace RegistrationKiosk {
+    public class ChoiceEntry {
+        public string choiceText { get; set; }
+        public ChoiceEntry(string choiceText) {
+            this.choiceText = choiceText;
+        }
+    }
     public class QuestionEntry {
 
         //===========================================================================
         #region Variables
         //===========================================================================
-        
-        string questionText;
-        List<string> choices = new List<string>();
+
+        public string questionText { get; set; }
+        List<ChoiceEntry> choices = new List<ChoiceEntry>();
 
         #endregion
         //===========================================================================
@@ -35,32 +41,29 @@ namespace RegistrationKiosk {
         //===========================================================================
         #region Get/Set
         //===========================================================================
-        public string GetQuestionText() {
-            return questionText;
-        }
         
-        public string GetChoiceAt(int index) {
-            return choices[index];
+        public ChoiceEntry GetChoiceAt(int index) {
+            if (index >= 0 && index < choices.Count)
+                return choices[index];
+            return null;
         }
 
         public int GetChoiceCount() {
             return choices.Count;
         }
 
-        public void ChangeText(string newText) {
-            questionText = newText;
-        }
-
         public void AddNewChoice(string newChoice) {
-            choices.Add(newChoice);
+            choices.Add(new ChoiceEntry(newChoice));
         }
 
-        public void RemoveChoice(int index) {
-            choices.RemoveAt(index);
+        public void RemoveChoiceAt(int index) {
+            if (index >= 0 && index < choices.Count)
+                choices.RemoveAt(index);
         }
 
-        public void EditChoice(int index, string newChoice) {
-            choices[index] = newChoice;
+        public void EditChoiceAt(int index, string newChoice) {
+            if (index >= 0 && index < choices.Count)
+                choices[index] = new ChoiceEntry(newChoice);
         }
         #endregion
         //===========================================================================
