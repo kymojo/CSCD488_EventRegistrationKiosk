@@ -295,14 +295,16 @@
                     <Button x:Name="btn_AnswerBoxRemove" Content="Remove Answer" HorizontalAlignment="Center" Margin="66,0,67,10" VerticalAlignment="Bottom" Width="100" Height="20" Grid.Column="1" Grid.Row="2" Click="btn_AnswerBoxRemove_Click"/>
                     <Label x:Name="lbl_Questions" Content="Questions" HorizontalAlignment="Left" Margin="10,0,0,0" Width="68" Height="26" VerticalAlignment="Top"/>
                     <Label x:Name="lbl_Answers" Content="Answers" HorizontalAlignment="Left" Width="68" Height="26" VerticalAlignment="Top" Grid.Column="1"/>
-                    <DataGrid x:Name="datagrid_QuestionsBox" Margin="10,0,0,10" Grid.Row="1" HeadersVisibility="None" ItemsSource="{Binding}" FrozenColumnCount="1" AutoGenerateColumns="False" GridLinesVisibility="None" ColumnWidth="500" SelectionChanged="datagrid_QuestionsBox_SelectionChanged">
+                    <DataGrid x:Name="datagrid_QuestionsBox" HeadersVisibility="None" ItemsSource="{Binding}" AutoGenerateColumns="False" ColumnWidth="Auto" SelectionChanged="datagrid_QuestionsBox_SelectionChanged" UseLayoutRounding="False" CanUserSortColumns="False" CanUserReorderColumns="False" GridLinesVisibility="Horizontal" Margin="10,0,232,10" Grid.Row="1" Grid.ColumnSpan="2">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Binding="{Binding questionText}"/>
+                            <DataGridTextColumn Binding="{Binding questionText}" MinWidth="220"/>
+                            <DataGridTextColumn MinWidth="0" MaxWidth="0"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <DataGrid x:Name="datagrid_AnswersBox" Margin="0,0,11,10" Grid.Row="1" HeadersVisibility="None" ItemsSource="{Binding}" FrozenColumnCount="1" AutoGenerateColumns="False" GridLinesVisibility="None" ColumnWidth="500" Grid.Column="1">
+                    <DataGrid x:Name="datagrid_AnswersBox" Margin="1,0,10,10" HeadersVisibility="None" ItemsSource="{Binding}" AutoGenerateColumns="False" GridLinesVisibility="Horizontal" ColumnWidth="Auto" CanUserReorderColumns="False" CanUserSortColumns="False" Grid.Column="1" Grid.Row="1">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Binding="{Binding choiceText}"/>
+                            <DataGridTextColumn Binding="{Binding choiceText}" MinWidth="220"/>
+                            <DataGridTextColumn MinWidth="0" MaxWidth="0"/>
                         </DataGrid.Columns>
                     </DataGrid>
 
