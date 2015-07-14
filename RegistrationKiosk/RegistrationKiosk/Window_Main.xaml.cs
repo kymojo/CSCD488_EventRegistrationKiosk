@@ -1243,6 +1243,18 @@ namespace RegistrationKiosk {
         }
 
         #endregion
+
+        /// <summary>
+        /// Click event for Print button on Admin page.
+        /// </summary>
+        private void btn_AdminEntriesPrint_Click(object sender, RoutedEventArgs e){
+            try{
+                printer.Print(searchEntries.ElementAt<RegistrantEntry>(datagrid_AdminEntries.SelectedIndex));
+            }
+            catch(Exception)
+            {}
+ 
+        }
         //---------------------------------------------------------------------------
 
         #endregion

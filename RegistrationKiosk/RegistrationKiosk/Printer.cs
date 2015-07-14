@@ -26,7 +26,7 @@ namespace RegistrationKiosk{
                 text += registrant.Business;
             }
             else
-                text += "Community Member";
+                text += "Community\nMember";
 
             try {
                 label = DYMO.Label.Framework.Label.Open("../../jobfair.label");
@@ -53,6 +53,9 @@ namespace RegistrationKiosk{
                             try
                             {
                                 label.Print("DYMO LabelWriter 450 DUO Label");
+
+                                MessageBox.Show("Your name tag has printed.\n\n" +
+                                                "Enjoy the event!");
                             }
                             catch (Exception)
                             {
