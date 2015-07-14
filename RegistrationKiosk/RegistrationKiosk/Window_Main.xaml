@@ -20,15 +20,15 @@
         <Button x:Name="btn_AdminMenu" Content="Admin" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="56" Height="36" Click="btn_AdminMenu_Click"/>
 
         <!-- REGISTRATION GRID -->
-        <Grid x:Name="grid_Registration" Grid.Column="1" Grid.Row="1" Visibility="Visible" d:IsHidden="True">
+        <Grid x:Name="grid_Registration" Grid.Column="1" Grid.Row="1" Visibility="Visible">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="203"/>
+                <RowDefinition Height="10*"/>
                 <RowDefinition Height="315"/>
-                <RowDefinition/>
+                <RowDefinition Height="5*"/>
             </Grid.RowDefinitions>
 
             <!-- PREREGISTRATION GRID -->
@@ -42,14 +42,15 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="34"/>
-                    <RowDefinition/>
+                    <RowDefinition Height="126*"/>
+                    <RowDefinition Height="115*"/>
                 </Grid.RowDefinitions>
-                <Rectangle x:Name="rec_RegPre" Fill="#FFC6E8E8" RadiusY="5" RadiusX="5" Stroke="#FF81ADAA" StrokeThickness="3" Grid.RowSpan="2" Grid.ColumnSpan="5" d:IsLocked="True"/>
+                <Rectangle x:Name="rec_RegPre" Fill="#FFC6E8E8" RadiusY="5" RadiusX="5" Stroke="#FF81ADAA" StrokeThickness="3" Grid.RowSpan="3" Grid.ColumnSpan="5" d:IsLocked="True"/>
                 <Label x:Name="lbl_RegPre_Header" Content="If you preregistered online" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" FontSize="18" Grid.ColumnSpan="5" FontWeight="Bold"/>
                 <Label x:Name="lbl_RegPre_Or" Content="OR" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="1" FontWeight="Bold" FontSize="18"/>
 
                 <!-- REGISTRATION CODE GRID -->
-                <Grid x:Name="grid_RegCode" Grid.Column="1" Margin="0" Grid.Row="1" Height="100" VerticalAlignment="Center" HorizontalAlignment="Center" Width="262">
+                <Grid x:Name="grid_RegCode" Grid.Column="1" Margin="10,0" Grid.Row="1" Height="100" VerticalAlignment="Center" HorizontalAlignment="Center" Width="262">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="14*"/>
                         <ColumnDefinition Width="5*"/>
@@ -67,7 +68,7 @@
                 </Grid>
 
                 <!-- BARCODE GRID -->
-                <Grid x:Name="grid_RegBarcode" Grid.Column="3" Margin="0" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Height="100">
+                <Grid x:Name="grid_RegBarcode" Grid.Column="3" Margin="2,0" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Height="100" Width="278">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="135"/>
@@ -89,7 +90,7 @@
             <Rectangle x:Name="rec_RegGeneral" Fill="#FFC6E8E8" RadiusY="5" RadiusX="5" Stroke="#FF81ADAA" StrokeThickness="3" Grid.Row="1"/>
 
             <!-- GENERAL INFORMATION GRID -->
-            <Grid x:Name="grid_RegGeneral" Grid.Row="1" HorizontalAlignment="Center" Width="322">
+            <Grid x:Name="grid_RegGeneral" Grid.Row="1" HorizontalAlignment="Center" Width="322" Margin="125,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
@@ -100,7 +101,7 @@
                     <RowDefinition Height="5*"/>
                     <RowDefinition Height="6*"/>
                 </Grid.RowDefinitions>
-                <Label x:Name="lbl_RegGeneral" Content="General Information" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" FontSize="18" FontWeight="Bold" Grid.ColumnSpan="2"/>
+                <Label x:Name="lbl_RegGeneral" Content="Register Here!" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" FontSize="18" FontWeight="Bold" Grid.ColumnSpan="2"/>
 
                 <!-- NAME GRID -->
                 <Grid x:Name="grid_RegName" Margin="10,0" Grid.Row="1" Grid.ColumnSpan="2">
@@ -163,7 +164,7 @@
             <Rectangle x:Name="rec_RegSpecial" Fill="#FFC6E8E8" RadiusY="5" RadiusX="5" Stroke="#FF81ADAA" StrokeThickness="3" Grid.Column="1" Grid.Row="1" d:IsLocked="True"/>
 
             <!-- STUDENT INFORMATION SECTION -->
-            <Grid x:Name="grid_RegStudent" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" Width="322">
+            <Grid x:Name="grid_RegStudent" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" Width="322" Margin="125,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="34"/>
                     <RowDefinition Height="112"/>
@@ -245,7 +246,8 @@
             <!-- FOOTER GRID -->
             <Grid x:Name="grid_RegFooter" Grid.Row="2" Grid.ColumnSpan="2">
                 <Rectangle x:Name="rec_RegFooter" Fill="#FFC6E8E8" RadiusY="5" RadiusX="5" Stroke="#FF81ADAA" StrokeThickness="3" d:IsLocked="True"/>
-                <Button x:Name="btn_Checkin" Content="Check In" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="120" Height="60" FontSize="24" FontWeight="Bold" Click="btn_Checkin_Click"/>
+                <Button x:Name="btn_Checkin" Content="Check In" HorizontalAlignment="Center" Margin="0,30,0,0" VerticalAlignment="Center" Width="120" Height="60" FontSize="24" FontWeight="Bold" Click="btn_Checkin_Click"/>
+                <Label Content="All done?" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="24"/>
             </Grid>
             <Grid x:Name="grid_EditFooter" Grid.Row="2" Grid.ColumnSpan="2" d:IsHidden="True">
                 <Grid.ColumnDefinitions>
@@ -259,7 +261,7 @@
                 <Button x:Name="btn_EditCancel" Content="Cancel" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="120" Height="60" FontSize="24" FontWeight="Bold" Grid.Column="2" Click="btn_EditCancel_Click"/>
             </Grid>
         </Grid>
-        <Grid x:Name="grid_Admin" Grid.Column="1" Grid.Row="1">
+        <Grid x:Name="grid_Admin" Grid.Column="1" Grid.Row="1" d:IsHidden="True">
             <Grid.RowDefinitions>
                 <RowDefinition Height="237*"/>
                 <RowDefinition Height="357*"/>

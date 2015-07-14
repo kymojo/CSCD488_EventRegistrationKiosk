@@ -6,12 +6,18 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 
 namespace RegistrationKiosk {
+
+    // Choice Entry Class, used in QuestionEntry (Used for easier Datagrid syncing)
     public class ChoiceEntry {
+        // Variable
         public string choiceText { get; set; }
+        // Constructor
         public ChoiceEntry(string choiceText) {
             this.choiceText = choiceText;
         }
     }
+
+    // Question Entry Class
     public class QuestionEntry {
 
         //===========================================================================
@@ -39,31 +45,43 @@ namespace RegistrationKiosk {
         }
         #endregion
         //===========================================================================
-        #region Get/Set
+        #region Methods
         //===========================================================================
         
+        /// <summary>
+        /// Gets the choice at a given index.
+        /// </summary>
+        /// <param name="index">Index of requested choice (0 based)</param>
+        /// <returns>Returns requested ChoiceEntry, otherwise returns NULL</returns>
         public ChoiceEntry GetChoiceAt(int index) {
             if (index >= 0 && index < choices.Count)
                 return choices[index];
             return null;
         }
 
+        /// <summary>
+        /// Returns the number of choices the question has
+        /// </summary>
+        /// <returns></returns>
         public int GetChoiceCount() {
             return choices.Count;
         }
 
+        /// <summary>
+        /// Adds a new choice to the question
+        /// </summary>
+        /// <param name="newChoice">Text for the choice</param>
         public void AddNewChoice(string newChoice) {
             choices.Add(new ChoiceEntry(newChoice));
         }
 
+        /// <summary>
+        /// Removes a choice at a given index
+        /// </summary>
+        /// <param name="index">Index to remove choice from (0 based)</param>
         public void RemoveChoiceAt(int index) {
             if (index >= 0 && index < choices.Count)
                 choices.RemoveAt(index);
-        }
-
-        public void EditChoiceAt(int index, string newChoice) {
-            if (index >= 0 && index < choices.Count)
-                choices[index] = new ChoiceEntry(newChoice);
         }
         #endregion
         //===========================================================================

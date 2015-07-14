@@ -407,8 +407,9 @@ namespace RegistrationKiosk {
 
                 #region College
                 // =========================
-                if (combo_Colleges.SelectedIndex == -1) {
-                    MessageBox.Show("Please indicate college.");
+                regex_pattern = @"^[\w\s\d.+-]{2,24}$";
+                if (!Regex.IsMatch(txtbx_Major.Text, regex_pattern)) {
+                    MessageBox.Show("Invalid college.\nSelect from the list or manually enter.\nColleges must be under 24 characters long.");
                     rec_RegStudMore.Stroke = Brushes.Red;
                     return false;
                 }
@@ -419,7 +420,7 @@ namespace RegistrationKiosk {
                 // =========================
                 regex_pattern = @"^[\w\s\d.+-]{2,24}$";
                 if (!Regex.IsMatch(txtbx_Major.Text, regex_pattern)) {
-                    MessageBox.Show("Invalid major!/nMajors must be under 24 characters long.");
+                    MessageBox.Show("Invalid major!\nMajors must be under 24 characters long.");
                     rec_RegStudMore.Stroke = Brushes.Red;
                     return false;
                 }
@@ -987,54 +988,91 @@ namespace RegistrationKiosk {
             string filename = ioXL.SelectSaveFile();
             ioXL.ExportExcel(filename);
         }
+
+        /// <summary>
+        /// Click event for Print button on Admin page.
+        /// </summary>
+        private void btn_AdminEntriesPrint_Click(object sender, RoutedEventArgs e) {
+            try {
+                printer.Print(searchEntries.ElementAt<RegistrantEntry>(datagrid_AdminEntries.SelectedIndex));
+            } catch (Exception) { }
+
+        }
         #endregion
         // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
         #region ADMIN FORM - QUESTION DATABASE BUTTONS
+
+        /// <summary>
+        /// Click event for Load Questions button on Admin page.
+        /// </summary>
         private void btn_QuestionBoxLoad_Click(object sender, RoutedEventArgs e) {
-            /*
-            if (!questionsChanged) {
-                MessageBoxResult result = MessageBox.Show("This will erase all recent changes and load old questions and choices. Continue?", "Reload", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (result == MessageBoxResult.No) {
-                    return;
-                }      
-            }
-            */
-            // ! ! ASK USER  ! !
+            // Ask user if they are sure
+            MessageBoxResult result = MessageBox.Show("This will erase all unsaved changes and load old questions and answers. Continue?", "Reload", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.No)
+                return;
+            // Check if database is connected
             if (!dbConnection.IsConnected()) {
                 MessageBox.Show("Database not connected!");
                 return;
             }
+            // Load Questions
             questionsList = new ObservableCollection<QuestionEntry>(dbConnection.SelectQuestions());
             datagrid_QuestionsBox.DataContext = questionsList;
             MessageBox.Show("Questions loaded!");
         }
 
+        /// <summary>
+        /// Selection changed event for Questions box on Admin page
+        /// </summary>
         private void datagrid_QuestionsBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            // Clear choices list
             choicesList.Clear();
+            // Set question index
             int index = datagrid_QuestionsBox.SelectedIndex;
             if (index == -1)
                 return;
+            // Add question choices to choices list
             int count = questionsList[index].GetChoiceCount();
             for (int i = 0; i < count; i++) {
                 choicesList.Add(questionsList[index].GetChoiceAt(i));
             }
+            // Sync choice datagrid
             datagrid_AnswersBox.DataContext = choicesList;
         }
 
+        /// <summary>
+        /// Click event for Save Questions button on Admin page.
+        /// </summary>
         private void btn_QuestionBoxSave_Click(object sender, RoutedEventArgs e) {
-            // ! ! ASK USER  ! !
+            // Ask user if they are sure
+            MessageBoxResult result = MessageBox.Show("This will overwrite all old questions and answers. Continue?", "Overwrite", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.No)
+                return;
+            // Delete old questions and save new questions
             dbConnection.DeleteQuestions();
             dbConnection.InsertQuestions(new List<QuestionEntry>(questionsList));
             MessageBox.Show("Questions and Answers successfully written to database!");
         }
 
+        /// <summary>
+        /// Click event for Clear Responses button on Admin page.
+        /// </summary>
         private void btn_QuestionsClearResponses_Click(object sender, RoutedEventArgs e) {
-            // ! ! ASK USER  ! !
+            // Ask user if they are sure
+            MessageBoxResult result = MessageBox.Show("This will clear the database of all registrant question responses. Continue?", "Clear Responses", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.No)
+                return;
+            // Delete registrant responses database
             dbConnection.DeleteAnswers();
         }
 
+        /// <summary>
+        /// Click event for Add Question button on Admin page.
+        /// </summary>
         private void btn_QuestionBoxAdd_Click(object sender, RoutedEventArgs e) {
-            questionsList.Add(new QuestionEntry("<<NEW QUESTION>>"));
+            // Add a new question
+            questionsList.Add(new QuestionEntry("<< NEW QUESTION >>"));
+            // Highlight and begin editing new question
             int index = questionsList.Count - 1;
             datagrid_QuestionsBox.DataContext = questionsList;
             datagrid_QuestionsBox.Focus();
@@ -1043,17 +1081,28 @@ namespace RegistrationKiosk {
             datagrid_QuestionsBox.BeginEdit();
         }
 
+        /// <summary>
+        /// Click event for Remove Question button on Admin page.
+        /// </summary>
         private void btn_QuestionBoxRemove_Click(object sender, RoutedEventArgs e) {
+            // Ensure a question is selected
             int index = datagrid_QuestionsBox.SelectedIndex;
             if (index == -1) {
                 MessageBox.Show("No question selected!");
                 return;
             }
-            // ! ! ASK USER  ! !
+            // Ask user if they are sure
+            if (choicesList.Count > 0) {
+                MessageBoxResult result = MessageBox.Show("Are you sure you want to delete this question?", "Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.No)
+                    return;
+            }
+            // Remove question
             questionsList.RemoveAt(index);
             choicesList.Clear();
             datagrid_QuestionsBox.DataContext = questionsList;
             datagrid_AnswersBox.DataContext = choicesList;
+            // Set focus to another question
             datagrid_QuestionsBox.Focus();
             if (index != 0)
                 datagrid_QuestionsBox.SelectedIndex = index - 1;
@@ -1061,34 +1110,47 @@ namespace RegistrationKiosk {
                 datagrid_QuestionsBox.SelectedIndex = 0;
         }
 
+        /// <summary>
+        /// Click event for Add Answer button on Admin page.
+        /// </summary>
         private void btn_AnswerBoxAdd_Click(object sender, RoutedEventArgs e) {
+            // Add new choice to selected question
             int index = datagrid_QuestionsBox.SelectedIndex;
             if (index == -1)
                 return;
             questionsList[index].AddNewChoice("<<NEW CHOICE>>");
-
+            // Clear choices list and repopulate
             choicesList.Clear();
             int count = questionsList[index].GetChoiceCount();
             for (int i = 0; i < count; i++) {
                 choicesList.Add(questionsList[index].GetChoiceAt(i));
             }
+            // Sync datagrid
             datagrid_AnswersBox.DataContext = choicesList;
+            // Focus on new choice
             datagrid_AnswersBox.Focus();
             datagrid_AnswersBox.SelectedIndex = count - 1;
             datagrid_AnswersBox.CurrentCell = new DataGridCellInfo(datagrid_AnswersBox.Items[count - 1], datagrid_AnswersBox.Columns[0]);
             datagrid_AnswersBox.BeginEdit();
         }
 
+        /// <summary>
+        /// Click event for Remove Answer button on Admin page.
+        /// </summary>
         private void btn_AnswerBoxRemove_Click(object sender, RoutedEventArgs e) {
+            // Make sure answer is selected
             int q_index = datagrid_QuestionsBox.SelectedIndex;
             int a_index = datagrid_AnswersBox.SelectedIndex;
             if (a_index == -1) {
                 MessageBox.Show("No answer selected!");
                 return;
             }
+            // Remove answer
             choicesList.RemoveAt(a_index);
             questionsList[q_index].RemoveChoiceAt(a_index);
+            // Resync datagrid
             datagrid_AnswersBox.DataContext = choicesList;
+            // Focus on another answer
             datagrid_AnswersBox.Focus();
             if (a_index != 0)
                 datagrid_AnswersBox.SelectedIndex = a_index - 1;
@@ -1243,18 +1305,6 @@ namespace RegistrationKiosk {
         }
 
         #endregion
-
-        /// <summary>
-        /// Click event for Print button on Admin page.
-        /// </summary>
-        private void btn_AdminEntriesPrint_Click(object sender, RoutedEventArgs e){
-            try{
-                printer.Print(searchEntries.ElementAt<RegistrantEntry>(datagrid_AdminEntries.SelectedIndex));
-            }
-            catch(Exception)
-            {}
- 
-        }
         //---------------------------------------------------------------------------
 
         #endregion
