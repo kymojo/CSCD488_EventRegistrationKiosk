@@ -819,6 +819,8 @@ namespace RegistrationKiosk {
                 MessageBoxResult result = MessageBox.Show("Is this the information you registered with?", "Pre-Reg Validation", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result == MessageBoxResult.No) {
                     ClearRegistrationForm();
+                } else {
+                    MessageBox.Show("After reviewing your information,\nclick the Check In button.", "Next...", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             } else {
                 validCodeEntered = false;
