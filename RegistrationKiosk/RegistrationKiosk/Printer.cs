@@ -54,8 +54,8 @@ namespace RegistrationKiosk{
                             {
                                 label.Print("DYMO LabelWriter 450 DUO Label");
 
-                                MessageBox.Show("Your name tag has printed.\n\n" +
-                                                "Enjoy the event!");
+                                MessageBox.Show("Thank you for registering!\n\n" +
+                                                "Retrieve your name tag and enjoy the event!");
                             }
                             catch (Exception)
                             {

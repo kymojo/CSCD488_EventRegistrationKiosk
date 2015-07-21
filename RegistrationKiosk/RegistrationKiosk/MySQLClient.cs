@@ -870,7 +870,7 @@ namespace RegistrationKiosk {
 
                 dataAdapter = new MySqlDataAdapter(query, conn);
                 dataAdapter.FillSchema(ds, SchemaType.Source);
-                dataAdapter.Fill(ds, "data");
+                dataAdapter.Fill(ds, "view");
 
                 foreach (DataTable table in ds.Tables) {
                     //Add a new worksheet to workbook with the Datatable name
