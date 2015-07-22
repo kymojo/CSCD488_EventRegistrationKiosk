@@ -77,7 +77,6 @@ namespace RegistrationKiosk {
             datagrid_QuestionsBox.DataContext = questionsList;
             datagrid_AnswersBox.DataContext = choicesList;
             dbConnection = new MySQLClient();
-            //dbConnection = new MySQLClient("cscd379.com", "jobfair", "jobfair", "ewu2015");
             dbConnection.CreateDatabaseTables();
             ioXL = new IOExcel(dbConnection);
         }
