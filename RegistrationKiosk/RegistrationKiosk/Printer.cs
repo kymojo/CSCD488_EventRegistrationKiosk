@@ -11,8 +11,12 @@ namespace RegistrationKiosk{
 
     public class Printer{
 
+        /// <summary>
+        /// Prints a jobfair nametag
+        /// </summary>
+        /// <param name="registrant">The registrant to print</param>
         public void Print(RegistrantEntry registrant){
-            // Prints a jobfair nametag
+            
 
             var label = (DYMO.Label.Framework.ILabel)null;
             string text = registrant.Fname + "\n" + registrant.Lname + "\n";

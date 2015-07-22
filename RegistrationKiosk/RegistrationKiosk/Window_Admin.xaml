@@ -16,12 +16,12 @@
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Label x:Name="lbl_AdminUser" Content="Admin User" HorizontalAlignment="Center" Margin="8,10,5,11" VerticalAlignment="Center" Height="26" Width="72"/>
-            <Label x:Name="lbl_AdminPass" Content="Password" HorizontalAlignment="Center" Margin="14,11,11,10" VerticalAlignment="Center" Grid.Row="1" Height="26" Width="60"/>
+            <Label x:Name="lbl_AdminUser" Content="Admin User" HorizontalAlignment="Center" Margin="8,10,5,11" VerticalAlignment="Center" Height="26" Width="72" Foreground="Black"/>
+            <Label x:Name="lbl_AdminPass" Content="Password" HorizontalAlignment="Center" Margin="14,11,11,10" VerticalAlignment="Center" Grid.Row="1" Height="26" Width="60" Foreground="Black"/>
             <TextBox x:Name="txtbx_Admin" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="16,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="150" IsEnabled="False" Text="admin"/>
             <PasswordBox x:Name="pass_Admin" HorizontalAlignment="Left" Margin="16,0,0,0" VerticalAlignment="Center" Width="150" Grid.Row="1" Grid.Column="1" Height="23" KeyDown="pass_Admin_PressEnter"/>
-            <Button x:Name="btn_AdminOk" Content="Ok" HorizontalAlignment="Center" Margin="0" Grid.Row="2" VerticalAlignment="Center" Width="75" Grid.ColumnSpan="2" Click="btn_AdminOk_Click"/>
-            <Button x:Name="btn_AdminCancel" Content="Cancel" HorizontalAlignment="Center" Margin="0,0,2,0" Grid.Row="2" VerticalAlignment="Center" Width="75" Grid.Column="1" Grid.ColumnSpan="2" Click="btn_AdminCancel_Click"/>
+            <Button x:Name="btn_AdminOk" Content="Ok" HorizontalAlignment="Center" Margin="0" Grid.Row="2" VerticalAlignment="Center" Width="75" Grid.ColumnSpan="2" Click="btn_AdminOk_Click" Foreground="Black"/>
+            <Button x:Name="btn_AdminCancel" Content="Cancel" HorizontalAlignment="Center" Margin="0,0,2,0" Grid.Row="2" VerticalAlignment="Center" Width="75" Grid.Column="1" Grid.ColumnSpan="2" Click="btn_AdminCancel_Click" Foreground="Black"/>
         </Grid>
 
     </Grid>

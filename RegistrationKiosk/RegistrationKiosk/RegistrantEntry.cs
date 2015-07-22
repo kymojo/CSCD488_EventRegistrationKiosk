@@ -150,9 +150,15 @@ namespace RegistrationKiosk {
         //===========================================================================
         #region Methods
         //===========================================================================
-
-        #region SET REGISTRATION TYPE
         
+        /// <summary>
+        /// Set Registrant data and type to student
+        /// </summary>
+        /// <param name="classStanding"></param>
+        /// <param name="college"></param>
+        /// <param name="major"></param>
+        /// <param name="studentID"></param>
+        /// <param name="gradYear"></param>
         public void SetTypeStudent(ClassStandingType classStanding, string college, string major, string studentID, int gradYear) {
             this.ClassStanding = classStanding;
             this.College = college;
@@ -162,20 +168,22 @@ namespace RegistrationKiosk {
             this.RegType = RegistrantType.Student;
         }
 
+        /// <summary>
+        /// Sets registrant type and data to employee
+        /// </summary>
+        /// <param name="business"></param>
+        /// <param name="job"></param>
         public void SetTypeEmployee(string business, string job) {
             this.Business = business;
             this.Job = job;
             this.RegType = RegistrantType.Employee;
         }
 
+        /// <summary>
+        /// Sets registrant type to general
+        /// </summary>
         public void SetTypeGeneral() {
             this.RegType = RegistrantType.General;
-        }
-
-        #endregion
-
-        public string GetQueryString() {
-            return "";
         }
 
         /// <summary>
@@ -185,19 +193,6 @@ namespace RegistrationKiosk {
         public void GenerateCode() {
             Random r = new Random(this.GetHashCode());
             Code = r.Next(1000000).ToString("000000");
-        }
- 
-        /// <summary>
-        /// A modified hashing function found here: http://stackoverflow.com/a/549352
-        /// </summary>
-        /// <param name="s">String to hash</param>
-        /// <returns></returns>
-        public static string HashFunction(string s)
-        {
-            SecurityMeans security = new SecurityMeans();
-            string hash = security.GetMd5Hash(s);
-            hash = hash.Substring(0, 5);
-            return hash;
         }
 
         /// <summary>

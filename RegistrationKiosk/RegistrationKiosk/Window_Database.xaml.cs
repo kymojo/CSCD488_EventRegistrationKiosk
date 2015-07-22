@@ -30,12 +30,16 @@ namespace RegistrationKiosk {
             this.main = main;
             loadOldLines();
             getFieldsFromOldLines();
+            checkConnectionStatus();
         }
         #endregion
         //===========================================================================
         #region Window Events
         //===========================================================================
 
+        /// <summary>
+        /// Click event for Connect button
+        /// </summary>
         private void btn_Connect_Click(object sender, RoutedEventArgs e) {
             // Validate port
             if (!validateForm())
@@ -55,8 +59,12 @@ namespace RegistrationKiosk {
                 // Exit dialog
                 btn_Cancel_Click(sender, e);
             }
+            checkConnectionStatus();
         }
 
+        /// <summary>
+        /// Click event for Cancel button
+        /// </summary>
         private void btn_Cancel_Click(object sender, RoutedEventArgs e) {
             if (!main.dbConnection.IsConnected()) {
                 MessageBoxResult result = MessageBox.Show("Database is not currently connected.\nAre you sure you wish to cancel?", "No Connection!", MessageBoxButton.YesNo, MessageBoxImage.Question);
@@ -68,6 +76,9 @@ namespace RegistrationKiosk {
             this.Close();
         }
 
+        /// <summary>
+        /// KeyDown event for textboxes (checks for Enter press)
+        /// </summary>
         private void txtbx_KeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.Return) {
                 btn_Connect_Click(sender, e);
@@ -79,6 +90,20 @@ namespace RegistrationKiosk {
         #region Window Methods
         //===========================================================================
 
+        /// <summary>
+        /// Displays the connection status
+        /// </summary>
+        private void checkConnectionStatus() {
+            if (!main.dbConnection.IsConnected()) {
+                lbl_ConnectionStatus.Content = "Database Status: No Connection!";
+            } else
+                lbl_ConnectionStatus.Content = "Database Status: Connected";
+        }
+
+        /// <summary>
+        /// Validates form data
+        /// </summary>
+        /// <returns>Is Valid</returns>
         private bool validateForm() {
             // Validate Port Number
             try {
@@ -94,6 +119,9 @@ namespace RegistrationKiosk {
             return true;
         }
 
+        /// <summary>
+        /// Populate connection settings with previously accepted settings
+        /// </summary>
         private void getFieldsFromOldLines() {
             txtbx_Host.Text = oldLines[1].Substring(9);
             txtbx_Port.Text = oldLines[2].Substring(9);
@@ -102,6 +130,10 @@ namespace RegistrationKiosk {
             pass_Pass.Password = oldLines[5].Substring(9);
         }
 
+        /// <summary>
+        /// Retrieve previously accepted settings from security.txt
+        /// </summary>
+        /// <returns>Success flag</returns>
         private bool loadOldLines() {
             try {
                 oldLines = File.ReadAllLines("../../security.txt");
@@ -112,6 +144,10 @@ namespace RegistrationKiosk {
             }
         }
 
+        /// <summary>
+        /// Writes newly accepted settings to security.txt
+        /// </summary>
+        /// <returns>Success flag</returns>
         private bool writeNewLines() {
             try {
                 newLines = new string[] { oldLines[0],
@@ -130,6 +166,10 @@ namespace RegistrationKiosk {
             }
         }
 
+        /// <summary>
+        /// Attempts to connect to database with entered settings
+        /// </summary>
+        /// <returns>Success flag</returns>
         private bool connectDatabase() {
             // Set connection variables
             main.dbConnection.SetConnection(txtbx_Host.Text, txtbx_Db.Text, txtbx_User.Text, pass_Pass.Password, Convert.ToInt32(txtbx_Port.Text));

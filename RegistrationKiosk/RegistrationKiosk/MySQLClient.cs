@@ -749,7 +749,7 @@ namespace RegistrationKiosk {
                             "`Code` VARCHAR(6), " +
                             "`questionID` INT, " +
                             "`answer` TEXT, " +
-                            "PRIMARY KEY(Code))";
+                            "PRIMARY KEY(Code, questionID))";
                     // =========================
                     #endregion
                     cmd = new MySqlCommand(query, conn);
@@ -759,7 +759,8 @@ namespace RegistrationKiosk {
                     // =========================
                     query = @"CREATE TABLE IF NOT EXISTS `choices` (" +
                             "`questionID` INT, " +
-                            "`answer` TEXT)";
+                            "`answer` TEXT, " +
+                            "PRIMARY KEY(questionID, answer))";
                     // =========================
                     #endregion
                     cmd = new MySqlCommand(query, conn);

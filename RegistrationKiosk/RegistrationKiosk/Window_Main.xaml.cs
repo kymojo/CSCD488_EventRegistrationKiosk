@@ -57,7 +57,6 @@ namespace RegistrationKiosk {
         // Questions
         private ObservableCollection<QuestionEntry> questionsList = new ObservableCollection<QuestionEntry>();
         private ObservableCollection<ChoiceEntry> choicesList = new ObservableCollection<ChoiceEntry>();
-        bool questionsChanged = false;
 
         // Flag indicating if user used pre-registration code
         private bool validCodeEntered = false;
@@ -119,6 +118,10 @@ namespace RegistrationKiosk {
                     grid_RegFooter.Visibility = System.Windows.Visibility.Visible;
                     grid_RegPre.IsEnabled = true;
                     grid_RegPre.Visibility = System.Windows.Visibility.Visible;
+                    grid_RegOther.IsEnabled = true;
+                    grid_RegOther.Visibility = System.Windows.Visibility.Visible;
+                    lbl_Otherwise.Visibility = System.Windows.Visibility.Visible;
+                    lbl_RegGeneral.Content = "Register Here!";
                     // Disable Back Button
                     btn_Back.IsEnabled = false;
                     btn_Back.Visibility = System.Windows.Visibility.Hidden;
@@ -136,6 +139,10 @@ namespace RegistrationKiosk {
                     grid_RegFooter.Visibility = System.Windows.Visibility.Hidden;
                     grid_RegPre.IsEnabled = false;
                     grid_RegPre.Visibility = System.Windows.Visibility.Hidden;
+                    grid_RegOther.IsEnabled = false;
+                    grid_RegOther.Visibility = System.Windows.Visibility.Hidden;
+                    lbl_Otherwise.Visibility = System.Windows.Visibility.Hidden;
+                    lbl_RegGeneral.Content = "General Information";
                     // Enable Edit Header & Footer
                     grid_EditFooter.IsEnabled = true;
                     grid_EditFooter.Visibility = System.Windows.Visibility.Visible;
@@ -1018,9 +1025,14 @@ namespace RegistrationKiosk {
                 return;
             }
             // Load Questions
-            questionsList = new ObservableCollection<QuestionEntry>(dbConnection.SelectQuestions());
-            datagrid_QuestionsBox.DataContext = questionsList;
-            MessageBox.Show("Questions loaded!");
+            List<QuestionEntry> loaded = dbConnection.SelectQuestions();
+            if (loaded != null) {
+                questionsList = new ObservableCollection<QuestionEntry>();
+                datagrid_QuestionsBox.DataContext = questionsList;
+                MessageBox.Show("Questions loaded!");
+            } else
+                MessageBox.Show("No questions in the database!");
+            
         }
 
         /// <summary>
@@ -1118,8 +1130,10 @@ namespace RegistrationKiosk {
         private void btn_AnswerBoxAdd_Click(object sender, RoutedEventArgs e) {
             // Add new choice to selected question
             int index = datagrid_QuestionsBox.SelectedIndex;
-            if (index == -1)
+            if (index == -1) {
+                MessageBox.Show("No question selected!");
                 return;
+            }
             questionsList[index].AddNewChoice("<<NEW CHOICE>>");
             // Clear choices list and repopulate
             choicesList.Clear();
