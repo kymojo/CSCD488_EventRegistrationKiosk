@@ -20,7 +20,6 @@ namespace RegistrationKiosk {
     public partial class Window_Database : Window {
 
         private Window_Main main = null;
-        string[] oldLines = null, newLines = null;
 
         //===========================================================================
         #region Window Initialize
@@ -28,9 +27,8 @@ namespace RegistrationKiosk {
         public Window_Database(Window_Main main) {
             InitializeComponent();
             this.main = main;
-            loadOldLines();
-            getFieldsFromOldLines();
-            checkConnectionStatus();
+            GetFieldsFromOldSettings();
+            CheckConnectionStatus();
         }
         #endregion
         //===========================================================================
@@ -42,45 +40,57 @@ namespace RegistrationKiosk {
         /// </summary>
         private void btn_Connect_Click(object sender, RoutedEventArgs e) {
             // Validate port
-            if (!validateForm())
+            if (!ValidateForm())
                 return;
-            if (!connectDatabase()) {
+            if (!ConnectDatabase()) {
                 // If bad connection
                 MessageBox.Show("Connection failed! Make sure fields are correct.");
-                getFieldsFromOldLines();
-                if (!main.dbConnection.IsConnected()) {
-                    if (!connectDatabase())
-                        MessageBox.Show("Cannot connect to old settings.");
-                }
             } else {
                 // If good connection
                 MessageBox.Show("Connection successful!");
-                writeNewLines();
+                SaveNewSettings();
                 // Exit dialog
                 btn_Cancel_Click(sender, e);
             }
-            checkConnectionStatus();
+            CheckConnectionStatus();
         }
 
         /// <summary>
         /// Click event for Cancel button
         /// </summary>
         private void btn_Cancel_Click(object sender, RoutedEventArgs e) {
+            // If no connected
             if (!main.dbConnection.IsConnected()) {
-                MessageBoxResult result = MessageBox.Show("Database is not currently connected.\nAre you sure you wish to cancel?", "No Connection!", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (result == MessageBoxResult.No) {
-                    return;
+                // Ask to revert
+                MessageBoxResult result = MessageBox.Show("Do you want to revert to the last valid settings?", "Revert?", MessageBoxButton.YesNo, MessageBoxImage.Asterisk);
+                if (result == MessageBoxResult.Yes) {
+                    GetFieldsFromOldSettings();
+                    // If success, let them see
+                    if (ConnectDatabase()) {
+                        CheckConnectionStatus();
+                        return;
+                    } 
+                }
+                // If still not connected
+                if (!main.dbConnection.IsConnected()) {
+                    // Ask if they want to close window
+                    result = MessageBox.Show("Database is not currently connected.\nAre you sure you wish to cancel?", "No Connection!", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.No)
+                        return;
+                    // If no, save the settings
+                    SaveNewSettings();
                 }
             }
+            // Close the window
             main.IsEnabled = true;
             this.Close();
         }
 
         /// <summary>
-        /// KeyDown event for textboxes (checks for Enter press)
+        /// KeyDown event for textboxes (checks for Return/Enter press)
         /// </summary>
         private void txtbx_KeyDown(object sender, KeyEventArgs e) {
-            if (e.Key == Key.Return) {
+            if (e.Key == Key.Return || e.Key == Key.Enter) {
                 btn_Connect_Click(sender, e);
             }
         }
@@ -93,18 +103,21 @@ namespace RegistrationKiosk {
         /// <summary>
         /// Displays the connection status
         /// </summary>
-        private void checkConnectionStatus() {
+        private void CheckConnectionStatus() {
             if (!main.dbConnection.IsConnected()) {
                 lbl_ConnectionStatus.Content = "Database Status: No Connection!";
-            } else
+                lbl_ConnectionStatus.Foreground = new SolidColorBrush(Colors.Red);
+            } else {
                 lbl_ConnectionStatus.Content = "Database Status: Connected";
+                lbl_ConnectionStatus.Foreground = new SolidColorBrush(Colors.Black);
+            }
         }
 
         /// <summary>
         /// Validates form data
         /// </summary>
         /// <returns>Is Valid</returns>
-        private bool validateForm() {
+        private bool ValidateForm() {
             // Validate Port Number
             try {
                 int port = Convert.ToInt32(txtbx_Port.Text);
@@ -122,55 +135,31 @@ namespace RegistrationKiosk {
         /// <summary>
         /// Populate connection settings with previously accepted settings
         /// </summary>
-        private void getFieldsFromOldLines() {
-            txtbx_Host.Text = oldLines[1].Substring(9);
-            txtbx_Port.Text = oldLines[2].Substring(9);
-            txtbx_Db.Text = oldLines[3].Substring(9);
-            txtbx_User.Text = oldLines[4].Substring(9);
-            pass_Pass.Password = oldLines[5].Substring(9);
-        }
-
-        /// <summary>
-        /// Retrieve previously accepted settings from security.txt
-        /// </summary>
-        /// <returns>Success flag</returns>
-        private bool loadOldLines() {
-            try {
-                oldLines = File.ReadAllLines("../../security.txt");
-                return true;
-            } catch {
-                MessageBox.Show("Error reading from file.");
-                return false;
-            }
+        private void GetFieldsFromOldSettings() {
+            txtbx_Host.Text = main.GetSecurity().DbHost;
+            txtbx_Port.Text = main.GetSecurity().DbPort.ToString();
+            txtbx_Db.Text = main.GetSecurity().DbName;
+            txtbx_User.Text = main.GetSecurity().DbUser;
+            pass_Pass.Password = main.GetSecurity().DbPass;
         }
 
         /// <summary>
         /// Writes newly accepted settings to security.txt
         /// </summary>
         /// <returns>Success flag</returns>
-        private bool writeNewLines() {
-            try {
-                newLines = new string[] { oldLines[0],
-                                              "Db Host: " + txtbx_Host.Text,
-                                              "Db Port: " + Convert.ToInt32(txtbx_Port.Text),
-                                              "Db Name: " + txtbx_Db.Text,
-                                              "Db User: " + txtbx_User.Text,
-                                              "Db Pass: " + pass_Pass.Password
-                                            };
-                File.WriteAllLines("../../security.txt", newLines);
-                oldLines = newLines;
-                return true;
-            } catch {
-                MessageBox.Show("Error writing to file.");
-                return false;
-            }
+        private void SaveNewSettings() {
+            main.GetSecurity().DbHost = txtbx_Host.Text;
+            main.GetSecurity().DbPort = Convert.ToInt32(txtbx_Port.Text);
+            main.GetSecurity().DbName = txtbx_Db.Text;
+            main.GetSecurity().DbUser = txtbx_User.Text;
+            main.GetSecurity().DbPass = pass_Pass.Password;
         }
 
         /// <summary>
         /// Attempts to connect to database with entered settings
         /// </summary>
         /// <returns>Success flag</returns>
-        private bool connectDatabase() {
+        private bool ConnectDatabase() {
             // Set connection variables
             main.dbConnection.SetConnection(txtbx_Host.Text, txtbx_Db.Text, txtbx_User.Text, pass_Pass.Password, Convert.ToInt32(txtbx_Port.Text));
             // Try connection

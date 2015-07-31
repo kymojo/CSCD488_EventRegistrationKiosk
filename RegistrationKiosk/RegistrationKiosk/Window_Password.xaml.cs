@@ -20,7 +20,6 @@ namespace RegistrationKiosk {
     public partial class Window_Password : Window {
         
         private Window_Main main = null;
-        SecurityMeans security = new SecurityMeans();
 
         //===========================================================================
         #region Initialize Window
@@ -47,34 +46,26 @@ namespace RegistrationKiosk {
         /// Click event for Change Password button.
         /// </summary>
         private void btn_PassOk_Click(object sender, RoutedEventArgs e) {
-            try {
-                // Open file and read password
-                string[] oldLines = File.ReadAllLines("../../security.txt");
-                string hash = oldLines[0].Substring(12);
-                string passOld = pass_PassOld.Password;
-                string passNew = pass_PassNew.Password;
-                string passVer = pass_PassVerify.Password;
-                // Verify Old Password
-                if (!security.VerifyMd5Hash(passOld, hash)) {
-                    MessageBox.Show("Old password invalid!");
-                    pass_PassOld.Focus();
-                    return;
-                }
-                // Verify New Password
-                if (!passNew.Equals(passVer)) {
-                    MessageBox.Show("New passwords don't match!");
-                    pass_PassVerify.Focus();
-                    return;
-                }
-                // Set password
-                string[] newLines = {
-                                         "Admin Pass: " + security.GetMd5Hash(passNew),
-                                         oldLines[1], oldLines[2], oldLines[3], oldLines[4], oldLines[5]
-                                     };
-                File.WriteAllLines("../../security.txt", newLines);
+
+            string passOld = pass_PassOld.Password;
+            string passNew = pass_PassNew.Password;
+            string passVer = pass_PassVerify.Password;
+
+            // Check new passwords (make sure they match)
+            if (!passNew.Equals(passVer)) {
+                MessageBox.Show("New passwords don't match!");
+                pass_PassVerify.Focus();
+                return;
+            }
+
+            // Try setting admin password
+            if (main.GetSecurity().SetAdminPassword(passOld, passNew)) {
                 MessageBox.Show("Password changed!");
-                btn_PassCancel_Click(sender, e);
-            } catch { }
+            } else {
+                MessageBox.Show("Old password invalid!");
+                pass_PassOld.Focus();
+                return;
+            }
         }
 
         /// <summary>

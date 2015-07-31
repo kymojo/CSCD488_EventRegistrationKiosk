@@ -16,6 +16,9 @@ using System.Text.RegularExpressions;
 using System.Collections.ObjectModel;
 using MySql.Data.MySqlClient;
 using System.Data.SqlClient;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace RegistrationKiosk {
     /// <summary>
@@ -41,7 +44,7 @@ namespace RegistrationKiosk {
         public MySQLClient dbConnection;
 
         // Excel Interop Object
-        IOExcel ioXL;
+        private IOExcel ioXL;
 
         // Defined color brushes
         private SolidColorBrush brush_FormBorder = new SolidColorBrush(Color.FromRgb(129, 173, 170));
@@ -64,6 +67,9 @@ namespace RegistrationKiosk {
         // Printer Object
         private Printer printer = new Printer();
 
+        // Security Stuff
+        private SecurityMeans security;
+
         #endregion
         //===========================================================================
         #region Window Initialization
@@ -76,7 +82,8 @@ namespace RegistrationKiosk {
             datagrid_AdminEntries.DataContext = searchEntries;
             datagrid_QuestionsBox.DataContext = questionsList;
             datagrid_AnswersBox.DataContext = choicesList;
-            dbConnection = new MySQLClient();
+            UnserializeSecurity();
+            dbConnection = new MySQLClient(security);
             dbConnection.CreateDatabaseTables();
             ioXL = new IOExcel(dbConnection);
         }
@@ -227,6 +234,69 @@ namespace RegistrationKiosk {
             } else
                 MessageBox.Show("Invalid Registration Code!");
             return false;
+        }
+
+        /// <summary>
+        /// Returns a reference to the main window's SecurityMeans
+        /// </summary>
+        /// <returns>SecurityMeans security</returns>
+        public SecurityMeans GetSecurity() {
+            return security;
+        }
+
+        /// <summary>
+        /// Unserializes the security file to load settings
+        /// </summary>
+        private void UnserializeSecurity() {
+            string directory = GetSecurityDirectory();
+            if (!File.Exists(directory + "/security.bin")) {
+                MessageBox.Show("Security settings not found! Default settings applied.\nDefault admin password is 'pass'.");
+                security = new SecurityMeans();
+                return;
+            }
+            try {
+                IFormatter formatter = new BinaryFormatter();
+                Stream stream = new FileStream(directory + "/security.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
+                security = (SecurityMeans)formatter.Deserialize(stream);
+                stream.Close();
+            } catch {
+                MessageBox.Show("Unable to deserialize security file!", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+                security = new SecurityMeans();
+            }
+            
+        }
+
+        /// <summary>
+        /// Serializes the security file to save settings
+        /// </summary>
+        private void SerializeSecurity() {
+            string directory = GetSecurityDirectory();
+            try {
+                IFormatter formatter = new BinaryFormatter();
+                Stream stream = new FileStream(directory + "/security.bin", FileMode.Create, FileAccess.Write, FileShare.None);
+                formatter.Serialize(stream, security);
+                stream.Close();
+            } catch {
+                MessageBox.Show("Unable to serialize security file!", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private string GetSecurityDirectory() {
+            // Find My Documents path
+            string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string fullPath = documents + "/RegKioskSecurity";
+            bool tried = false;
+            // If it doesn't exist
+            while (!Directory.Exists(fullPath)) {
+                // Try to create it
+                Directory.CreateDirectory(fullPath);
+                // If that doesn't work, return nothing
+                if (tried)
+                    return "";
+                tried = true;
+            }
+            // If all good, return path
+            return fullPath;
         }
 
         #endregion
@@ -1026,7 +1096,7 @@ namespace RegistrationKiosk {
             // Load Questions
             List<QuestionEntry> loaded = dbConnection.SelectQuestions();
             if (loaded != null) {
-                questionsList = new ObservableCollection<QuestionEntry>();
+                questionsList = new ObservableCollection<QuestionEntry>(loaded);
                 datagrid_QuestionsBox.DataContext = questionsList;
                 MessageBox.Show("Questions loaded!");
             } else
@@ -1175,6 +1245,10 @@ namespace RegistrationKiosk {
         #endregion
         // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
         #region ADMIN FORM - OTHER BUTTONS
+        
+        /// <summary>
+        /// Click event for Change Password button on Admin Page
+        /// </summary>
         private void btn_ChangePass_Click(object sender, RoutedEventArgs e) {
             // Create changePass window and display
             changepassWindow = new Window_Password(this);
@@ -1183,6 +1257,9 @@ namespace RegistrationKiosk {
             this.IsEnabled = false;
         }
 
+        /// <summary>
+        /// Click event for Database Connection Settings button on Admin Page
+        /// </summary>
         private void btn_DatabaseConnection_Click(object sender, RoutedEventArgs e) {
             // Create database window and display
             databaseWindow = new Window_Database(this);
@@ -1317,6 +1394,10 @@ namespace RegistrationKiosk {
                 // Drop down to focus on Major textbox
                 txtbx_Major.Focus();
             }
+        }
+
+        private void Window_Closed(object sender, EventArgs e) {
+            SerializeSecurity();
         }
 
         #endregion

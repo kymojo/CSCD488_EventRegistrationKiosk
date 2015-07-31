@@ -10,14 +10,15 @@ using System.IO;
 
 namespace RegistrationKiosk {
 
-    public class MySQLClient
-    {
+    public class MySQLClient {
+
         //===========================================================================
         #region Class Variables
         //===========================================================================
         
         MySqlConnection conn = null;
         MySqlCommand cmd;
+        SecurityMeans security;
 
         public string hostname { get; set; }
         public string database { get; set; }
@@ -33,19 +34,15 @@ namespace RegistrationKiosk {
         /// <summary>
         /// Creates an instance of MySQLClient without opening a connection.
         /// </summary>
-        public MySQLClient() {
-            // Read from security.txt
-            if (File.Exists("../../security.txt")) {
-                try {
-                    string[] oldLines = File.ReadAllLines("../../security.txt");
-                    hostname = oldLines[1].Substring(9);
-                    portNumber = Convert.ToInt32(oldLines[2].Substring(9));
-                    database = oldLines[3].Substring(9);
-                    username = oldLines[4].Substring(9);
-                    password = oldLines[5].Substring(9);
-                    Connect();
-                } catch { }
-            }
+        public MySQLClient(SecurityMeans security) {
+            this.security = security;
+            hostname = security.DbHost;
+            database = security.DbName;
+            username = security.DbUser;
+            password = security.DbPass;
+            portNumber = security.DbPort;
+            Connect();
+
             // Check connection (notify if failed)
             if (!IsConnected())
                 MessageBox.Show("Could not connect to database.");
@@ -195,7 +192,10 @@ namespace RegistrationKiosk {
                     cmd.ExecuteNonQuery();
                     this.Close();
                 }
-            } catch { this.Close(); }
+            } catch {
+                MessageBox.Show("Error adding registrant to database!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
+            }
             return;
         }
 
@@ -234,7 +234,10 @@ namespace RegistrationKiosk {
                     }
                     this.Close();
                 }
-            } catch { this.Close(); }
+            } catch {
+                MessageBox.Show("Error adding registrant to database!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
+            }
             return;
         }
 
@@ -289,7 +292,7 @@ namespace RegistrationKiosk {
 
             try {
                 if (this.Open()) {
-                    //Opens a connection, if succefull; run the query and then close the connection.
+                    //Opens a connection, if successful; run the query and then close the connection.
 
                     // Execute general query
                     MySqlCommand cmd = new MySqlCommand(generalQuery, conn);
@@ -303,7 +306,10 @@ namespace RegistrationKiosk {
                         
                     this.Close();
                 }
-            } catch { this.Close(); }
+            } catch {
+                MessageBox.Show("Error adding registrant to database!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
+            }
             return;
         }
         
@@ -332,7 +338,10 @@ namespace RegistrationKiosk {
                     cmd.ExecuteNonQuery();
                     this.Close();
                 }
-                catch { this.Close(); }
+                catch {
+                    MessageBox.Show("Unable to update entry in database!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.Close();
+                }
             }
             return;
         }
@@ -399,7 +408,10 @@ namespace RegistrationKiosk {
 
                     this.Close();
 
-                } catch { this.Close(); }
+                } catch {
+                    MessageBox.Show("Unable to update registrant in database!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.Close();
+                }
             }
             return;
 
@@ -429,7 +441,10 @@ namespace RegistrationKiosk {
                     cmd.ExecuteNonQuery();
                     this.Close();
                 }
-                catch { this.Close(); }
+                catch {
+                    MessageBox.Show("Unable to delete entry from database!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.Close();
+                }
             }
             return;
         }
@@ -453,7 +468,10 @@ namespace RegistrationKiosk {
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
                     this.Close();
-                } catch { this.Close(); }
+                } catch {
+                    MessageBox.Show("Unable to delete question from database!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.Close();
+                }
             }
             return;
         }
@@ -472,7 +490,10 @@ namespace RegistrationKiosk {
                     cmd = new MySqlCommand(query, conn);
                     cmd.ExecuteNonQuery();
                     this.Close();
-                } catch { this.Close(); }
+                } catch {
+                    MessageBox.Show("Unable to delete answer from database!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.Close();
+                }
             }
             return;
         }
@@ -504,7 +525,10 @@ namespace RegistrationKiosk {
 
                     this.Close();
 
-                } catch { this.Close(); }
+                } catch {
+                    MessageBox.Show("Unable to delete registrant from database!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.Close();
+                }
             }
             return;
         }
@@ -550,47 +574,44 @@ namespace RegistrationKiosk {
                         regList.Add(registrant);
                     }
                     dataReader.Close();
-
-                    // STUDENT INFO
-                    query = "SELECT * FROM student WHERE " + WHERE + ";";
-                    cmd = new MySqlCommand(query, conn);
-                    dataReader = cmd.ExecuteReader();
-                    while (dataReader.Read()) {
-                        string code = (string)dataReader[0];
-                        int index = regList.FindIndex(reg => reg.Code.Equals(code));
-                        if (index != -1) {
+                    
+                    foreach (RegistrantEntry reg_get in regList) {
+                        // STUDENT INFO
+                        query = "SELECT * FROM student WHERE Code = '" + reg_get.Code + "';";
+                        cmd = new MySqlCommand(query, conn);
+                        dataReader = cmd.ExecuteReader();
+                        while (dataReader.Read()) {
                             #region Set registrant Properties for Students
                             // =========================
-                            regList[index].GradYear = (int)dataReader[1];
-                            regList[index].StudentID = (string)dataReader[2];
-                            regList[index].Major = (string)dataReader[3];
-                            regList[index].College = (string)dataReader[4];
-                            regList[index].ClassStanding = (RegistrantEntry.ClassStandingType)Enum.Parse(typeof(RegistrantEntry.ClassStandingType), (string)dataReader[5]);
+                            reg_get.GradYear = (int)dataReader[1];
+                            reg_get.StudentID = (string)dataReader[2];
+                            reg_get.Major = (string)dataReader[3];
+                            reg_get.College = (string)dataReader[4];
+                            reg_get.ClassStanding = (RegistrantEntry.ClassStandingType)Enum.Parse(typeof(RegistrantEntry.ClassStandingType), (string)dataReader[5]);
                             // =========================
                             #endregion
                         }
-                    }
-                    dataReader.Close();
+                        dataReader.Close();
 
-                    // EMPLOYEE INFO
-                    query = "SELECT * FROM employee WHERE " + WHERE + ";";
-                    cmd = new MySqlCommand(query, conn);
-                    dataReader = cmd.ExecuteReader();
-                    while (dataReader.Read()) {
-                        string code = (string)dataReader[0];
-                        int index = regList.FindIndex(reg => reg.Code.Equals(code));
-                        if (index != -1) {
+                        // EMPLOYEE INFO
+                        query = "SELECT * FROM employee WHERE Code = '" + reg_get.Code + "';";
+                        cmd = new MySqlCommand(query, conn);
+                        dataReader = cmd.ExecuteReader();
+                        while (dataReader.Read()) {
                             #region Set registrant Properties for Employees
                             // =========================
-                            regList[index].Business = (string)dataReader[1];
-                            regList[index].Job = (string)dataReader[2];
+                            reg_get.Business = (string)dataReader[1];
+                            reg_get.Job = (string)dataReader[2];
                             // =========================
                             #endregion
                         }
+                        dataReader.Close();
                     }
-                    dataReader.Close();
                     
-                } catch { }
+                    
+                } catch {
+                    MessageBox.Show("Error retrieving student from database!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 this.Close();
             }
             return regList;
@@ -633,6 +654,7 @@ namespace RegistrationKiosk {
                     dataReader.Close();
                     this.Close();
                 } catch {
+                    MessageBox.Show("Error grabbing questions!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     this.Close();
                     result = null;
                 }
@@ -759,7 +781,7 @@ namespace RegistrationKiosk {
                     // =========================
                     query = @"CREATE TABLE IF NOT EXISTS `choices` (" +
                             "`questionID` INT, " +
-                            "`answer` TEXT, " +
+                            "`answer` VARCHAR(64), " +
                             "PRIMARY KEY(questionID, answer))";
                     // =========================
                     #endregion
@@ -769,7 +791,10 @@ namespace RegistrationKiosk {
                     this.Close();
                     return true;
                 }
-            } catch { this.Close(); }
+            } catch {
+                MessageBox.Show("Error Creating Tables!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
+            }
             return false;
         }
 
@@ -810,7 +835,10 @@ namespace RegistrationKiosk {
                     this.Close();
                     return true;
                 }
-            } catch { this.Close(); }
+            } catch {
+                MessageBox.Show("Error clearing database!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
+            }
             return false;
         }
 

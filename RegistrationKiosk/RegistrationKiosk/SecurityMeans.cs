@@ -6,20 +6,33 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 
 namespace RegistrationKiosk {
-    class SecurityMeans {
+
+    [Serializable]
+    public class SecurityMeans {
 
         //===========================================================================
-        #region Class Variables
+        #region Class Properties
         //===========================================================================
 
-        private MD5 md5Hash = null;
+        public string AdminPass { get; set; }
+        public string DbHost { get; set; }
+        public string DbName { get; set; }
+        public string DbUser { get; set; }
+        public string DbPass { get; set; }
+        public int DbPort { get; set; }
 
         #endregion
         //===========================================================================
         #region Class Constructor
         //===========================================================================
         public SecurityMeans() {
-            md5Hash = MD5.Create();
+            // Default settings
+            AdminPass = GetMd5Hash("pass");
+            DbHost = "";
+            DbName = "";
+            DbUser = "";
+            DbPass = "";
+            DbPort = 3306;
         }
         #endregion
         //===========================================================================
@@ -36,6 +49,7 @@ namespace RegistrationKiosk {
         /// <param name="input">Input string to be hashed</param>
         /// <returns>String of hash</returns>
         public string GetMd5Hash(string input) {
+            MD5 md5Hash = MD5.Create();
             byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
             return BytesToString(data);
         }
@@ -59,6 +73,35 @@ namespace RegistrationKiosk {
             } else {
                 return false;
             }
+        }
+
+        #endregion
+        //---------------------------------------------------------------------------
+        #region Security Settings
+        //---------------------------------------------------------------------------
+
+        /// <summary>
+        /// Sets the admin password if the given password is correct
+        /// </summary>
+        /// <param name="password">Old password for verification</param>
+        /// <param name="newPass">New password to have</param>
+        /// <returns>Success flag</returns>
+        public bool SetAdminPassword(string password, string newPass) {
+            bool success = false;
+            if (CheckAdminPassword(password)) {
+                AdminPass = GetMd5Hash(newPass);
+                success = true;
+            }
+            return success;
+        }
+
+        /// <summary>
+        /// Verifies whether or not a given password is valid
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns>IsValid flag</returns>
+        public bool CheckAdminPassword(string password) {
+            return VerifyMd5Hash(password, AdminPass);
         }
 
         #endregion

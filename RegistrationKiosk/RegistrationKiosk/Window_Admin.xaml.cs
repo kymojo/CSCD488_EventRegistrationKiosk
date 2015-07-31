@@ -20,7 +20,6 @@ namespace RegistrationKiosk {
     public partial class Window_Admin : Window {
         
         private Window_Main main = null;
-        SecurityMeans security = new SecurityMeans();
 
         //===========================================================================
         #region Window Initialize
@@ -47,37 +46,16 @@ namespace RegistrationKiosk {
         /// Click event for Okay button.
         /// </summary>
         private void btn_AdminOk_Click(object sender, RoutedEventArgs e) {
-            // If file doesn't exist, set pass to default "pass"
-            if (!File.Exists("../../security.txt")) {
-                try {
-                    string[] lines = {
-                                         "Admin Pass: 1a1dc91c907325c69271ddf0c944bc72",
-                                         "Db Host: cscd379.com",
-                                         "Db Port: 3306",
-                                         "Db Name: jobfair",
-                                         "Db User: jobfair",
-                                         "Db Pass: pass"
-                                     };
-                    File.WriteAllLines("../../security.txt", lines);
-                } catch { }
-            }
             // Check password
-            try {
-                // Open file and read password
-                string[] lines = File.ReadAllLines("../../security.txt");
-                string hash = lines[0].Substring(12);
-                string pass = pass_Admin.Password;
-                // Verify Password
-                if (security.VerifyMd5Hash(pass, hash)) {
-                    main.IsEnabled = true;
-                    main.GotoAdminPage();
-                    this.Close();
-                } else {
-                    MessageBox.Show("Invalid Password!");
-                    pass_Admin.Focus();
-                    pass_Admin.Password = "";
-                }
-            } catch { }
+            if (main.GetSecurity().CheckAdminPassword(pass_Admin.Password)) {
+                main.IsEnabled = true;
+                main.GotoAdminPage();
+                this.Close();
+            } else {
+                MessageBox.Show("Invalid Password!");
+                pass_Admin.Focus();
+                pass_Admin.Password = "";
+            }
         }
 
         /// <summary>

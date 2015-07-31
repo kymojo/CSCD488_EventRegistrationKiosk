@@ -32,8 +32,8 @@
                 <Label x:Name="lbl_Port" Content="Port Number" Margin="10,0,0,0" VerticalAlignment="Center" Grid.Row="1" Height="26" Foreground="Black"/>
                 <Label x:Name="lbl_Db" Content="Database" Margin="10,0,21,0" VerticalAlignment="Top" Grid.Row="2" Height="26" Foreground="Black"/>
                 <TextBox x:Name="txtbx_Host" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="220" Grid.Column="1" KeyDown="txtbx_KeyDown"/>
-                <TextBox x:Name="txtbx_Port" HorizontalAlignment="Left" Margin="0" TextWrapping="Wrap" Width="220" Grid.Column="1" Grid.Row="1" Height="24" VerticalAlignment="Center"/>
-                <TextBox x:Name="txtbx_Db" Margin="0,0,10,0" TextWrapping="Wrap" Grid.Column="1" Grid.Row="2" Height="24" VerticalAlignment="Top"/>
+                <TextBox x:Name="txtbx_Port" HorizontalAlignment="Left" Margin="0" TextWrapping="Wrap" Width="220" Grid.Column="1" Grid.Row="1" Height="24" VerticalAlignment="Center" KeyDown="txtbx_KeyDown"/>
+                <TextBox x:Name="txtbx_Db" Margin="0,0,10,0" TextWrapping="Wrap" Grid.Column="1" Grid.Row="2" Height="24" VerticalAlignment="Top" KeyDown="txtbx_KeyDown"/>
             </Grid>
             <Grid x:Name="grid_Credentials" Margin="10,5,10,0" Grid.Row="2" Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
@@ -47,8 +47,8 @@
                 <Rectangle x:Name="rec_Credentials" Fill="#FFC6E8E8" Stroke="#FF81ADAA" RadiusX="5" RadiusY="5" StrokeThickness="3" Grid.RowSpan="3" Grid.ColumnSpan="2" d:IsLocked="True"/>
                 <Label x:Name="lbl_User" Content="Username" Margin="10,3,17,0" VerticalAlignment="Top" Height="26" Foreground="Black"/>
                 <Label x:Name="lbl_Pass" Content="Password" Margin="10,0,20,3" Height="26" Grid.Row="1" VerticalAlignment="Bottom" Foreground="Black"/>
-                <TextBox x:Name="txtbx_User" Margin="0,6,10,0" TextWrapping="Wrap" Grid.Column="1" Height="23" VerticalAlignment="Top"/>
-                <PasswordBox x:Name="pass_Pass" Grid.Column="1" Grid.Row="1" Margin="0,0,10,6" Height="23" VerticalAlignment="Bottom"/>
+                <TextBox x:Name="txtbx_User" Margin="0,6,10,0" TextWrapping="Wrap" Grid.Column="1" Height="23" VerticalAlignment="Top" KeyDown="txtbx_KeyDown"/>
+                <PasswordBox x:Name="pass_Pass" Grid.Column="1" Grid.Row="1" Margin="0,0,10,6" Height="23" VerticalAlignment="Bottom" KeyDown="txtbx_KeyDown"/>
             </Grid>
             <Button x:Name="btn_Connect" Content="Connect" HorizontalAlignment="Center" Margin="48,0" VerticalAlignment="Center" Width="74" Grid.Row="3" Click="btn_Connect_Click" Foreground="Black" Height="30"/>
             <Button x:Name="btn_Cancel" Content="Cancel" HorizontalAlignment="Center" Margin="48,0" VerticalAlignment="Center" Width="74" Grid.Row="3" Grid.Column="1" Click="btn_Cancel_Click" Foreground="Black" Height="30"/>
