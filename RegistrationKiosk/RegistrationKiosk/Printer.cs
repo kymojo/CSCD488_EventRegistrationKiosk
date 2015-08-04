@@ -39,35 +39,35 @@ namespace RegistrationKiosk{
                 MessageBox.Show("File 'jobfair.label' not found.");
                 return;
             }
-            finally {
-                label.SetObjectText("Text", text);
+            
+            label.SetObjectText("Text", text);
 
-                ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Printer");
-                string printerName = "";
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Printer");
+            string printerName = "";
 
-                foreach (ManagementObject printer in searcher.Get()) {
-                    printerName = printer["Name"].ToString();
-                    if (printerName.Equals(@"DYMO LabelWriter 450 DUO Label"))
-                        if (printer["WorkOffline"].ToString().ToLower().Equals("true"))
+            foreach (ManagementObject printer in searcher.Get()) {
+                printerName = printer["Name"].ToString();
+                if (printerName.Equals(@"DYMO LabelWriter 450 DUO Label"))
+                    if (printer["WorkOffline"].ToString().ToLower().Equals("true"))
+                    {
+                        MessageBox.Show("'DYMO LabelWriter 450 DUO Label' - Printer not found.");
+                    }
+                    else
+                    {
+                        try
                         {
-                            MessageBox.Show("'DYMO LabelWriter 450 DUO Label' - Printer not found.");
-                        }
-                        else
-                        {
-                            try
-                            {
-                                label.Print("DYMO LabelWriter 450 DUO Label");
+                            label.Print("DYMO LabelWriter 450 DUO Label");
 
-                                MessageBox.Show("Thank you for registering!\n\n" +
-                                                "Retrieve your name tag and enjoy the event!");
-                            }
-                            catch (Exception)
-                            {
-                                MessageBox.Show("'DYMO LabelWriter 450 DUO Label' - Failed to print");
-                            }
+                            MessageBox.Show("Thank you for registering!\n\n" +
+                                            "Retrieve your name tag and enjoy the event!");
                         }
-                }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("'DYMO LabelWriter 450 DUO Label' - Failed to print");
+                        }
+                    }
             }
+            
         }
     }
 }
