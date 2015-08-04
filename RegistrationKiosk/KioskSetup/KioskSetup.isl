@@ -1051,7 +1051,6 @@
 	<table name="CreateFolder">
 		<col key="yes" def="s72">Directory_</col>
 		<col key="yes" def="s72">Component_</col>
-		<row><td>INSTALLDIR</td><td>ISX_DEFAULTCOMPONENT</td></row>
 		<row><td>INSTALLDIR</td><td>NewComponent1</td></row>
 	</table>
 
@@ -1882,6 +1881,7 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I4">ISAttributes</col>
 		<col def="S72">ISComponentSubFolder_</col>
+		<row><td>jobfair.label</td><td>ISX_DEFAULTCOMPONENT</td><td>JOBFAI~1.LAB|jobfair.label</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Kyle\OneDrive\My Work\Programming\GitHub\SeniorProject2015\RegistrationKiosk\RegistrationKiosk\jobfair.label</td><td>1</td><td/></row>
 		<row><td>registrationkiosk.primary_ou</td><td>RegistrationKiosk.Primary_output</td><td>RegistrationKiosk.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;RegistrationKiosk&gt;|Built</td><td>3</td><td/></row>
 	</table>
 
@@ -2648,7 +2648,7 @@
 		<col def="I2">Encoded</col>
 		<col def="S0">Comment</col>
 		<col def="I4">TimeStamp</col>
-		<row><td>COMPANY_NAME</td><td>1033</td><td>EWU Career Services</td><td>0</td><td/><td>-207381744</td></row>
+		<row><td>COMPANY_NAME</td><td>1033</td><td>EWU Career Services</td><td>0</td><td/><td>606275087</td></row>
 		<row><td>DN_AlwaysInstall</td><td>1033</td><td>Always Install</td><td>0</td><td/><td>-207414576</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_COLOR</td><td>1033</td><td>The color settings of your system are not adequate for running [ProductName].</td><td>0</td><td/><td>-207414576</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_DOTNETVERSION40FULL</td><td>1033</td><td>Microsoft .NET Framework 4.0 Full package or greater needs to be installed for this installation to continue.</td><td>0</td><td/><td>-207367216</td></row>
@@ -3754,8 +3754,8 @@
 		<row><td>IDS__TargetReq_DESC_RAM</td><td>1033</td><td>The amount of RAM is not adequate for running [ProductName].</td><td>0</td><td/><td>-207414576</td></row>
 		<row><td>IDS__TargetReq_DESC_RESOLUTION</td><td>1033</td><td>The screen resolution is not adequate for running [ProductName].</td><td>0</td><td/><td>-207414576</td></row>
 		<row><td>ID_STRING1</td><td>1033</td><td/><td>0</td><td/><td>-207410480</td></row>
-		<row><td>ID_STRING2</td><td>1033</td><td>http://www.ewu.edu/community/career-services</td><td>0</td><td/><td>-207417872</td></row>
-		<row><td>ID_STRING3</td><td>1033</td><td>EWU Career Services</td><td>0</td><td/><td>-207381744</td></row>
+		<row><td>ID_STRING2</td><td>1033</td><td>http://www.EWUCareerServices.com</td><td>0</td><td/><td>606275087</td></row>
+		<row><td>ID_STRING3</td><td>1033</td><td>EWU Career Services</td><td>0</td><td/><td>606275087</td></row>
 		<row><td>ID_STRING4</td><td>1033</td><td>Launch |Built</td><td>0</td><td/><td>-207360400</td></row>
 		<row><td>ID_STRING5</td><td>1033</td><td>Event Registration Kiosk</td><td>0</td><td/><td>-207374891</td></row>
 		<row><td>IIDS_UITEXT_FeatureUninstalled</td><td>1033</td><td>This feature will remain uninstalled.</td><td>0</td><td/><td>-207414576</td></row>
@@ -3867,8 +3867,8 @@
 		<col def="I2">ISIconIndex</col>
 		<row><td>ARPPRODUCTICON.exe</td><td/><td>&lt;ISProductFolder&gt;\redist\Language Independent\OS Independent\setupicon.ico</td><td>0</td></row>
 		<row><td>UNINST_Uninstall_E_F03CC8FA19584F27AC3C9AEBF60CA9A4.exe</td><td/><td>C:\Program Files (x86)\InstallShield\2013LE\Redist\Language Independent\OS Independent\uninstall.ico</td><td>0</td></row>
-		<row><td>_Built1_B3E4D0D4384943618B1C33ADED037EF5.exe</td><td/><td>C:\Users\Kyle\OneDrive\My Work\Programming\GitHub\SeniorProject2015\idcard.ico</td><td>0</td></row>
-		<row><td>_Built_3A37E0BB0F5F40EF872B00545F90101A.exe</td><td/><td>C:\Users\Kyle\OneDrive\My Work\Programming\GitHub\SeniorProject2015\idcard.ico</td><td>0</td></row>
+		<row><td>_Built1_77B3D73CA51949F7AE2030A2584473B8.exe</td><td/><td>C:\Users\Kyle\OneDrive\My Work\Programming\GitHub\SeniorProject2015\idcard.ico</td><td>0</td></row>
+		<row><td>_Built_F455717C4D7E463D8E7A71AAB51768A2.exe</td><td/><td>C:\Users\Kyle\OneDrive\My Work\Programming\GitHub\SeniorProject2015\idcard.ico</td><td>0</td></row>
 	</table>
 
 	<table name="IniFile">
@@ -4001,7 +4001,7 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ISTheme</td><td>InstallShield Blue.theme</td></row>
 		<row><td>ISUSLock</td><td>{D4BD1C6E-9D19-4C19-A4A6-0F934E291B29}</td></row>
 		<row><td>ISUSSignature</td><td>{09819C9A-2F37-42FE-9F97-6991A35642AF}</td></row>
-		<row><td>ISVisitedViews</td><td>viewAssistant,viewUI,viewProject,viewRelease,viewSetupDesign</td></row>
+		<row><td>ISVisitedViews</td><td>viewAssistant,viewUI,viewProject,viewRelease,viewSetupDesign,viewShortcuts</td></row>
 		<row><td>Limited</td><td>1</td></row>
 		<row><td>LockPermissionMode</td><td>1</td></row>
 		<row><td>MsiExecCmdLineOptions</td><td/></row>
@@ -4542,8 +4542,8 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<col def="S255">ISShortcutName</col>
 		<col def="I4">ISAttributes</col>
 		<row><td>UNINST_Uninstall_Event_Registration_Software</td><td>eventr_1_event_registration_software</td><td>##IDS_SHORTCUT_DISPLAY_NAME3##</td><td>NewComponent1</td><td>[SystemFolder]msiexec.exe</td><td>/x {39683DA5-CC6C-46CB-AD47-278AC91BB7B3}</td><td/><td/><td>UNINST_Uninstall_E_F03CC8FA19584F27AC3C9AEBF60CA9A4.exe</td><td>0</td><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
-		<row><td>_Built</td><td>eventr_1_event_registration_software</td><td>##IDS_SHORTCUT_DISPLAY_NAME1##</td><td>RegistrationKiosk.Primary_output</td><td>AlwaysInstall</td><td/><td/><td/><td>_Built_3A37E0BB0F5F40EF872B00545F90101A.exe</td><td>0</td><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
-		<row><td>_Built1</td><td>DesktopFolder</td><td>##IDS_SHORTCUT_DISPLAY_NAME1##</td><td>RegistrationKiosk.Primary_output</td><td>AlwaysInstall</td><td/><td/><td/><td>_Built1_B3E4D0D4384943618B1C33ADED037EF5.exe</td><td>0</td><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
+		<row><td>_Built</td><td>eventr_1_event_registration_software</td><td>##IDS_SHORTCUT_DISPLAY_NAME1##</td><td>RegistrationKiosk.Primary_output</td><td>AlwaysInstall</td><td/><td/><td/><td>_Built_F455717C4D7E463D8E7A71AAB51768A2.exe</td><td>0</td><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
+		<row><td>_Built1</td><td>DesktopFolder</td><td>##IDS_SHORTCUT_DISPLAY_NAME1##</td><td>RegistrationKiosk.Primary_output</td><td>AlwaysInstall</td><td/><td/><td/><td>_Built1_77B3D73CA51949F7AE2030A2584473B8.exe</td><td>0</td><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
 	</table>
 
 	<table name="Signature">

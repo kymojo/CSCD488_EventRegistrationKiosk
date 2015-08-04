@@ -33,13 +33,13 @@ namespace RegistrationKiosk{
                 text += "Community\nMember";
 
             try {
-                label = DYMO.Label.Framework.Label.Open("../../jobfair.label");
+                label = DYMO.Label.Framework.Label.Open(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "/jobfair.label");
             }
             catch {
-                MessageBox.Show("File 'jobfair.label' not found.");
+                MessageBox.Show("File 'jobfair.label' not found in " + System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
                 return;
             }
-            
+                        
             label.SetObjectText("Text", text);
 
             ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Printer");
