@@ -758,7 +758,7 @@ namespace RegistrationKiosk {
                     // =========================
                     query = @"CREATE TABLE IF NOT EXISTS `questions` (" +
                             "`questionID` INT, " +
-                            "`question` TEXT, " +
+                            "`question` VARCHAR(64), " +
                             "PRIMARY KEY(questionID))";
                     // =========================
                     #endregion
