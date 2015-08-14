@@ -181,7 +181,7 @@ namespace RegistrationKiosk {
         {
             //Example: INSERT INTO names (name, age) VALUES('John Smith', '33')
             //Code: MySQLClient.Insert("names", "name, age", "'John Smith, '33'");
-            string query = "INSERT INTO " + table + " (" + column + ") VALUES(" + value + ")";
+            string query = "INSERT IGNORE INTO " + table + " (" + column + ") VALUES(" + value + ")";
 
             try {
                 if (this.Open()) {
@@ -217,7 +217,7 @@ namespace RegistrationKiosk {
                     while (i < questionsCount) {
                         // The Question
                         questionValues = "'" + (i + 1) + "', '" + questions[i].questionText.Replace("'","''") + "'";
-                        query = "INSERT INTO questions (questionID, question) VALUES(" + questionValues + ");";
+                        query = "INSERT IGNORE INTO questions (questionID, question) VALUES(" + questionValues + ");";
                         cmd = new MySqlCommand(query, conn);
                         cmd.ExecuteNonQuery();
                         // Its Choices
@@ -225,7 +225,7 @@ namespace RegistrationKiosk {
                         ii = 0;
                         while (ii < choiceCount) {
                             choiceValues = "'" + (i + 1) + "', '" + questions[i].GetChoiceAt(ii).choiceText.Replace("'", "''") + "'";
-                            query = "INSERT INTO choices (questionID, answer) VALUES(" + choiceValues + ");";
+                            query = "INSERT IGNORE INTO choices (questionID, answer) VALUES(" + choiceValues + ");";
                             cmd = new MySqlCommand(query, conn);
                             cmd.ExecuteNonQuery();
                             ii++;
@@ -263,7 +263,7 @@ namespace RegistrationKiosk {
             value += "'" + registrant.Sex.ToString() + "', ";
             value += "'" + registrant.RegType.ToString() + "', ";
             value += "'Yes'";
-            generalQuery = "INSERT INTO registrant (Code, Fname, Lname, Phone, Email, Sex, RegType, CheckedIn) VALUES(" + value + ");";
+            generalQuery = "INSERT IGNORE INTO registrant (Code, Fname, Lname, Phone, Email, Sex, RegType, CheckedIn) VALUES(" + value + ");";
             // =========================
             #endregion
 
@@ -276,7 +276,7 @@ namespace RegistrationKiosk {
                 value += "'" + registrant.Major + "', ";
                 value += "'" + registrant.College + "', ";
                 value += "'" + registrant.ClassStanding.ToString() + "'";
-                specialQuery = "INSERT INTO student (Code, Graduation, StudentID, Major, College, ClassStanding) VALUES(" + value + ");";
+                specialQuery = "INSERT IGNORE INTO student (Code, Graduation, StudentID, Major, College, ClassStanding) VALUES(" + value + ");";
                 // =========================
                 #endregion
             } else if (registrant.RegType == RegistrantEntry.RegistrantType.Employee) {
@@ -285,7 +285,7 @@ namespace RegistrationKiosk {
                 value = "'" + registrant.Code + "', ";
                 value += "'" + registrant.Business + "', ";
                 value += "'" + registrant.Job + "'";
-                specialQuery = "INSERT INTO employee (Code, Business, Job) VALUES(" + value + ");";
+                specialQuery = "INSERT IGNORE INTO employee (Code, Business, Job) VALUES(" + value + ");";
                 // =========================
                 #endregion
             }
@@ -770,7 +770,7 @@ namespace RegistrationKiosk {
                     query = @"CREATE TABLE IF NOT EXISTS `answers` (" +
                             "`Code` VARCHAR(6), " +
                             "`questionID` INT, " +
-                            "`answer` TEXT, " +
+                            "`answer` VARCHAR(64), " +
                             "PRIMARY KEY(Code, questionID))";
                     // =========================
                     #endregion

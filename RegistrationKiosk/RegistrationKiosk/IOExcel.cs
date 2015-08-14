@@ -40,16 +40,24 @@ namespace RegistrationKiosk {
 
             OpenFileDialog ofd = new OpenFileDialog();
 
-            // Setting the filter options
-            ofd.Filter = "Microsoft Excel Worksheet (.xlsx)|*.xlsx|All Files (*.*)|*.*";
-            ofd.FilterIndex = 1;
-            ofd.Multiselect = false;
+            try
+            {
 
-            // Check if user selected file or not
-            if (ofd.ShowDialog() == DialogResult.OK)
-                return ofd.FileName;
-            else
+                // Setting the filter options
+                ofd.Filter = "Microsoft Excel Worksheet (.xlsx)|*.xlsx|All Files (*.*)|*.*";
+                ofd.FilterIndex = 1;
+                ofd.Multiselect = false;
+
+                // Check if user selected file or not
+                if (ofd.ShowDialog() == DialogResult.OK)
+                    return ofd.FileName;
+                else
+                    return null;
+            }
+            catch(Exception){
+                MessageBox.Show("Incorrect file type (.xlsx is needed) or \nMicrosoft Excel isn't installed.");
                 return null;
+            }
         }
 
         /// <summary>
@@ -59,14 +67,22 @@ namespace RegistrationKiosk {
         public string SelectSaveFile() {
 
             SaveFileDialog fbd = new SaveFileDialog();
-            fbd.Filter = "Microsoft Excel Worksheet (.xlsx)|*.xlsx|All Files (*.*)|*.*";
-            fbd.FilterIndex = 1;
+            try
+            {
+                fbd.Filter = "Microsoft Excel Worksheet (.xlsx)|*.xlsx|All Files (*.*)|*.*";
+                fbd.FilterIndex = 1;
 
-            // Check if user selected file or not
-            if (fbd.ShowDialog() == DialogResult.OK)
-                return fbd.FileName;
-            else
+                // Check if user selected file or not
+                if (fbd.ShowDialog() == DialogResult.OK)
+                    return fbd.FileName;
+                else
+                    return null;
+            }
+            catch (Exception){
+                MessageBox.Show("Microsoft Excel needs to be installed on this computer in order to use this feature.");
                 return null;
+            }
+
         }
 
         /// <summary>

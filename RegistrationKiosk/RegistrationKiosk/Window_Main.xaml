@@ -158,7 +158,7 @@
                     </Grid.RowDefinitions>
                     <Rectangle x:Name="rec_RegRegistrant" Fill="#FFC6E8E8" RadiusY="5" RadiusX="5" Stroke="#FF81ADAA" StrokeThickness="3" Margin="0,0,10,0" Grid.Row="1" Grid.RowSpan="3" d:IsLocked="True"/>
                     <Label x:Name="lbl_RegRegistrant" Content="Registrant Type" HorizontalAlignment="Left" VerticalAlignment="Top" Height="26" Grid.RowSpan="2" Width="156" Foreground="Black"/>
-                    <RadioButton x:Name="radio_Student" HorizontalAlignment="Left" Margin="10,2,0,2" VerticalContentAlignment="Center" GroupName="group_Registrant" Height="20" Width="118" Grid.Row="1" Content="Student / Alumnus" VerticalAlignment="Center" Checked="radio_RegistrantType_Checked"/>
+                    <RadioButton x:Name="radio_Student" HorizontalAlignment="Left" Margin="10,2,0,2" VerticalContentAlignment="Center" GroupName="group_Registrant" Height="20" Width="118" Grid.Row="1" Content="Student / Alumnus" VerticalAlignment="Center" Checked="radio_RegistrantType_Checked" Foreground="Black"/>
                     <RadioButton x:Name="radio_Employee" Content="Employer / Employee" HorizontalAlignment="Left" Margin="10,2,0,2" VerticalContentAlignment="Center" GroupName="group_Registrant" Height="20" Width="132" Grid.Row="2" VerticalAlignment="Center" Checked="radio_RegistrantType_Checked" Foreground="Black"/>
                     <RadioButton x:Name="radio_General" Content="General Registrant" HorizontalAlignment="Left" Margin="10,2,0,2" VerticalContentAlignment="Center" GroupName="group_Registrant" Height="22" Width="117" Grid.Row="3" Checked="radio_RegistrantType_Checked" Foreground="Black"/>
                 </Grid>
