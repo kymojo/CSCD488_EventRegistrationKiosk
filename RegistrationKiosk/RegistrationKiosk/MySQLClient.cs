@@ -193,7 +193,7 @@ namespace RegistrationKiosk {
                     this.Close();
                 }
             } catch {
-                MessageBox.Show("Error adding registrant to database!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error adding entry to database!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.Close();
             }
             return;
@@ -491,7 +491,7 @@ namespace RegistrationKiosk {
                     cmd.ExecuteNonQuery();
                     this.Close();
                 } catch {
-                    MessageBox.Show("Unable to delete answer from database!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Unable to delete answers from database!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     this.Close();
                 }
             }
@@ -502,7 +502,7 @@ namespace RegistrationKiosk {
         /// Delete a registrant entry from database.
         /// </summary>
         /// <param name="code">The entry code of entry to delete</param>
-        public void DeleteRegistrant(int code) {
+        public void DeleteRegistrant(string code) {
             string query;
             MySqlCommand cmd;
 
@@ -527,6 +527,33 @@ namespace RegistrationKiosk {
 
                 } catch {
                     MessageBox.Show("Unable to delete registrant from database!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.Close();
+                }
+            }
+            return;
+        }
+
+        public void DeleteAllRegistrants() {
+            string query;
+            MySqlCommand cmd;
+
+            if (this.Open()) {
+                try {
+                    // Delete all general registrants +
+                    query = "DELETE FROM registrant;";
+                    cmd = new MySqlCommand(query, conn);
+                    cmd.ExecuteNonQuery();
+                    // Delete all students
+                    query = "DELETE FROM student;";
+                    cmd = new MySqlCommand(query, conn);
+                    cmd.ExecuteNonQuery();
+                    // Delete all employees
+                    query = "DELETE FROM employee;";
+                    cmd = new MySqlCommand(query, conn);
+                    cmd.ExecuteNonQuery();
+                    this.Close();
+                } catch {
+                    MessageBox.Show("Error deleting registrants from database!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     this.Close();
                 }
             }
