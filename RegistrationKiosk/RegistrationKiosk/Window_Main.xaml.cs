@@ -754,7 +754,8 @@ namespace RegistrationKiosk {
         /// Queries the database for search string and populates DataGrid with entries.
         /// </summary>
         /// <param name="search">The search parameter</param>
-        private void GetSearchResults(string search) {
+        /// <returns>Success flag (entries found)</returns>
+        private bool GetSearchResults(string search) {
             List<RegistrantEntry> Registrants;
             List<string> words = new List<string>();
             // Clear entries from previous search
@@ -787,7 +788,9 @@ namespace RegistrationKiosk {
             // Display results
             datagrid_AdminEntries.SelectedIndex = -1;
             datagrid_AdminEntries.DataContext = searchEntries;
-            //datagrid_AdminEntries.UpdateLayout();
+            if (searchEntries.Count == 0)
+                return false;
+            return true;
         }
 
         /// <summary>
@@ -913,14 +916,22 @@ namespace RegistrationKiosk {
                 MessageBox.Show("Database not connected!");
                 return;
             }
+
+            List<RegistrantEntry> select;
+            RegistrantEntry newEntry;
+
             if (ValidateRegistrationForms()) {
                 // If entry already exists
                 if (validCodeEntered) {
-                    dbConnection.UpdateRegistrant(editingID, RegistrantFromForm());
+                    // Delete entry and replace with copy (avoids issues with changing reg type)
+                    dbConnection.DeleteRegistrant(editingID);
+                    newEntry = RegistrantFromForm();
+                    newEntry.Code = editingID;
+                    dbConnection.InsertRegistrant(newEntry);
                 }
                 else {
-                    RegistrantEntry newEntry = RegistrantFromForm();
-                    List<RegistrantEntry> select = dbConnection.SelectRegistrant("Code = '" + newEntry.Code + "'");
+                    newEntry = RegistrantFromForm();
+                    select = dbConnection.SelectRegistrant("Code = '" + newEntry.Code + "'");
                     // Check for collision
                     while (select.Count != 0) {
                         // If collision, reroll
@@ -934,7 +945,7 @@ namespace RegistrationKiosk {
                 txtbx_RegCode.Focus();
             }
         }
-
+        
         /// <summary>
         /// Click event for Forgot Code button on CheckIn page.
         /// </summary>
@@ -964,7 +975,9 @@ namespace RegistrationKiosk {
                 MessageBox.Show("Database not connected!");
                 return;
             }
-            GetSearchResults(txtbx_AdminEntriesSearch.Text);
+            bool flag = GetSearchResults(txtbx_AdminEntriesSearch.Text);
+            if (!flag)
+                MessageBox.Show("No entries found!");
         }
 
         /// <summary>
@@ -1004,7 +1017,7 @@ namespace RegistrationKiosk {
                 // Ask admin if this action is correct
                 MessageBoxResult result = MessageBox.Show("Are you sure you want to remove this entry?", "Remove", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result == MessageBoxResult.Yes) {
-                    dbConnection.DeleteRegistrant(Convert.ToInt32(txtbx_AdminEntriesCode.Text));
+                    dbConnection.DeleteRegistrant(txtbx_AdminEntriesCode.Text);
                     MessageBox.Show("Entry successfully deleted.");
                     txtbx_AdminEntriesCode.Text = "";
                 }
@@ -1031,9 +1044,9 @@ namespace RegistrationKiosk {
                 result = MessageBox.Show("Are you sure you want to clear the database?\nTHIS CANNOT BE UNDONE!", "Clear Database", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Yes) {
                     // Clear entry database
+                    dbConnection.DeleteAllRegistrants();
+                    dbConnection.DeleteAnswers();
                     MessageBox.Show("Database successfully cleared.");
-                    dbConnection.DropDatabaseTables();
-                    dbConnection.CreateDatabaseTables();
                     txtbx_AdminEntriesCode.Text = "";
                 }
             }
@@ -1277,8 +1290,14 @@ namespace RegistrationKiosk {
         private void btn_EditConfirm_Click(object sender, RoutedEventArgs e) {
             // If form is valid
             if (ValidateRegistrationForms()) {
-                dbConnection.UpdateRegistrant(editingID, RegistrantFromForm());
+                // Delete entry and replace with copy (avoids issues with changing reg type)
+                dbConnection.DeleteRegistrant(editingID);
+                RegistrantEntry newEntry = RegistrantFromForm();
+                newEntry.Code = editingID;
+                dbConnection.InsertRegistrant(newEntry);
+                // Return to admin page
                 ChangeAppState(WindowView.Admin);
+                GetSearchResults(txtbx_AdminEntriesSearch.Text);
             }
         }
 
